@@ -65,7 +65,8 @@ locals {
 }
 
 module "taito_zone" {
-  source = "github.com/TaitoUnited/taito-terraform-modules//infrastructure/do"
+  source  = "TaitoUnited/kubernetes-infrastructure/digitalocean"
+  version = "0.1.0"
 
   # Provider
   do_token                = var.taito_provider_do_token

@@ -60,7 +60,8 @@ locals {
 }
 
 module "taito_zone" {
-  source = "github.com/TaitoUnited/taito-terraform-modules//infrastructure/aws"
+  source  = "TaitoUnited/kubernetes-infrastructure/aws"
+  version = "1.0.0"
 
   # Labeling
   name                       = var.taito_zone

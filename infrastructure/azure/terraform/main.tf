@@ -76,7 +76,8 @@ resource "azurerm_resource_group" "zone" {
 }
 
 module "taito_zone" {
-  source = "github.com/TaitoUnited/taito-terraform-modules//infrastructure/azure"
+  source  = "TaitoUnited/kubernetes-infrastructure/azurerm"
+  version = "1.0.0"
 
   # Labeling
   name                               = var.taito_zone

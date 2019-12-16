@@ -95,7 +95,8 @@ resource "google_project" "zone" {
 }
 
 module "taito_zone" {
-  source = "github.com/TaitoUnited/taito-terraform-modules//infrastructure/gcp"
+  source  = "TaitoUnited/kubernetes-infrastructure/google"
+  version = "1.0.0"
 
   # First run
   first_run                          = var.first_run
