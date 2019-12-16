@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+taito::confirm "Execute some zone specific custom doctoring" || \
+  taito::skip_to_next "${@}"
+
+echo "TIP: You can implement zone specific functionality here"
+
+taito::call_next "${@}"

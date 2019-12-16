@@ -1,0 +1,105 @@
+- name: Postgresql listens all addresses
+  lineinfile:
+    dest: /etc/postgresql/{{ pg.version | default('9.6') }}/main/postgresql.conf
+    regexp: "^.*listen_addresses ="
+    line: "listen_addresses = '*'"
+    state: present
+  notify:
+    - Restart postgresql
+
+- name: Allow database authorized networks postgresql access
+  lineinfile:
+    dest: /etc/postgresql/{{ pg.version | default('9.6') }}/main/pg_hba.conf
+    regexp: ".*allow access from {{ item }}"
+    line: "host   all   all   {{ item }}   md5   # allow access from {{ item }}"
+    state: present
+  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+  notify:
+    - Restart postgresql
+
+- name: Allow 5432 from database authorized networks through firewall
+  ufw:
+    rule: allow
+    to_port: "5432"
+    proto: tcp
+    src: '{{ item }}'
+  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+  notify: Reload ufw
+
+- name: Deny all IPv6 to port 5432 just in case it was allowed at some point
+  ufw:
+    rule: deny
+    proto: tcp
+    port: "5432"
+    to_ip: "::"
+    insert: 0
+    insert_relative_to: first-ipv6
+  notify: Reload ufw
+
+- name: Add postgres admin user
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+  postgresql_user:
+    name: "{{ pg.admin_user }}"
+    password: "{{ pg_admin_password }}"
+    role_attr_flags: SUPERUSER
+  when: pg.admin_user is defined and pg_admin_password is defined
+
+- name: Add postgres admin user database
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: "{{ pg.admin_user }}"
+    owner: "{{ pg.admin_user }}"
+    encoding: 'UTF-8'
+    lc_collate: 'en_US.UTF-8'
+    lc_ctype: 'en_US.UTF-8'
+  when: pg.admin_user is defined and pg_admin_password is defined
+
+# TODO: remove postgres user?
+
+- name: Add postgres basic user
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    name: "{{ pg.user }}"
+    password: "{{ pg.password }}"
+    role_attr_flags: NOSUPERUSER
+  when: pg.user is defined and pg.password is defined
+
+- name: Add postgres basic user database
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: "{{ pg.database }}"
+    owner: "{{ pg.user }}"
+    encoding: 'UTF-8'
+    lc_collate: 'en_US.UTF-8'
+    lc_ctype: 'en_US.UTF-8'
+  when: pg.database is defined and pg.user is defined and pg.password is defined
+
+- name: Install postgres trigram extension
+  become: yes
+  become_user: postgres
+  command: psql -d {{ pg.database }} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;"
+  when: pg.enable_trigram is defined and pg.enable_trigram
+
+- name: Install postgres uuid-ossp extension
+  become: yes
+  become_user: postgres
+  command: psql -d {{ pg.database }} -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" WITH SCHEMA pg_catalog;"
+  when: pg.enable_uuid_oosp is defined and pg.enable_uuid_oosp
+
+- name: Install postgres pgcrypto extension
+  become: yes
+  become_user: postgres
+  command: psql -d {{ pg.database }} -c "CREATE EXTENSION IF NOT EXISTS \"pgcrypto\" WITH SCHEMA pg_catalog;"
+  when: pg.enable_pgcrypto is defined and pg.enable_pgcrypto
+
+- name: Generate locale fi_FI.UTF-8 for Postgres
+  locale_gen:
+    name: fi_FI.UTF-8
+  notify:
+    - Restart postgresql

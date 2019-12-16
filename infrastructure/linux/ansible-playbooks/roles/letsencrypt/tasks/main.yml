@@ -1,0 +1,20 @@
+# https://gist.github.com/mattiaslundberg/ba214a35060d3c8603e9b1ec8627d349
+
+- name: Create letsencrypt directory
+  file:
+    name: /var/www/letsencrypt
+    state: directory
+
+- name: Add letsencrypt site template
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/nginx/templates/taito-site-letsencrypt-template"
+  vars:
+    item:
+      domain: DOMAIN
+      src: files/sites/template-letsencrypt.j2
+
+- name: Generate dhparams
+  shell: openssl dhparam -out /etc/ssl/private/letsencrypt.pem  2048
+  args:
+    creates: "/etc/ssl/private/letsencrypt.pem"

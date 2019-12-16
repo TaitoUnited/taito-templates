@@ -1,0 +1,61 @@
+#!/bin/bash
+
+set -e
+
+NAMESPACE=$1
+DOMAIN=$2
+CLIENT_MAX_BODY_SIZE=${3:-1m}
+
+PROJECT_DIR="/projects/${NAMESPACE}"
+TEMPLATE_FILE=/etc/nginx/templates/taito-site-template
+LETSENCRYPT_TEMPLATE_FILE=/etc/nginx/templates/taito-site-letsencrypt-template
+
+echo "[Make sure directory ${PROJECT_DIR} exists]"
+mkdir -p "${PROJECT_DIR}"
+echo
+
+echo "[Determine port for site ${NAMESPACE}]"
+PORT=$(gettaitositeport "$NAMESPACE")
+echo "port: $PORT"
+echo
+
+echo "[Add letsencrypt for site ${NAMESPACE}]"
+sed "s/NAME/${NAMESPACE}/g" "$LETSENCRYPT_TEMPLATE_FILE" | \
+  sed "s/DOMAIN/${DOMAIN}/g" \
+    > "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
+ln -s "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt" \
+  "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
+echo
+
+echo "[Restart nginx]"
+service nginx restart && echo OK
+echo
+
+echo "[Create letsencrypt certificate]"
+letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ devops_email }} --agree-tos -d "${DOMAIN}"
+echo
+
+echo "[Create letsencrypt renewal cron job]"
+# TODO: Do not reload nginx?
+sed -i "/ letsencrypt .*${DOMAIN//./\\.}/d" /etc/crontab || :
+echo "0 3 * * * root letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ devops_email }} --agree-tos -d '${DOMAIN}' && service nginx reload" >> /etc/crontab
+echo
+
+echo "[Add configuration for site ${NAMESPACE}]"
+sed "s/NAME/${NAMESPACE}/g" "$TEMPLATE_FILE" | \
+  sed "s/DOMAIN/${DOMAIN}/g" | \
+  sed "s/PORT/${PORT}/g" | \
+  sed "s/CLIENT_MAX_BODY_SIZE/${CLIENT_MAX_BODY_SIZE}/g" \
+    > "/etc/nginx/sites-available/${NAMESPACE}"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}"
+ln -s "/etc/nginx/sites-available/${NAMESPACE}" \
+  "/etc/nginx/sites-enabled/${NAMESPACE}"
+echo
+
+echo "[Restart nginx]"
+service nginx restart && echo OK
+echo
+
+echo "[Site created]"
+echo OK

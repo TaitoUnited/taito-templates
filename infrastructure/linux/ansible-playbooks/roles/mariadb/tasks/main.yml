@@ -1,0 +1,60 @@
+- name: Allow 3306 from database authorized networks through firewall
+  ufw:
+    rule: allow
+    to_port: "3306"
+    proto: tcp
+    src: '{{ item }}'
+  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+  notify: Reload ufw
+
+- name: Deny all IPv6 to port 3306 just in case it was allowed at some point
+  ufw:
+    rule: deny
+    proto: tcp
+    port: "3306"
+    to_ip: "::"
+    insert: 0
+    insert_relative_to: first-ipv6
+  notify: Reload ufw
+
+- name: Add MariaDB admin user database
+  mysql_db:
+    name: "{{ mariadb.admin_user }}"
+    encoding: utf8
+    collation: utf8_unicode_ci
+  when: mariadb.admin_user is defined
+
+- name: Add MariaDB admin user
+  mysql_user:
+    name: "{{ mariadb.admin_user }}"
+    password: "{{ mariadb_admin_password }}"
+    priv: '*.*:ALL,GRANT'
+  when: mariadb.admin_user is defined and mariadb_admin_password is defined
+
+# TODO remove mariadb root user?
+
+- name: Change MariaDB root password
+  mysql_user:
+    name: root
+    password: "{{ mariadb_admin_password }}"
+  when: mariadb_admin_password is defined
+
+- name: Remove anonymous MariaDB users
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: Add MariaDB database
+  mysql_db:
+    name: "{{ mariadb.database }}"
+    encoding: utf8
+    collation: utf8_unicode_ci
+  when: mariadb.database is defined
+
+- name: Add MariaDB user
+  mysql_user:
+    name: "{{ mariadb.user }}"
+    password: "{{ mariadb.password }}"
+    priv: "{{ mariadb.database }}.*:ALL"
+  when: mariadb.user is defined and mariadb.password is defined

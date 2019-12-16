@@ -1,0 +1,9 @@
+- name: Restart MariaDB
+  service:
+    name: mysql
+    state: restarted
+
+- name: Reload MariaDB
+  service:
+    name: mysql
+    state: reloaded

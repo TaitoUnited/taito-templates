@@ -1,0 +1,11 @@
+- hosts: mysql # NOTE: allinone does not include mysql by default
+  become: yes
+  become_user: root
+  roles:
+    - mariadb
+  vars_prompt:
+    - name: "mariadb_admin_password"
+      prompt: "(New) MariaDB admin password"
+      unsafe: yes
+      private: yes
+      confirm: yes

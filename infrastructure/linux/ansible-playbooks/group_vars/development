@@ -1,0 +1,14 @@
+# Copy ssh public key of each user from ~/.ssh/KEYNAME.pub to
+# ansible-playbooks/files/public_keys. If ssh public key does not exist, see
+# https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2
+# WARNING: Do not accidentally copy the private key!
+
+admins:
+  johndoe:
+    username: johndoe
+    public_key: files/public_keys/johndoe.pub
+
+# users:
+#  janedoe:
+#    username: janedoe
+#    public_key: files/public_keys/janedoe.pub

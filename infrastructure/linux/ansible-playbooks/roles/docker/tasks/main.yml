@@ -1,0 +1,72 @@
+- name: Add Docker s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags:
+    - docker
+
+- name: Verify that we have the key with the fingerprint
+  apt_key:
+    id: 0EBFCD88
+    state: present
+  tags:
+    - docker
+
+- name: Set up the stable repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+    state: present
+    update_cache: yes
+  tags:
+    - docker
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+  tags:
+    - docker
+
+- name: Install docker
+  apt:
+    name: docker-ce # =18.06.*
+    state: present
+    update_cache: yes
+  # notify: Restart docker
+  tags:
+    - docker
+
+- name: Create "docker" group
+  group:
+    name: docker
+    state: present
+  tags:
+    - docker
+
+- name: Check current docker-compose version.
+  command: docker-compose --version
+  register: docker_compose_current_version
+  changed_when: false
+  failed_when: false
+
+- name: Delete existing docker-compose version if it's different.
+  file:
+    path: "{{ docker_compose_path }}"
+    state: absent
+  when: >
+    docker_compose_current_version.stdout is defined
+    and docker_compose_version not in docker_compose_current_version.stdout
+
+- name: Install Docker Compose (if configured).
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: "{{ docker_compose_path }}"
+    mode: 0755
+
+- name: Allow http to Docker Compose through firewall
+  ufw:
+    rule: allow
+    to_port: "{{ lookup('env','taito_worker_port_range') }}"
+    proto: tcp
+    src: '{{ item }}'
+  loop: "{{ lookup('env','taito_worker_authorized_networks').split(' ') }}"
+  notify: Reload ufw

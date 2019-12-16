@@ -1,0 +1,44 @@
+- name: Upgrade the system
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install basic tools
+  apt:
+    name:
+      - apt-transport-https
+      - ntp
+      - curl
+      - rsync
+
+- name: Install whatever listed
+  apt:
+    name: "{{ item }}"
+  with_items: "{{ extra_apt_packages | default([]) }}"
+
+- name: Copy timezone UTC to /etc/localtime
+  command: rsync --itemize-changes --checksum --copy-links /usr/share/zoneinfo/UTC /etc/localtime
+
+- name: Set /etc/timezone to UTC
+  copy:
+    src: timezone
+    dest: /etc/timezone
+    owner: root
+    mode: "0644"
+  notify: Update timezone
+
+- name: Generate locale en_US.UTF-8
+  locale_gen:
+    name: en_US.UTF-8
+
+- name: Generate locale fi_FI.UTF-8
+  locale_gen:
+    name: fi_FI.UTF-8
+
+- name: Set locale to en_US.UTF-8
+  copy:
+    src: locale
+    dest: /etc/default/locale
+    force: yes
+    owner: root
+    mode: "0644"

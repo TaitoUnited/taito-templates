@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+NAMESPACE=$1
+PROJECT_DIR="/projects/${NAMESPACE}"
+
+echo "[Delete directory ${PROJECT_DIR}]"
+rm -rf "${PROJECT_DIR}"
+echo
+
+echo "[Delete configuration of site ${NAMESPACE}]"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}"
+rm -f "/etc/nginx/sites-available/${NAMESPACE}"
+echo
+
+echo "[Delete letsencrypt configuration of site ${NAMESPACE}]"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
+rm -f "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt"
+echo
+
+echo "[Delete letsencrypt renewal cron job]"
+sed -i "/ letsencrypt .*${DOMAIN//./\\.}/d" /etc/crontab || :
+echo
+
+echo "[Restart nginx]"
+service nginx restart && echo OK
+echo

@@ -1,0 +1,7 @@
+dependencies:
+  - role: ufw
+  - role: apt
+    packages:
+      - mariadb-server
+      - mariadb-client
+      - python-mysqldb

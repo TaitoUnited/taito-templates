@@ -1,0 +1,9 @@
+dependencies:
+  - role: ufw
+  - role: apt
+    packages:
+      - acl
+      - python-psycopg2
+      - "postgresql-{{ pg.version | default('9.6') }}"
+      - "postgresql-contrib-{{ pg.version | default('9.6') }}"
+      - "postgresql-client-{{ pg.version | default('9.6') }}"

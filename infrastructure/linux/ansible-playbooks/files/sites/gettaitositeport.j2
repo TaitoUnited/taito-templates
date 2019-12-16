@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+NAMESPACE=$1
+PORTS_FILE=/etc/nginx/templates/taito-site-ports
+
+PORT=$(grep "^${NAMESPACE}=" "$PORTS_FILE" 2> /dev/null | sed 's/.*=\(.*\)/\1/' | sed '/^$/d' || :)
+if [[ ! $PORT ]]; then
+  PORT=$(awk '/./{line=$0} END{print line}' $PORTS_FILE 2> /dev/null | sed 's/.*=\(.*\)/\1/')
+  PORT=${PORT:-8999}
+  PORT=$((PORT+1))
+  echo "${NAMESPACE}=$PORT" >> $PORTS_FILE
+fi
+echo "$PORT"

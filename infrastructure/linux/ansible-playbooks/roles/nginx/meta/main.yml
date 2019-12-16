@@ -1,0 +1,5 @@
+dependencies:
+  - role: ufw
+  - role: apt
+    packages:
+      - "{{ nginx_package }}"

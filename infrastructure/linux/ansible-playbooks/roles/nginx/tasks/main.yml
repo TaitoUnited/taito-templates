@@ -1,0 +1,101 @@
+- name: Allow http through firewall
+  ufw:
+    rule: allow
+    to_port: "80"
+    proto: tcp
+    src: '{{ item }}'
+  loop: "{{ lookup('env','taito_http_authorized_networks').split(' ') }}"
+  notify: Reload ufw
+
+- name: Allow https through firewall
+  ufw:
+    rule: allow
+    to_port: "443"
+    proto: tcp
+    src: '{{ item }}'
+  loop: "{{ lookup('env','taito_http_authorized_networks').split(' ') }}"
+  notify: Reload ufw
+
+- name: Disable nginx default site
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - Restart nginx
+
+- name: Remove nginx default site
+  file:
+    dest: /etc/nginx/sites-available/default
+    state: absent
+  notify:
+    - Restart nginx
+
+- name: Ensure /etc/nginx/templates directory exists
+  file: path=/etc/nginx/templates state=directory
+
+- name: Add nginx site template
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/nginx/templates/taito-site-template"
+  vars:
+    item:
+      name: NAME
+      domain: DOMAIN
+      port: PORT
+      client_max_body_size: CLIENT_MAX_BODY_SIZE
+      src: files/sites/template.j2
+
+- name: Add createtaitosite command
+  template:
+    src: "{{ createtaitosite_template }}"
+    dest: "/usr/local/bin/createtaitosite"
+    mode: 0755
+  when: createtaitosite_template is defined
+
+- name: Add deletetaitosite command
+  template:
+    src: "{{ deletetaitosite_template }}"
+    dest: "/usr/local/bin/deletetaitosite"
+    mode: 0755
+  when: deletetaitosite_template is defined
+
+- name: Add gettaitositeport command
+  template:
+    src: "{{ gettaitositeport_template }}"
+    dest: "/usr/local/bin/gettaitositeport"
+    mode: 0755
+  when: gettaitositeport_template is defined
+
+- name: Add nginx sites
+  template:
+    src: "{{ item.src }}"
+    dest: "/etc/nginx/sites-available/{{ item.name }}"
+  loop: "{{ sites }}"
+  when: sites is defined
+  notify:
+    - Restart nginx
+
+- name: Enable nginx sites
+  file:
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}"
+    src: "/etc/nginx/sites-available/{{ item.name }}"
+    state: link
+  loop: "{{ sites }}"
+  when: sites is defined
+  notify:
+    - Restart nginx
+
+- name: Create DH group for nginx sites
+  command: "/usr/bin/openssl dhparam -out /etc/ssl/private/{{ item.name }}.pem 2048"
+  args:
+    creates: "/etc/ssl/private/{{ item.name }}.pem"
+  loop: "{{ sites }}"
+  when: sites is defined and item.dh is defined and item.dh
+  notify:
+    - Restart nginx
+
+- name: Enable nginx service
+  service:
+    name: nginx
+    enabled: yes
+    state: started

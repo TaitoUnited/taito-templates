@@ -1,0 +1,15 @@
+- name: Add APT repository key
+  apt_key:
+    url: "{{ item }}"
+    validate_certs: "no"
+  with_items: "{{ key_urls | default([]) }}"
+
+- name: Add APT repository
+  apt_repository:
+    repo: "{{ item }}"
+  with_items: "{{ repositories | default([]) }}"
+
+- name: Install package with APT
+  apt:
+    name: "{{ packages | default([]) }}"
+    update_cache: yes

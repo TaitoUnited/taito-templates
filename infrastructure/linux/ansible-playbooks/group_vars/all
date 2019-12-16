@@ -1,0 +1,21 @@
+# Common
+devops_email: "{{ lookup('env','taito_devops_email') }}"
+
+# Ingress
+nginx_package: nginx-light
+createtaitosite_template: files/sites/createtaitosite.j2
+deletetaitosite_template: files/sites/deletetaitosite.j2
+gettaitositeport_template: files/sites/gettaitositeport.j2
+
+# Worker
+docker_compose_version: 1.24.0
+docker_compose_path: /usr/bin/docker-compose
+
+# PostgreSQL
+pg:
+  version: 9.6
+  admin_user: "{{ lookup('env','postgres_default_admin') }}"
+
+# MariaDB
+mariadb:
+  admin_user: "{{ lookup('env','postgres_default_admin') }}"

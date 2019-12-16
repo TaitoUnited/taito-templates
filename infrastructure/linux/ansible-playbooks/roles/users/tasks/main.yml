@@ -1,0 +1,37 @@
+# TODO: remove non-existing users
+
+- name: Add admin users
+  user:
+    name: "{{ item.value.username }}"
+    groups: sudo
+    shell: /bin/bash
+    generate_ssh_key: "{{ item.value.generate_ssh_key | default(omit) }}"
+    ssh_key_bits: "{{ item.value.ssh_key_bits | default(omit) }}"
+    ssh_key_file: "{{ item.value.ssh_key_file | default(omit) }}"
+  with_dict: "{{ admins }}"
+
+- name: Add authorized key for admin users
+  authorized_key:
+    user: "{{ item.value.username }}"
+    key: "{{ lookup('file', item.value.public_key) }}"
+    exclusive: yes # Deletes all other authorized keys
+  with_dict: "{{ admins }}"
+
+- name: Add basic users
+  user:
+    name: "{{ item.value.username }}"
+    shell: /bin/bash
+    groups: "{{ item.value.groups | default(omit) }}"
+    generate_ssh_key: "{{ item.value.generate_ssh_key | default(omit) }}"
+    ssh_key_bits: "{{ item.value.ssh_key_bits | default(omit) }}"
+    ssh_key_file: "{{ item.value.ssh_key_file | default(omit) }}"
+  with_dict: "{{ users | default({}) }}"
+
+- name: Add authorized key for basic users users
+  authorized_key:
+    user: "{{ item.value.username }}"
+    key: "{{ lookup('file', item.value.public_key) }}"
+    key_options: "{{ item.value.key_options | default(omit) }}"
+    exclusive: yes # Deletes all other authorized keys
+  with_dict: "{{ users | default({}) }}"
+  when: item.value.get('public_key')

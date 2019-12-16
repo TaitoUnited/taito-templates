@@ -1,0 +1,8 @@
+dependencies:
+  - role: ufw
+  - role: apt
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
