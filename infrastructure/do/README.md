@@ -25,11 +25,16 @@ LINKS WILL BE GENERATED HERE
 
 ## Troubleshooting
 
-Terraform:
+Terraform fails during Helm release execution:
 
-* Just retry by running `taito zone apply` again and see if it works.
-* Try to reauthenticate with `taito auth` or `taito auth --reset`.
-* Limit terraform execution to a specific target by setting `teffaform_target` in `taito-config.sh`. For example: `teffaform_target=module.taito_zone`.
+* Just retry a few times to see if that resolves the issue.
+* Reinstall all Helm releases:
+  1. Set `helm_enabled = false` in `main.tf`
+  2. Run `taito zone apply`, and retry until it succeeds.
+  3. Delete rest of the cert-manager [manually](https://github.com/jetstack/cert-manager/issues/2273#issuecomment-564525232) in case something extra is still lying around.
+  4. Set `helm_enabled = true` in `main.tf`
+  5. Run `taito zone apply`, and retry until succeeds.
+* Limit terraform execution to a specific target by setting `teffaform_target` in `taito-config.sh`. For example: `teffaform_target=module.taito_zone.helm_release.postgres_proxy`.
 
 ## TODO
 
