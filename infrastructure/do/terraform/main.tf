@@ -66,7 +66,7 @@ locals {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/digitalocean"
-  version = "0.1.0"
+  version = "0.1.2"
 
   # Provider
   do_token                = var.taito_provider_do_token
