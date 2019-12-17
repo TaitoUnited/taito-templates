@@ -55,9 +55,9 @@ taito_projects_bucket=$taito_zone-projects
 taito_assets_bucket=$taito_zone-assets
 
 # Kubernetes
-# NOTE: If you disable Kubernetes, remove also kubectl-zone and helm-zone from
-# taito_plugins, and change 'infrastructure/aws' to
-# 'infrastructure/aws-no-kubernetes' in terraform/main.tf
+# NOTE: If you disable Kubernetes, replace the original module
+# 'TaitoUnited/kubernetes-infrastructure/aws' with the serverless submodule
+# 'TaitoUnited/kubernetes-infrastructure/aws//modules/serverless' in main.tf.
 kubernetes_name="$taito_zone-common-kube"
 kubernetes_cluster_prefix=arn:aws:eks:$taito_provider_region:$taito_provider_org_id:cluster/
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
