@@ -88,7 +88,7 @@ resource "google_project" "zone" {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/google"
-  version = "1.0.4"
+  version = "1.0.5"
 
   # First run
   first_run                          = var.first_run
