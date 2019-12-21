@@ -52,10 +52,6 @@ variable "kubernetes_name" {
   default = ""
 }
 
-variable "kubernetes_cluster" {
-  type    = string
-}
-
 variable "kubernetes_version" {
   type    = string
   default = ""

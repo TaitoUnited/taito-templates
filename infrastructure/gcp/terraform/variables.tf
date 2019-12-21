@@ -112,10 +112,6 @@ variable "kubernetes_name" {
   type    = string
 }
 
-variable "kubernetes_cluster" {
-  type    = string
-}
-
 variable "kubernetes_zones" {
   type    = string
   default = ""

@@ -16,11 +16,6 @@ terraform {
 provider "azurerm" {
 }
 
-provider "helm" {
-  install_tiller = false
-  max_history    = 20
-}
-
 # Convert whitespace delimited strings into list(string)
 locals {
   taito_owners = (var.taito_owners == "" ? [] :

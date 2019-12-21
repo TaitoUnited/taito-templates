@@ -80,10 +80,6 @@ variable "kubernetes_name" {
   default = ""
 }
 
-variable "kubernetes_cluster" {
-  type    = string
-}
-
 variable "kubernetes_machine_type" {
   type    = string
   default = "n1-standard-1"

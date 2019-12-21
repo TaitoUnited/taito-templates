@@ -20,11 +20,6 @@ provider "aws" {
   shared_credentials_file = "/home/taito/.aws/credentials"
 }
 
-provider "helm" {
-  install_tiller = false
-  max_history    = 20
-}
-
 # Convert whitespace delimited strings into list(string)
 locals {
   taito_developers = (var.taito_developers == "" ? [] :

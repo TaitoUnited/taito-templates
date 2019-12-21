@@ -27,11 +27,6 @@ provider "digitalocean" {
   token = var.taito_provider_do_token
 }
 
-provider "helm" {
-  install_tiller = false
-  max_history    = 20
-}
-
 # Convert whitespace delimited strings into list(string)
 locals {
   # TODO

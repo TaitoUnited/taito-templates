@@ -85,15 +85,10 @@ variable "taito_projects_bucket" {
 }
 
 /* Kubernetes */
-/* NOTE: kubernetes_cluster and kubernetes_user not required on Terraform */
 
 variable "kubernetes_name" {
   type    = string
   default = ""
-}
-
-variable "kubernetes_cluster" {
-  type    = string
 }
 
 variable "kubernetes_version" {
