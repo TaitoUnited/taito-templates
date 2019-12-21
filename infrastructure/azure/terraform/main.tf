@@ -69,7 +69,7 @@ resource "azurerm_resource_group" "zone" {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/azurerm"
-  version = "1.0.2"
+  version = "1.0.3"
 
   # Labeling
   name                               = var.taito_zone
