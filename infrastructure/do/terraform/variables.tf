@@ -25,8 +25,15 @@ variable "taito_provider_region" {
   type = string
 }
 
-/* TODO: rename to taito_provider_access_token? */
 variable "taito_provider_do_token" {
+  type = string
+}
+
+variable "taito_provider_spaces_access_id" {
+  type = string
+}
+
+variable "taito_provider_spaces_secret_key" {
   type = string
 }
 
