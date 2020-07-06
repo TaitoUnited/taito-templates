@@ -22,6 +22,7 @@ taito_zone=my-zone
 # - ansible-playbooks/production
 taito_default_domain=dev1.mydomain.com # CHANGE
 taito_default_domain_prod=prod1.mydomain.com # CHANGE
+taito_default_cdn_domain=
 
 # Providers
 taito_provider=linux

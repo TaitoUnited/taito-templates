@@ -17,6 +17,7 @@ taito_zone=my-zone
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE
+taito_default_cdn_domain=
 
 # Cloud provider
 taito_provider="do"
