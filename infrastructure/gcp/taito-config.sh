@@ -17,6 +17,7 @@ taito_plugins="
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
+taito_provider_secrets_location=
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE

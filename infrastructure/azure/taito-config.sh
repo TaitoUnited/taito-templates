@@ -12,6 +12,7 @@ taito_plugins="azure-zone terraform-zone kubectl-zone helm-zone links-global cus
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
+taito_provider_secrets_location=
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE
