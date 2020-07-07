@@ -2,6 +2,13 @@
 # shellcheck disable=SC2034
 set -a
 
+# CHANGE: For serverless infrastucture (no Kubernetes) you should do the
+# following changes:
+# - Remove kubectl-zone and helm-zone from taito_plugins
+# - Define taito_authorized_networks as IP addresses instead of CIDRs
+# - Use serverless submodule in main.tf source:
+#   TaitoUnited/kubernetes-infrastructure/aws//modules/serverless
+
 # Taito CLI
 taito_version=1
 taito_type=zone
@@ -56,9 +63,6 @@ taito_projects_bucket=$taito_zone-projects
 taito_assets_bucket=$taito_zone-assets
 
 # Kubernetes
-# NOTE: If you disable Kubernetes, replace the original module
-# 'TaitoUnited/kubernetes-infrastructure/aws' with the serverless submodule
-# 'TaitoUnited/kubernetes-infrastructure/aws//modules/serverless' in main.tf.
 kubernetes_name="$taito_zone-common-kube"
 kubernetes_cluster_prefix=arn:aws:eks:$taito_provider_region:$taito_provider_org_id:cluster/
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}

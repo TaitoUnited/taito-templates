@@ -53,7 +53,7 @@ locals {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "1.0.3"
+  version = "1.0.4"
 
   # Labeling
   name                       = var.taito_zone
@@ -68,6 +68,7 @@ module "taito_zone" {
 
   # Settings
   email                      = var.taito_devops_email
+  authorized_networks        = local.taito_authorized_networks
   archive_day_limit          = var.taito_archive_day_limit
 
   # Buckets
