@@ -23,7 +23,7 @@ taito_provider_secrets_location=$taito_zone
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE
-taito_default_cdn_domain=
+taito_default_cdn_domain=$taito_zone-assets.s3.amazonaws.com
 
 # Cloud provider
 taito_provider=aws
