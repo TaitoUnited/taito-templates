@@ -53,7 +53,7 @@ locals {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "1.0.4"
+  version = "1.0.5"
 
   # Labeling
   name                       = var.taito_zone
