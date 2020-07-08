@@ -53,7 +53,7 @@ locals {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "1.0.5"
+  version = "1.1.0"
 
   # Labeling
   name                       = var.taito_zone
@@ -62,6 +62,9 @@ module "taito_zone" {
   account_id                 = var.taito_provider_org_id
   user_profile               = coalesce(var.taito_provider_user_profile, var.taito_organization)
   region                     = var.taito_provider_region
+
+  # Domain
+  default_domain             = var.taito_default_domain
 
   # Users
   developers                 = local.taito_developers

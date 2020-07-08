@@ -34,6 +34,12 @@ variable "taito_provider_region" {
   type = string
 }
 
+/* Domain */
+
+variable "taito_default_domain" {
+  type = string
+}
+
 /* User rights */
 
 variable "taito_developers" {
