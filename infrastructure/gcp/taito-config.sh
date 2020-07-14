@@ -103,6 +103,7 @@ postgres_high_availability="true"
 postgres_public_ip=false
 #postgres_authorized_networks=
 postgres_ssl_client_cert_enabled="true"
+postgres_ssl_server_cert_enabled="true"
 postgres_proxy_ssl_enabled="false"  # Accessed with GCP db proxy
 taito_secrets="
   ${taito_secrets}
@@ -120,6 +121,7 @@ mysql_admins="${taito_zone//-/}"
 mysql_public_ip=false
 #mysql_authorized_networks=
 mysql_ssl_client_cert_enabled="true"
+mysql_ssl_server_cert_enabled="true"
 mysql_proxy_ssl_enabled="false"  # Accessed with GCP db proxy
 taito_secrets="
   ${taito_secrets}

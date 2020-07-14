@@ -83,6 +83,11 @@ postgres_hosts="${taito_zone}-common-postgres.${taito_provider_region_hexchars}.
 postgres_tiers="db.t3.medium"
 postgres_sizes="20"
 postgres_admins="${taito_zone//-/}"
+postgres_ssl_server_cert_enabled="true"
+taito_secrets="
+  ${taito_secrets}
+  $taito_zone-common-postgres-ssl.ca/devops:file
+"
 
 # MySQL clusters
 mysql_instances="$taito_zone-common-mysql"
@@ -90,6 +95,11 @@ mysql_hosts="${taito_zone}-common-mysql.${taito_provider_region_hexchars}.${tait
 mysql_tiers="db.t3.medium"
 mysql_sizes="20"
 mysql_admins="${taito_zone//-/}"
+mysql_ssl_server_cert_enabled="true"
+taito_secrets="
+  ${taito_secrets}
+  $taito_zone-common-mysql-ssl.ca/devops:file
+"
 
 # Messaging
 # TODO: implement for AWS
