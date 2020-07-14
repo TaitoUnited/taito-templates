@@ -2,9 +2,10 @@ settings:
   # TODO: support for authorized network CIDRs
   authorizedNetworks:
     - cidr: 0.0.0.0/0
+    # - ip: YOUR PUBLIC IP ADDRESS HERE
 
-  developers:
-    # - arn: arn:aws:iam::${taito_provider_org_id}:user/john-doe
+  # developers:
+  #   - arn: arn:aws:iam::${taito_provider_org_id}:user/john-doe
 
   kubernetes:
     name: ${taito_zone}-common-kube

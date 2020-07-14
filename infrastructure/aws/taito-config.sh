@@ -5,7 +5,8 @@ set -a
 # CHANGE: For serverless infrastucture (no Kubernetes) you should do the
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
-# - Define authorizedNetworks as IP addresses instead of CIDRs in terraform.yaml
+# - Remove kubernetes settings from taito-config.sh and terraform.yaml
+# - Define authorizedNetworks as a IP single address instead of CIDRs in terraform.yaml
 # - Use serverless submodule in main.tf source:
 #   TaitoUnited/kubernetes-infrastructure/aws//modules/serverless
 

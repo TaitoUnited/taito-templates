@@ -24,15 +24,15 @@ provider "aws" {
 locals {
   # Read json file
   variables = (
-    fileexists("${path.root}/../terraform-merged.yaml")
-      ? yamldecode(file("${path.root}/../terraform-merged.yaml"))
-      : jsondecode(file("${path.root}/../terraform-merged.json.tmp"))
+    fileexists("${path.root}/../terraform-substituted.yaml")
+      ? yamldecode(file("${path.root}/../terraform-substituted.yaml"))
+      : jsondecode(file("${path.root}/../terraform.json.tmp"))
   )["settings"]
 }
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "2.0.0"
+  version = "2.0.1"
 
   # Labeling
   name                       = var.taito_zone
