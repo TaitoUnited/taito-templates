@@ -22,38 +22,17 @@ provider "aws" {
 
 # Convert whitespace delimited strings into list(string)
 locals {
-  taito_developers = (var.taito_developers == "" ? [] :
-    split(" ", trimspace(replace(var.taito_developers, "/\\s+/", " "))))
-  taito_authorized_networks = (var.taito_authorized_networks == "" ? [] :
-    split(" ", trimspace(replace(var.taito_authorized_networks, "/\\s+/", " "))))
-
-  helm_nginx_ingress_classes = (var.helm_nginx_ingress_classes == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_classes, "/\\s+/", " "))))
-  helm_nginx_ingress_replica_counts = (var.helm_nginx_ingress_replica_counts == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_replica_counts, "/\\s+/", " "))))
-
-  postgres_instances = (var.postgres_instances == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_instances, "/\\s+/", " "))))
-  postgres_tiers     = (var.postgres_tiers == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_tiers, "/\\s+/", " "))))
-  postgres_sizes     = (var.postgres_sizes == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_sizes, "/\\s+/", " "))))
-  postgres_admins    = (var.postgres_admins == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_admins, "/\\s+/", " "))))
-
-  mysql_instances    = (var.mysql_instances == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_instances, "/\\s+/", " "))))
-  mysql_tiers        = (var.mysql_tiers == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_tiers, "/\\s+/", " "))))
-  mysql_sizes        = (var.mysql_sizes == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_sizes, "/\\s+/", " "))))
-  mysql_admins       = (var.mysql_admins == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_admins, "/\\s+/", " "))))
+  # Read json file
+  variables = (
+    fileexists("${path.root}/../terraform-merged.yaml")
+      ? yamldecode(file("${path.root}/../terraform-merged.yaml"))
+      : jsondecode(file("${path.root}/../terraform-merged.json.tmp"))
+  )["settings"]
 }
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "1.1.0"
+  version = "2.0.0"
 
   # Labeling
   name                       = var.taito_zone
@@ -66,12 +45,8 @@ module "taito_zone" {
   # Domain
   default_domain             = var.taito_default_domain
 
-  # Users
-  developers                 = local.taito_developers
-
   # Settings
   email                      = var.taito_devops_email
-  authorized_networks        = local.taito_authorized_networks
   archive_day_limit          = var.taito_archive_day_limit
 
   # Buckets
@@ -80,30 +55,12 @@ module "taito_zone" {
   assets_bucket              = var.taito_assets_bucket
 
   # Helm
-  helm_enabled                       = var.first_run != true
-  helm_nginx_ingress_classes         = local.helm_nginx_ingress_classes
-  helm_nginx_ingress_replica_counts  = local.helm_nginx_ingress_replica_counts
-
-  # Kubernetes
-  kubernetes_name            = var.kubernetes_name
-  kubernetes_machine_type    = var.kubernetes_machine_type
-  kubernetes_disk_size_gb    = var.kubernetes_disk_size_gb
-  kubernetes_min_node_count  = var.kubernetes_min_node_count
-  kubernetes_max_node_count  = var.kubernetes_max_node_count
-
-  # Postgres
-  postgres_instances         = local.postgres_instances
-  postgres_tiers             = local.postgres_tiers
-  postgres_sizes             = local.postgres_sizes
-  postgres_admins            = local.postgres_admins
-
-  # MySQL
-  mysql_instances            = local.mysql_instances
-  mysql_tiers                = local.mysql_tiers
-  mysql_sizes                = local.mysql_sizes
-  mysql_admins               = local.mysql_admins
+  helm_enabled               = var.first_run != true
 
   # Messaging
   messaging_webhook          = var.taito_messaging_webhook
   messaging_critical_channel = var.taito_messaging_critical_channel
+
+  # Variables
+  variables                  = local.variables
 }

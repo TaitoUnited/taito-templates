@@ -1,0 +1,46 @@
+settings:
+  # TODO: support for authorized network CIDRs
+  authorizedNetworks:
+    - cidr: 0.0.0.0/0
+
+  developers:
+    # - arn: arn:aws:iam::${taito_provider_org_id}:user/john-doe
+
+  kubernetes:
+    name: ${taito_zone}-common-kube
+    context: ${taito_zone}
+    nodePools:
+      - name: pool-1
+        machineType: n1-standard-1
+        diskSizeGb: 100
+        minNodeCount: ${kubernetes_default_node_count}
+        maxNodeCount: ${kubernetes_default_node_count}
+    nginxIngressControllers:
+      - class: nginx
+        replicas: ${kubernetes_default_node_count}
+
+  postgresClusters:
+    - name: ${taito_zone}-common-postgres
+      tier: db.t3.medium
+      size: 20
+      adminUsername: ${taito_zone_short}
+      # TODO: support for db users
+      # users:
+      #   - username: john.doe
+      #     read:
+      #       - my-project-prod
+      #     write:
+      #       - another-project-prod
+
+  mysqlClusters:
+    - name: ${taito_zone}-common-mysql
+      tier: db.t3.medium
+      size: 20
+      adminUsername: ${taito_zone_short}
+      # TODO: support for db users
+      # users:
+      #   - username: john.doe
+      #     read:
+      #       - my-project-prod
+      #     write:
+      #       - another-project-prod

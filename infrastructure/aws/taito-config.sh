@@ -5,7 +5,7 @@ set -a
 # CHANGE: For serverless infrastucture (no Kubernetes) you should do the
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
-# - Define taito_authorized_networks as IP addresses instead of CIDRs
+# - Define authorizedNetworks as IP addresses instead of CIDRs in terraform.yaml
 # - Use serverless submodule in main.tf source:
 #   TaitoUnited/kubernetes-infrastructure/aws//modules/serverless
 
@@ -19,6 +19,7 @@ taito_plugins="aws-zone terraform-zone kubectl-zone helm-zone links-global custo
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
+taito_zone_short="${taito_zone//-/}"
 taito_provider_secrets_location=$taito_zone
 
 # Domains
@@ -42,18 +43,8 @@ taito_vc_provider=github
 taito_vc_domain=github.com
 taito_vc_organization=$taito_organization
 
-# User rights, for example:
-# taito_developers="
-#   arn:aws:iam::${taito_provider_org_id}:user/john-doe
-#   arn:aws:iam::${taito_provider_org_id}:user/jane-doe
-# "
-taito_developers=
-
 # Settings
 taito_devops_email=support@myorganization.com # CHANGE
-# NOTE: Also CI/CD requires access if CI/CD is used for automatic deployment
-# TODO: restrict access to VPC resources on AWS
-# taito_authorized_networks="0.0.0.0/0"
 taito_bastion_public_ip=TAITO_BASTION_PUBLIC_IP
 taito_archive_day_limit=60
 
@@ -68,36 +59,23 @@ kubernetes_name="$taito_zone-common-kube"
 kubernetes_cluster_prefix=arn:aws:eks:$taito_provider_region:$taito_provider_org_id:cluster/
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
-kubernetes_machine_type=t3.medium # e.g. t2.small, t3.small, t3.medium
-kubernetes_disk_size_gb=100
-kubernetes_min_node_count=2
-kubernetes_max_node_count=2
+kubernetes_default_node_count=2
 
-# Helm (for Kubernetes)
-helm_nginx_ingress_classes="nginx"
-helm_nginx_ingress_replica_counts="${kubernetes_min_node_count}"
-
-# Postgres clusters
-postgres_instances="$taito_zone-common-postgres"
-postgres_hosts="${taito_zone}-common-postgres.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
-postgres_tiers="db.t3.medium"
-postgres_sizes="20"
-postgres_admins="${taito_zone//-/}"
+# Default postgres cluster for new projects
+postgres_default_instance="$taito_zone-common-postgres"
+postgres_default_host="${taito_zone}-common-postgres.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
+postgres_default_admin="${taito_zone//-/}"
 postgres_ssl_server_cert_enabled="true"
-taito_secrets="
-  ${taito_secrets}
-  $taito_zone-common-postgres-ssl.ca/devops:file
-"
 
-# MySQL clusters
-mysql_instances="$taito_zone-common-mysql"
-mysql_hosts="${taito_zone}-common-mysql.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
-mysql_tiers="db.t3.medium"
-mysql_sizes="20"
-mysql_admins="${taito_zone//-/}"
+# Default mysql cluster for new projects
+mysql_default_instance="$taito_zone-common-mysql"
+mysql_default_host="${taito_zone}-common-mysql.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
+mysql_default_admin="${taito_zone//-/}"
 mysql_ssl_server_cert_enabled="true"
+
+# Secrets (Database SSL keys)
 taito_secrets="
-  ${taito_secrets}
+  $taito_zone-common-postgres-ssl.ca/devops:file
   $taito_zone-common-mysql-ssl.ca/devops:file
 "
 
