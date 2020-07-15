@@ -66,18 +66,17 @@ kubernetes_name="$taito_zone-common-kube"
 kubernetes_cluster_prefix=arn:aws:eks:$taito_provider_region:$taito_provider_org_id:cluster/
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
-kubernetes_default_node_count=2
 
-# Default postgres cluster for new projects
+# Default PostgreSQL cluster for new projects
 postgres_default_instance="$taito_zone-common-postgres"
 postgres_default_host="${taito_zone}-common-postgres.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
-postgres_default_admin="${taito_zone//-/}"
+postgres_default_admin="${taito_zone_short}"
 postgres_ssl_server_cert_enabled="true"
 
-# Default mysql cluster for new projects
+# Default MySQL cluster for new projects
 mysql_default_instance="$taito_zone-common-mysql"
 mysql_default_host="${taito_zone}-common-mysql.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
-mysql_default_admin="${taito_zone//-/}"
+mysql_default_admin="${taito_zone_short}"
 mysql_ssl_server_cert_enabled="true"
 
 # Secrets:

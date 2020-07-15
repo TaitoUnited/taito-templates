@@ -14,11 +14,11 @@ settings:
       - name: pool-1
         machineType: n1-standard-1
         diskSizeGb: 100
-        minNodeCount: ${kubernetes_default_node_count}
-        maxNodeCount: ${kubernetes_default_node_count}
+        minNodeCount: 2
+        maxNodeCount: 2
     nginxIngressControllers:
       - class: nginx
-        replicas: ${kubernetes_default_node_count}
+        replicas: 2
 
   postgresClusters:
     - name: ${taito_zone}-common-postgres
