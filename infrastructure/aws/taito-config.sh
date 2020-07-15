@@ -14,18 +14,22 @@ set -a
 taito_version=1
 taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
-taito_plugins="aws-zone terraform-zone kubectl-zone helm-zone links-global custom"
+taito_plugins="
+  aws-zone aws-secrets
+  terraform-zone
+  kubectl-zone helm-zone
+  generate-secrets links-global custom
+"
 
 # Labeling
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
-taito_provider_secrets_location=$taito_zone
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE
-taito_default_cdn_domain=$taito_zone-assets.s3.amazonaws.com
+taito_default_cdn_domain=$taito_zone-public.s3.amazonaws.com
 
 # Cloud provider
 taito_provider=aws
@@ -48,12 +52,14 @@ taito_vc_organization=$taito_organization
 taito_devops_email=support@myorganization.com # CHANGE
 taito_bastion_public_ip=TAITO_BASTION_PUBLIC_IP
 taito_archive_day_limit=60
+taito_provider_secrets_location=$taito_zone
+taito_cicd_secrets_path=
 
 # Buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
 taito_state_bucket=$taito_zone-state
 taito_projects_bucket=$taito_zone-projects
-taito_assets_bucket=$taito_zone-assets
+taito_public_bucket=$taito_zone-public
 
 # Kubernetes
 kubernetes_name="$taito_zone-common-kube"
@@ -74,8 +80,12 @@ mysql_default_host="${taito_zone}-common-mysql.${taito_provider_region_hexchars}
 mysql_default_admin="${taito_zone//-/}"
 mysql_ssl_server_cert_enabled="true"
 
-# Secrets (Database SSL keys)
+# Secrets:
+# - GitHub personal token for tagging releases (optional)
+#   -> CHANGE: remove token if this zone is not used for production releases
+# - Database certificates
 taito_secrets="
+  version-control-buildbot.token/devops:manual
   $taito_zone-common-postgres-ssl.ca/devops:file
   $taito_zone-common-mysql-ssl.ca/devops:file
 "

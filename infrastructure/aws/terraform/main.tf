@@ -32,7 +32,7 @@ locals {
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "2.0.1"
+  version = "2.1.0"
 
   # Labeling
   name                       = var.taito_zone
@@ -48,11 +48,12 @@ module "taito_zone" {
   # Settings
   email                      = var.taito_devops_email
   archive_day_limit          = var.taito_archive_day_limit
+  cicd_secrets_path          = var.taito_cicd_secrets_path
 
   # Buckets
   state_bucket               = var.taito_state_bucket
   projects_bucket            = var.taito_projects_bucket
-  assets_bucket              = var.taito_assets_bucket
+  public_bucket              = var.taito_public_bucket
 
   # Helm
   helm_enabled               = var.first_run != true

@@ -62,6 +62,11 @@ variable "taito_archive_day_limit" {
   type = number
 }
 
+variable "taito_cicd_secrets_path" {
+  type    = string
+  default = ""
+}
+
 /* Buckets */
 
 variable "taito_state_bucket" {
@@ -74,7 +79,7 @@ variable "taito_projects_bucket" {
   default = ""
 }
 
-variable "taito_assets_bucket" {
+variable "taito_public_bucket" {
   type    = string
   default = ""
 }
