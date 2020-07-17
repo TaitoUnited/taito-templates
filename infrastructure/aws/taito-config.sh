@@ -57,9 +57,9 @@ taito_cicd_secrets_path=
 # Network
 taito_network_tags="{ name = \"${taito_zone}\" }"
 taito_function_subnet_tags='{ tier = "private" }'
-taito_function_security_group_tags='{ group-name = "default" }' # TODO
+taito_function_security_group_tags='{}'
 taito_cache_subnet_tags='{ tier = "elasticache" }'
-taito_cache_security_group_tags='{ group-name = "default" }' # TODO
+taito_cache_security_group_tags='{}'
 
 # Policies
 taito_gateway_policies='[]'
