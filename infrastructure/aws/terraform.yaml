@@ -1,14 +1,13 @@
 settings:
-  # TODO: support for authorized network CIDRs
+  # TODO: support for authorized network CIDRs on Kubernetes setup
   authorizedNetworks:
-    - cidr: 0.0.0.0/0
-    # - ip: YOUR PUBLIC IP ADDRESS HERE
+    - cidr: 0.0.0.0/0 # Your public IP address range here
 
   # developers:
   #   - arn: arn:aws:iam::${taito_provider_org_id}:user/john-doe
 
   kubernetes:
-    name: ${taito_zone}-common-kube
+    name: ${kubernetes_name}
     context: ${taito_zone}
     nodePools:
       - name: pool-1
@@ -21,7 +20,7 @@ settings:
         replicas: 2
 
   postgresClusters:
-    - name: ${taito_zone}-common-postgres
+    - name: ${postgres_default_name}
       tier: db.t3.medium
       size: 20
       adminUsername: ${taito_zone_short}
@@ -34,7 +33,7 @@ settings:
       #       - another-project-prod
 
   mysqlClusters:
-    - name: ${taito_zone}-common-mysql
+    - name: ${mysql_default_name}
       tier: db.t3.medium
       size: 20
       adminUsername: ${taito_zone_short}

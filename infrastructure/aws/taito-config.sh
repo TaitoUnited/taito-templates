@@ -6,7 +6,6 @@ set -a
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
 # - Remove kubernetes settings from taito-config.sh and terraform.yaml
-# - Define authorizedNetworks as a IP single address instead of CIDRs in terraform.yaml
 # - Use serverless submodule in main.tf source:
 #   TaitoUnited/kubernetes-infrastructure/aws//modules/serverless
 
@@ -55,6 +54,21 @@ taito_archive_day_limit=60
 taito_provider_secrets_location=$taito_zone
 taito_cicd_secrets_path=
 
+# Network
+taito_network_tags="{ name = \"${taito_zone}\" }"
+taito_function_subnet_tags='{ tier = "private" }'
+taito_function_security_group_tags='{ group-name = "default" }' # TODO
+taito_cache_subnet_tags='{ tier = "elasticache" }'
+taito_cache_security_group_tags='{ group-name = "default" }' # TODO
+
+# Policies
+taito_gateway_policies='[]'
+taito_cicd_policies="[
+  \"arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser\",
+  \"arn:aws:iam::$taito_provider_org_id:policy/$taito_zone-serverlessdeployer\",
+  \"arn:aws:iam::$taito_provider_org_id:policy/$taito_zone-devopssecretreader\"
+]"
+
 # Buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
 taito_state_bucket=$taito_zone-state
@@ -68,13 +82,13 @@ kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
 
 # Default PostgreSQL cluster for new projects
-postgres_default_instance="$taito_zone-common-postgres"
+postgres_default_name="$taito_zone-common-postgres"
 postgres_default_host="${taito_zone}-common-postgres.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
 postgres_default_admin="${taito_zone_short}"
 postgres_ssl_server_cert_enabled="true"
 
 # Default MySQL cluster for new projects
-mysql_default_instance="$taito_zone-common-mysql"
+mysql_default_name="$taito_zone-common-mysql"
 mysql_default_host="${taito_zone}-common-mysql.${taito_provider_region_hexchars}.${taito_provider_region}.rds.amazonaws.com"
 mysql_default_admin="${taito_zone_short}"
 mysql_ssl_server_cert_enabled="true"
@@ -90,7 +104,7 @@ taito_secrets="
 "
 
 # Messaging
-# TODO: implement for AWS
+# CHANGE: Set slack webhook and channels (optional)
 taito_messaging_app=slack
 taito_messaging_webhook=https://hooks.slack.com/services/AAA/BBB/CCC
 taito_messaging_builds_channel=builds

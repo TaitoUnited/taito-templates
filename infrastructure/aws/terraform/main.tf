@@ -61,6 +61,7 @@ module "taito_zone" {
   # Messaging
   messaging_webhook          = var.taito_messaging_webhook
   messaging_critical_channel = var.taito_messaging_critical_channel
+  messaging_builds_channel   = var.taito_messaging_builds_channel
 
   # Variables
   variables                  = local.variables

@@ -176,3 +176,6 @@ variable "taito_messaging_webhook" {
 variable "taito_messaging_critical_channel" {
   type    = string
 }
+variable "taito_messaging_builds_channel" {
+  type    = string
+}
