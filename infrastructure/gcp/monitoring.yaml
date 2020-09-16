@@ -1,0 +1,10 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/monitoring/google
+
+alerts:
+  - name: kubernetes-container-errors
+    type: log
+    channels: [ "monitoring" ]
+    rule: >
+      resource.type="k8s_container"
+      severity>=ERROR
+  # TODO: nginx ingress latency

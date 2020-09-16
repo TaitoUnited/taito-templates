@@ -1,0 +1,19 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/storage/google
+
+storageBuckets:
+  - name: ${taito_state_bucket}
+    purpose: state
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: true
+    versioningRetainDays: 30
+  - name: ${taito_public_bucket}
+    purpose: public
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: true
+    versioningRetainDays: 30
+    cors:
+      - origin: ["*"]
+    cdnDomain: ${taito_default_cdn_domain}
+    cloudbuildDeployEnabled: true

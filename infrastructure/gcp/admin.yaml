@@ -1,0 +1,28 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/admin/google
+
+# TIP: You can create custom roles at the project or organization level
+# https://cloud.google.com/iam/docs/creating-custom-roles
+
+members:
+# - id: "group:developers@mydomain.com"
+#   roles: [ "custom/developer" ]
+
+serviceAccounts:
+  - id: "database-proxy"
+    description: "TODO"
+    roles: [ "roles/container.clusterViewer" ]
+  - id: "cicd-tester"
+    description: "TODO"
+    roles: [ "roles/container.clusterViewer" ]
+
+apis:
+  - id: "cloudbuild.googleapis.com"
+  - id: "cloudkms.googleapis.com"
+  - id: "compute.googleapis.com"
+  - id: "container.googleapis.com"
+  - id: "containerregistry.googleapis.com"
+  - id: "monitoring.googleapis.com"
+  - id: "pubsub.googleapis.com"
+  - id: "servicenetworking.googleapis.com"
+  - id: "sql-component.googleapis.com"
+  - id: "sqladmin.googleapis.com"

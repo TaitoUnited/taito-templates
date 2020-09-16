@@ -13,65 +13,48 @@ provider "google" {
   project = var.taito_zone
   region  = var.taito_provider_region
   zone    = var.taito_provider_zone
-  version = "~> 2.18.1"
 }
 
 provider "google-beta" {
   project = var.taito_zone
   region  = var.taito_provider_region
   zone    = var.taito_provider_zone
-  version = "~> 2.18.1"
 }
 
-# Convert whitespace delimited strings into list(string)
+provider "helm" {
+  project = var.taito_zone
+  region  = var.taito_provider_region
+  zone    = var.taito_provider_zone
+}
+
 locals {
-  taito_owners = (var.taito_owners == "" ? [] :
-    split(" ", trimspace(replace(var.taito_owners, "/\\s+/", " "))))
-  taito_editors = (var.taito_editors == "" ? [] :
-    split(" ", trimspace(replace(var.taito_editors, "/\\s+/", " "))))
-  taito_viewers = (var.taito_viewers == "" ? [] :
-    split(" ", trimspace(replace(var.taito_viewers, "/\\s+/", " "))))
-  taito_developers = (var.taito_developers == "" ? [] :
-    split(" ", trimspace(replace(var.taito_developers, "/\\s+/", " "))))
-  taito_externals = (var.taito_externals == "" ? [] :
-    split(" ", trimspace(replace(var.taito_externals, "/\\s+/", " "))))
+  admin = yamldecode(
+    file("${path.root}/../admin.json.tmp")
+  )
 
-  helm_nginx_ingress_classes = (var.helm_nginx_ingress_classes == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_classes, "/\\s+/", " "))))
-  helm_nginx_ingress_replica_counts = (var.helm_nginx_ingress_replica_counts == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_replica_counts, "/\\s+/", " "))))
+  databases = yamldecode(
+    file("${path.root}/../databases.json.tmp")
+  )
 
-  kubernetes_zones = (var.kubernetes_zones == "" ? [] :
-    split(" ", trimspace(replace(var.kubernetes_zones, "/\\s+/", " "))))
-  kubernetes_authorized_networks = (var.kubernetes_authorized_networks == "" ? [] :
-    split(" ", trimspace(replace(var.kubernetes_authorized_networks, "/\\s+/", " "))))
+  dns = yamldecode(
+    file("${path.root}/../dns.json.tmp")
+  )
 
-  postgres_instances = (var.postgres_instances == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_instances, "/\\s+/", " "))))
-  postgres_versions  = (var.postgres_versions == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_versions, "/\\s+/", " "))))
-  postgres_tiers     = (var.postgres_tiers == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_tiers, "/\\s+/", " "))))
-  postgres_authorized_networks = (var.postgres_authorized_networks == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_authorized_networks, "/\\s+/", " "))))
+  kubernetes = yamldecode(
+    file("${path.root}/../kubernetes.json.tmp")
+  )
 
-  mysql_instances    = (var.mysql_instances == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_instances, "/\\s+/", " "))))
-  mysql_versions     = (var.mysql_versions == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_versions, "/\\s+/", " "))))
-  mysql_tiers        = (var.mysql_tiers == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_tiers, "/\\s+/", " "))))
-  mysql_admins       = (var.mysql_admins == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_admins, "/\\s+/", " "))))
-  mysql_authorized_networks = (var.mysql_authorized_networks == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_authorized_networks, "/\\s+/", " "))))
+  monitoring = yamldecode(
+    file("${path.root}/../monitoring.json.tmp")
+  )
 
-  /* TODO
-  logging_sinks = (var.logging_sinks == "" ? [] :
-    split(" ", trimspace(replace(var.logging_sinks, "/\\s+/", " "))))
-  logging_companies = (var.logging_companies == "" ? [] :
-    split(" ", trimspace(replace(var.logging_companies, "/\\s+/", " "))))
-  */
+  network = yamldecode(
+    file("${path.root}/../network.json.tmp")
+  )
+
+  storage = yamldecode(
+    file("${path.root}/../storage.json.tmp")
+  )
 }
 
 resource "google_project" "zone" {
@@ -86,80 +69,86 @@ resource "google_project" "zone" {
   }
 }
 
-module "taito_zone" {
-  source  = "TaitoUnited/kubernetes-infrastructure/google"
-  version = "1.0.5"
+module "admin" {
+  source           = "TaitoUnited/admin/google"
+  version          = "1.0.1"
+  providers        = [ google ]
+  depends_on       = [ google_project.zone ]
 
-  # First run
-  first_run                          = var.first_run
+  members          = local.admin["members"]
+  service_accounts = local.admin["serviceAccounts"]
+  apis             = local.admin["apis"]
+}
 
-  # Labeling
-  name                               = var.taito_zone
+module "databases" {
+  source              = "TaitoUnited/databases/google"
+  version             = "1.0.1"
+  providers           = [ google ]
+  depends_on          = [ module.admin ]
 
-  # Google Provider
-  project_id                         = google_project.zone.project_id
-  region                             = var.taito_provider_region
-  zone                               = var.taito_provider_zone
+  postgresql_clusters = local.postgresqlClusters
+  mysql_clusters      = local.mysqlClusters
+  private_network_id  = module.network.database_network_id
+}
 
-  # Users
-  owners                             = local.taito_owners
-  editors                            = local.taito_editors
-  viewers                            = local.taito_viewers
-  developers                         = local.taito_developers
-  externals                          = local.taito_externals
+module "dns" {
+  source       = "TaitoUnited/dns/google"
+  version      = "1.0.1"
+  providers    = [ google ]
+  depends_on   = [ module.admin ]
+  dns_zones    = local.dns["dnsZones"]
+}
+
+module "kubernetes" {
+  source              = "TaitoUnited/kubernetes/google"
+  version             = "1.2.0"
+  providers           = [ google ]
+  depends_on          = [ module.admin ]
 
   # Settings
-  enable_google_services             = true
-  enable_private_google_services     = var.taito_enable_private_google_services
-  cicd_deploy_enabled                = var.taito_cicd_deploy_enabled
-  email                              = var.taito_devops_email
-  archive_day_limit                  = var.taito_archive_day_limit
+  helm_enabled        = var.first_run  # Should be false on the first run, then true
+  email               = var.taito_devops_email
 
-  # Buckets
-  state_bucket                       = var.taito_state_bucket
-  projects_bucket                    = var.taito_projects_bucket
-  assets_bucket                      = var.taito_assets_bucket
+  # Network
+  network             = module.network.network
+  subnetwork          = module.network.subnets_names[0]
+  pods_range_name     = module.network.pods_range_name
+  services_range_name = module.network.services_range_name
 
-  # Helm
-  helm_enabled                       = var.first_run != true
-  helm_nginx_ingress_classes         = local.helm_nginx_ingress_classes
-  helm_nginx_ingress_replica_counts  = local.helm_nginx_ingress_replica_counts
+  # Permissions
+  permissions         = local.kubernetes["permissions"]
 
   # Kubernetes
-  kubernetes_name                    = var.kubernetes_name
-  kubernetes_zones                   = local.kubernetes_zones
-  kubernetes_authorized_networks     = local.kubernetes_authorized_networks
-  kubernetes_release_channel         = var.kubernetes_release_channel
-  kubernetes_machine_type            = var.kubernetes_machine_type
-  kubernetes_disk_size_gb            = var.kubernetes_disk_size_gb
-  kubernetes_min_node_count          = var.kubernetes_min_node_count
-  kubernetes_max_node_count          = var.kubernetes_max_node_count
-  kubernetes_rbac_security_group     = var.kubernetes_rbac_security_group
-  kubernetes_shielded_nodes          = var.kubernetes_shielded_nodes
-  kubernetes_private_nodes           = var.kubernetes_private_nodes
-  kubernetes_network_policy          = var.kubernetes_network_policy
-  kubernetes_db_encryption           = var.kubernetes_db_encryption
-  kubernetes_pod_security_policy     = var.kubernetes_pod_security_policy
-  kubernetes_istio                   = var.kubernetes_istio
-  kubernetes_cloudrun                = var.kubernetes_cloudrun
+  kubernetes          = local.kubernetes["kubernetes"]
 
-  # Postgres
-  postgres_instances                 = local.postgres_instances
-  postgres_versions                  = local.postgres_versions
-  postgres_tiers                     = local.postgres_tiers
-  postgres_high_availability         = var.postgres_high_availability
-  postgres_public_ip                 = var.postgres_public_ip
-  postgres_authorized_networks       = local.postgres_authorized_networks
+  # Database clusters (for db proxies)
+  postgresql_cluster_names = for db in local.postgresqlClusters: [ db.name ]
+  mysql_cluster_names      = for db in local.mysqlClusters: [ db.name ]
+}
 
-  # MySQL
-  mysql_instances                    = local.mysql_instances
-  mysql_versions                     = local.mysql_versions
-  mysql_tiers                        = local.mysql_tiers
-  mysql_admins                       = local.mysql_admins
-  mysql_public_ip                    = var.mysql_public_ip
-  mysql_authorized_networks          = local.mysql_authorized_networks
+module "monitoring" {
+  source       = "TaitoUnited/monitoring/google"
+  version      = "1.0.1"
+  providers    = [ google ]
+  depends_on   = [ module.admin ]
 
-  # TODO: Logging
-  # logging_sinks                    = local.logging_sinks
-  # logging_companies                = local.logging_companies
+  alerts       = local.monitoring["alerts"]
+}
+
+module "network" {
+  source       = "TaitoUnited/network/google"
+  version      = "1.0.1"
+  providers    = [ google ]
+  depends_on   = [ module.admin ]
+
+  network      = local.network["network"]
+}
+
+module "storage" {
+  source          = "TaitoUnited/storage/google"
+  version         = "1.0.1"
+  providers       = [ google ]
+  depends_on      = [ module.admin ]
+
+  storage_buckets = local.storage["storageBuckets"]
 }

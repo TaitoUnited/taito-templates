@@ -1,0 +1,48 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/databases/google
+
+# NOTE: If you use the additional database privilege modules for managing
+# database roles and users, you need to define database provider for each
+# database in terraform/database-privileges.tf.
+# TODO: And to start a local db proxy for each database cluster
+
+postgresClusters:
+  - name: ${postgres_default_name}
+    region: ${taito_provider_region}
+    zone: ${taito_provider_zone}
+    version: POSTGRES_11
+    tier: db-f1-micro
+    maintenanceDay: 2
+    maintenanceHour: 2
+    backupStartTime: 05:00
+    pointInTimeRecoveryEnabled: false
+    highAvailabilityEnabled: true
+    publicIpEnabled: false
+    authorizedNetworks:
+      - 127.127.127.127/32
+    flags:
+      log_min_duration_statement: 1000
+    adminUsername: ${postgres_default_admin}
+
+    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/postgresql
+    roles:
+    users:
+
+mysqlClusters:
+  - name: ${mysql_default_name}
+    region: ${taito_provider_region}
+    zone: ${taito_provider_zone}
+    version: MYSQL_5_7
+    tier: db-f1-micro
+    maintenanceDay: 2
+    maintenanceHour: 2
+    backupStartTime: 05:00
+    pointInTimeRecoveryEnabled: false
+    highAvailabilityEnabled: true
+    publicIpEnabled: false
+    authorizedNetworks:
+      - 127.127.127.127/32
+    adminUsername: ${mysql_default_admin}
+
+    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
+    roles:
+    users:

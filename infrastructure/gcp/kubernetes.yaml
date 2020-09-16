@@ -1,0 +1,106 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/google
+
+permissions:
+  clusterRoles:
+    # Grant developer access to ALL namespaces
+    # NOTE: This is not recommended in a production setup
+    - name: taito-developer
+      subjects:
+        - "GCP_PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
+  namespaces:
+    # Grant database access through a db proxy
+    - name: db-proxy
+      clusterRoles:
+        - name: taito-pod-portforwarder
+          subjects:
+            - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
+
+# For Kubernetes setting descriptions, see
+# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/
+kubernetes:
+  name: ${kubernetes_name}
+  context: ${taito_zone}
+  releaseChannel: STABLE
+  maintenanceStartTime: 02:00
+  registryProjectId:
+  authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
+  rbacSecurityGroup:
+  clusterFirewallRulesEnabled: false
+  masterPrivateEndpointEnabled: false
+  masterGlobalAccessEnabled: true
+  privateNodesEnabled: true
+  shieldedNodesEnabled: true
+  networkPolicyEnabled: true
+  dbEncryptionEnabled: true
+  podSecurityPolicyEnabled: true
+  verticalPodAutoscalingEnabled: true
+  dnsCacheEnabled: true
+  pdCsiDriverEnabled: true
+  resourceConsumptionExportEnabled: true
+  resourceConsumptionExportDatasetId:
+  networkEgressExportEnabled: false
+  binaryAuthorizationEnabled: false
+  intranodeVisibilityEnabled: false
+  configConnectorEnabled: false
+  region: ${taito_provider_region}
+  zones: TODO ???  # NOTE: Provide zones only if kubernes is ZONAL instead of REGIONAL
+  masterAuthorizedNetworks:
+    - 0.0.0.0/0
+
+  # Node pools
+  nodePools:
+    - name: pool-1
+      machineType: n1-standard-1
+      acceleratorType:
+      acceleratorCount: 0
+      secureBootEnabled: true
+      diskSizeGb: 100
+      locations: # Leave empty or specify zones: us-central1-b,us-central1-c
+      # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
+      minNodeCount: 1
+      maxNodeCount: 1
+
+  # Ingress controllers
+  nginxIngressControllers:
+    - class: nginx
+      replicas: 3
+      metricsEnabled: true
+      maxmindLicenseKey: TODO # For GeoIP
+      # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+      configMap:
+        enable-modsecurity: true
+        enable-owasp-modsecurity-crs: true
+        use-geoip: false
+        use-geoip2: true
+        enable-real-ip: false
+        enable-opentracing: false
+        whitelist-source-range:
+        # Block malicious IPs. See https://www.projecthoneypot.org/list_of_ips.php
+        block-cidrs:
+        block-user-agents:
+        block-referers:
+      # Map TCP/UDP connections to services
+      tcpServices:
+      udpServices:
+
+  # Certificate managers
+  certManager:
+    enabled: false
+
+  # Platforms
+  istio:
+    enabled: false
+  knative:
+    enabled: false
+
+  # Logging, monitoring, and tracing
+  falco:
+    enabled: false
+  jaeger:
+    enabled: false
+  sentry:
+    enabled: false
+
+  # CI/CD
+  jenkinsx:
+    enabled: false
