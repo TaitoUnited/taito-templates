@@ -5,7 +5,7 @@
 # in terraform/database-privileges.tf.
 # TODO: And to start a local db proxy for each database cluster
 
-postgresClusters:
+postgresqlClusters:
   - name: ${postgres_default_name}
     region: ${taito_provider_region}
     zone: ${taito_provider_zone}
