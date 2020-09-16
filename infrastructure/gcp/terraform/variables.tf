@@ -15,6 +15,7 @@ variable "taito_zone" {
 
 variable "taito_provider_org_id" {
   type = string
+  default = ""
 }
 
 variable "taito_provider_billing_account_id" {
@@ -33,5 +34,15 @@ variable "taito_provider_zone" {
 /* Settings */
 
 variable "taito_devops_email" {
+  type = string
+}
+
+/* Database passwords */
+
+variable "postgresql_0_password" {
+  type = string
+}
+
+variable "mysql_0_password" {
   type = string
 }

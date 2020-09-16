@@ -1,9 +1,8 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/admin/google
 
+members:
 # TIP: You can create custom roles at the project or organization level
 # https://cloud.google.com/iam/docs/creating-custom-roles
-
-members:
 # - id: "group:developers@mydomain.com"
 #   roles: [ "custom/developer" ]
 

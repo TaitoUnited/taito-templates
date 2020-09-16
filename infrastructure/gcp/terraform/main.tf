@@ -22,9 +22,6 @@ provider "google-beta" {
 }
 
 provider "helm" {
-  project = var.taito_zone
-  region  = var.taito_provider_region
-  zone    = var.taito_provider_zone
 }
 
 data "google_organization" "org" {
@@ -48,7 +45,7 @@ locals {
   admin = yamldecode(replace(
     file("${path.root}/../admin.json.tmp"),
     "GCP_PROJECT_NUMBER",
-    google_project.zone.project_number
+    google_project.zone.number
   ))
 
   databases = yamldecode(
@@ -64,10 +61,10 @@ locals {
       replace(
         file("${path.root}/../kubernetes.json.tmp"),
         "GCP_PROJECT_NUMBER",
-        google_project.zone.project_number
+        google_project.zone.number
       ),
-      GKE_SECURITY_GROUP,
-      var.taito_provider_org_id != "gke-security-groups@${data.google_organization.domain}" ? 1 : ""
+      "GKE_SECURITY_GROUP",
+      var.taito_provider_org_id != "gke-security-groups@${data.google_organization.org[0].domain}" ? 1 : ""
     )
   )
 
@@ -82,14 +79,13 @@ locals {
   storage = yamldecode(replace(
     file("${path.root}/../storage.json.tmp"),
     "GCP_PROJECT_NUMBER",
-    google_project.zone.project_number
+    google_project.zone.number
   ))
 }
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
   version          = "1.0.1"
-  providers        = [ google ]
   depends_on       = [ google_project.zone ]
 
   members          = local.admin["members"]
@@ -100,53 +96,54 @@ module "admin" {
 module "databases" {
   source              = "TaitoUnited/databases/google"
   version             = "1.0.1"
-  providers           = [ google ]
   depends_on          = [ module.admin ]
 
-  postgresql_clusters = local.postgresqlClusters
-  mysql_clusters      = local.mysqlClusters
-  private_network_id  = module.network.database_network_id
+  postgresql_clusters = local.databases.postgresqlClusters
+  mysql_clusters      = local.databases.mysqlClusters
+  private_network_id  = module.network.network
 }
 
 module "dns" {
   source       = "TaitoUnited/dns/google"
   version      = "1.0.1"
-  providers    = [ google ]
   depends_on   = [ module.admin ]
   dns_zones    = local.dns["dnsZones"]
 }
 
 module "kubernetes" {
-  source              = "TaitoUnited/kubernetes/google"
-  version             = "1.2.0"
-  providers           = [ google ]
-  depends_on          = [ module.admin ]
+  source                 = "TaitoUnited/kubernetes/google"
+  version                = "1.4.0"
 
   # Settings
-  helm_enabled        = var.first_run  # Should be false on the first run, then true
-  email               = var.taito_devops_email
+  helm_enabled           = var.first_run  # Should be false on the first run, then true
+  email                  = var.taito_devops_email
 
   # Network
-  network             = module.network.network
-  subnetwork          = module.network.subnets_names[0]
-  pods_range_name     = module.network.pods_range_name
-  services_range_name = module.network.services_range_name
+  network                = module.network.network
+  subnetwork             = module.network.subnet_names[0]
+  pods_ip_range_name     = module.network.pods_ip_range_name
+  services_ip_range_name = module.network.services_ip_range_name
 
   # Permissions
-  permissions         = local.kubernetes["permissions"]
+  permissions            = local.kubernetes["permissions"]
 
   # Kubernetes
-  kubernetes          = local.kubernetes["kubernetes"]
+  kubernetes             = local.kubernetes["kubernetes"]
 
   # Database clusters (for db proxies)
-  postgresql_cluster_names = for db in local.postgresqlClusters: [ db.name ]
-  mysql_cluster_names      = for db in local.mysqlClusters: [ db.name ]
+  postgresql_cluster_names = [
+    for db in local.databases.postgresqlClusters:
+    db.name
+  ]
+  mysql_cluster_names      = [
+    for db in local.databases.mysqlClusters:
+    db.name
+  ]
 }
 
 module "monitoring" {
   source       = "TaitoUnited/monitoring/google"
   version      = "1.0.1"
-  providers    = [ google ]
   depends_on   = [ module.admin ]
 
   alerts       = local.monitoring["alerts"]
@@ -154,8 +151,7 @@ module "monitoring" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.0.1"
-  providers    = [ google ]
+  version      = "1.1.0"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]
@@ -163,8 +159,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "1.0.1"
-  providers       = [ google ]
+  version         = "1.1.0"
   depends_on      = [ module.admin ]
 
   storage_buckets = local.storage["storageBuckets"]

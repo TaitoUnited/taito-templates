@@ -31,13 +31,13 @@ kubernetes:
   masterGlobalAccessEnabled: true
   privateNodesEnabled: true
   shieldedNodesEnabled: true
-  networkPolicyEnabled: true
-  dbEncryptionEnabled: true
-  podSecurityPolicyEnabled: true
+  networkPolicyEnabled: false
+  dbEncryptionEnabled: false
+  podSecurityPolicyEnabled: false
   verticalPodAutoscalingEnabled: true
   dnsCacheEnabled: true
   pdCsiDriverEnabled: true
-  resourceConsumptionExportEnabled: true
+  resourceConsumptionExportEnabled: false
   resourceConsumptionExportDatasetId:
   networkEgressExportEnabled: false
   binaryAuthorizationEnabled: false
@@ -56,7 +56,7 @@ kubernetes:
       acceleratorCount: 0
       secureBootEnabled: true
       diskSizeGb: 100
-      locations: # Leave empty or specify zones: us-central1-b,us-central1-c
+      locations: # Leave empty or specify zones, example: us-central1-b,us-central1-c
       # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
       minNodeCount: 1
       maxNodeCount: 1
@@ -66,7 +66,9 @@ kubernetes:
     - class: nginx
       replicas: 3
       metricsEnabled: true
-      maxmindLicenseKey: TODO # For GeoIP
+      # MaxMind license key for GeoIP2:
+      # https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
+      maxmindLicenseKey:
       # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
       configMap:
         enable-modsecurity: true
@@ -86,7 +88,7 @@ kubernetes:
 
   # Certificate managers
   certManager:
-    enabled: false
+    enabled: true
 
   # Platforms
   istio:

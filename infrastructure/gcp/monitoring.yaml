@@ -7,4 +7,10 @@ alerts:
     rule: >
       resource.type="k8s_container"
       severity>=ERROR
-  # TODO: nginx ingress latency
+  - name: nginx-ingress-response-time
+    type: log
+    channels: [ "monitoring" ]
+    rule: >
+      resource.type="k8s_container"
+      resource.labels.namespace_name="nginx-ingress"
+      jsonPayload.responseTimeS>=3

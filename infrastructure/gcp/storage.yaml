@@ -16,4 +16,6 @@ storageBuckets:
     cors:
       - origin: ["*"]
     cdnDomain: ${taito_default_cdn_domain}
-    cloudbuildDeployEnabled: true
+    members:
+      - id: "GCP_PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
+        roles: [ "roles/storage.objectAdmin" ]
