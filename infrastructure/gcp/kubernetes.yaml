@@ -3,7 +3,7 @@
 permissions:
   clusterRoles:
     # Grant developer access to ALL namespaces
-    # NOTE: This is not recommended in a production setup
+    # NOTE: Not recommended on production clusters
     - name: taito-developer
       subjects:
         - "GCP_PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
@@ -13,6 +13,7 @@ permissions:
       clusterRoles:
         - name: taito-pod-portforwarder
           subjects:
+            # NOTE: CI/CD tester account is not required on production clusters
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
 
 # For Kubernetes setting descriptions, see
@@ -23,7 +24,7 @@ kubernetes:
   releaseChannel: STABLE
   maintenanceStartTime: 02:00
   registryProjectId:
-  authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
+  authenticatorSecurityGroup: GKE_SECURITY_GROUP
   rbacSecurityGroup:
   clusterFirewallRulesEnabled: false
   masterPrivateEndpointEnabled: false

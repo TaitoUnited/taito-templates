@@ -32,16 +32,6 @@ variable "taito_provider_zone" {
 
 /* Settings */
 
-variable "taito_cicd_cloud_deploy_enabled" {
-  type    = bool
-  default = "true"
-}
-
-variable "taito_cicd_testing_enabled" {
-  type    = bool
-  default = "true"
-}
-
 variable "taito_devops_email" {
   type = string
 }

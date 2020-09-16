@@ -25,27 +25,39 @@ taito_default_cdn_domain=
 
 # Cloud provider
 taito_provider=gcp
-taito_provider_org_domain=myorganization.com     # CHANGE: leave empty for 'no organization'
 taito_provider_org_id=0123456789 # CHANGE: leave empty for 'no organization'
 taito_provider_billing_account_id=1234AB-1234AB-1234AB # CHANGE
 taito_provider_region=europe-west1
 taito_provider_zone=europe-west1-b
 
-# Other providers
-taito_uptime_provider=gcp
-taito_uptime_provider_org_id=$taito_provider_org_id
-taito_uptime_channels=""
+# Container registry provider
 taito_container_registry_provider=gcp
 taito_container_registry=eu.gcr.io/$taito_zone
+
+# CI/CD provider
 taito_ci_provider=gcp
+
+# Version control provider
 taito_vc_provider=github
 taito_vc_domain=github.com
 taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
+# Uptime monitoring provider
+taito_uptime_provider=gcp
+taito_uptime_provider_url=
+taito_uptime_provider_org_id=$taito_provider_org_id
+taito_uptime_channels=""
+
+# Error tracking provider
+taito_tracking_provider=sentry
+taito_tracking_provider_url=
+
+# Distributed tracing provider
+taito_tracing_provider=jaeger
+taito_tracing_provider_url=https://jaeger.${taito_default_domain}
+
 # Settings
 taito_devops_email=support@myorganization.com # CHANGE
-taito_cicd_cloud_deploy_enabled=true
-taito_cicd_testing_enabled=true
 taito_provider_secrets_location=taito_resource_namespace_id
 taito_cicd_secrets_path=
 
@@ -93,11 +105,9 @@ taito_secrets="
 # Secrets:
 # - GitHub personal token for tagging releases (optional)
 #   -> CHANGE: remove token if this zone is not used for production releases
-# - Database proxy service account
 # - CI/CD tester services account
 taito_secrets="
   version-control-buildbot.token/devops:manual
-  database-proxy-serviceaccount.key/db-proxy:file
   cicd-tester-serviceaccount.key/devops:file
 "
 

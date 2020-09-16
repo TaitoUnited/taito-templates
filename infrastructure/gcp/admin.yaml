@@ -8,12 +8,12 @@ members:
 #   roles: [ "custom/developer" ]
 
 serviceAccounts:
-  - id: "database-proxy"
-    description: "TODO"
-    roles: [ "roles/container.clusterViewer" ]
+  # NOTE: CI/CD tester service account is not required on production clusters
   - id: "cicd-tester"
-    description: "TODO"
     roles: [ "roles/container.clusterViewer" ]
+    description: >
+      Service account for running tests on CI/CD. Connects to database
+      through a database proxy running on Kubernetes cluster.
 
 apis:
   - id: "cloudbuild.googleapis.com"

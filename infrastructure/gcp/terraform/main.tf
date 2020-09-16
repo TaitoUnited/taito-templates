@@ -27,34 +27,9 @@ provider "helm" {
   zone    = var.taito_provider_zone
 }
 
-locals {
-  admin = yamldecode(
-    file("${path.root}/../admin.json.tmp")
-  )
-
-  databases = yamldecode(
-    file("${path.root}/../databases.json.tmp")
-  )
-
-  dns = yamldecode(
-    file("${path.root}/../dns.json.tmp")
-  )
-
-  kubernetes = yamldecode(
-    file("${path.root}/../kubernetes.json.tmp")
-  )
-
-  monitoring = yamldecode(
-    file("${path.root}/../monitoring.json.tmp")
-  )
-
-  network = yamldecode(
-    file("${path.root}/../network.json.tmp")
-  )
-
-  storage = yamldecode(
-    file("${path.root}/../storage.json.tmp")
-  )
+data "google_organization" "org" {
+  count        = var.taito_provider_org_id != "" ? 1 : 0
+  organization = var.taito_provider_org_id
 }
 
 resource "google_project" "zone" {
@@ -67,6 +42,48 @@ resource "google_project" "zone" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+locals {
+  admin = yamldecode(replace(
+    file("${path.root}/../admin.json.tmp"),
+    "GCP_PROJECT_NUMBER",
+    google_project.zone.project_number
+  ))
+
+  databases = yamldecode(
+    file("${path.root}/../databases.json.tmp")
+  )
+
+  dns = yamldecode(
+    file("${path.root}/../dns.json.tmp")
+  )
+
+  kubernetes = yamldecode(
+    replace(
+      replace(
+        file("${path.root}/../kubernetes.json.tmp"),
+        "GCP_PROJECT_NUMBER",
+        google_project.zone.project_number
+      ),
+      GKE_SECURITY_GROUP,
+      var.taito_provider_org_id != "gke-security-groups@${data.google_organization.domain}" ? 1 : ""
+    )
+  )
+
+  monitoring = yamldecode(
+    file("${path.root}/../monitoring.json.tmp")
+  )
+
+  network = yamldecode(
+    file("${path.root}/../network.json.tmp")
+  )
+
+  storage = yamldecode(replace(
+    file("${path.root}/../storage.json.tmp"),
+    "GCP_PROJECT_NUMBER",
+    google_project.zone.project_number
+  ))
 }
 
 module "admin" {
