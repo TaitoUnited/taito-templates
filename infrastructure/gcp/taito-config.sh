@@ -32,13 +32,16 @@ taito_provider_zone=europe-west1-b
 
 # Container registry provider
 taito_container_registry_provider=gcp
+taito_container_registry_provider_url=
 taito_container_registry=eu.gcr.io/$taito_zone
 
 # CI/CD provider
 taito_ci_provider=gcp
+taito_ci_provider_url=
 
 # Version control provider
 taito_vc_provider=github
+taito_vc_provider_url=
 taito_vc_domain=github.com
 taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
