@@ -112,7 +112,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.4.0"
+  version                = "1.5.0"
 
   # Settings
   helm_enabled           = var.first_run  # Should be false on the first run, then true
@@ -151,7 +151,7 @@ module "monitoring" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.1.0"
+  version      = "1.2.0"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]
@@ -159,7 +159,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "1.1.0"
+  version         = "1.1.1"
   depends_on      = [ module.admin ]
 
   storage_buckets = local.storage["storageBuckets"]

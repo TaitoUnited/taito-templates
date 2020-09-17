@@ -44,7 +44,8 @@ kubernetes:
   intranodeVisibilityEnabled: false
   configConnectorEnabled: false
   region: ${taito_provider_region}
-  zones: TODO ???  # NOTE: Provide zones only if kubernes is ZONAL instead of REGIONAL
+  regional: false
+  zones: [ "${taito_provider_zone}" ]
   masterAuthorizedNetworks:
     - 0.0.0.0/0
 
@@ -56,7 +57,7 @@ kubernetes:
       acceleratorCount: 0
       secureBootEnabled: true
       diskSizeGb: 100
-      locations: # Leave empty or specify zones, example: us-central1-b,us-central1-c
+      locations: # Leave empty or specify zones, example: europe-west1-b,europe-west1-c
       # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
       minNodeCount: 1
       maxNodeCount: 1
@@ -70,7 +71,14 @@ kubernetes:
       # https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
       maxmindLicenseKey:
       # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+      # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
       configMap:
+        keep-alive: 10
+        hide-headers: Server, X-Powered-By
+        ssl-ciphers: EECDH+AESGCM:EDH+AESGCM
+        enable-ocsp: true
+        hsts-preload: true
+        ssl-session-tickets: false
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         use-geoip: false
