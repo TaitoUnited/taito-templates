@@ -112,10 +112,10 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.7.0"
+  version                = "1.8.0"
 
   # OPTIONAL: Helm app versions
-  nginx_ingress_version  = null
+  ingress_nginx_version  = null
   cert_manager_version   = null
   kubernetes_admin_version = null
   socat_tunneler_version = null
@@ -165,7 +165,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "1.1.1"
+  version         = "1.2.0"
   depends_on      = [ module.admin ]
 
   storage_buckets = local.storage["storageBuckets"]
