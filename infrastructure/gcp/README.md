@@ -1,6 +1,6 @@
 # Google Cloud example
 
-Example for a taito zone located in Google Cloud. Configure settings in `taito-config.sh` and then create the zone by running `taito zone apply`.
+Example for a taito zone located in Google Cloud. Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`. Then create the zone by running `taito zone apply`.
 
 ## Links
 
@@ -21,6 +21,13 @@ LINKS WILL BE GENERATED HERE
 * `taito zone destroy`: Destroy the zone.
 * `taito project settings`: Show project template settings for this zone.
 
+Terraform specific commands:
+
+* `taito terraform apply ARGS`: Apply infrastructure changes by running Terraform only. For example: `taito terraform apply -target=module.dns`.
+* `taito terraform destroy ARGS`: Destroy infrastructure changes by running Terraform only. For example: `taito terraform destroy -target=module.dns`.
+
+TIP: Once in a while update version numbers in `terraform/*.tf` and apply the changes (`taito zone maintenance` command not implemented yet).
+
 ## Troubleshooting
 
 Terraform fails during Helm release execution:
@@ -28,10 +35,10 @@ Terraform fails during Helm release execution:
 * Just retry a few times to see if that resolves the issue.
 * Reinstall all Helm releases:
   1. Set `helm_enabled = false` in `main.tf`
-  2. Run `taito zone apply`, and retry until it succeeds.
+  2. Run `taito terraform apply -target=module.kubernetes`, and retry until it succeeds.
   3. Delete rest of the cert-manager [manually](https://github.com/jetstack/cert-manager/issues/2273#issuecomment-564525232) in case something extra is still lying around.
   4. Set `helm_enabled = true` in `main.tf`
-  5. Run `taito zone apply`, and retry until succeeds.
+  5. Run `taito terraform apply -target=module.kubernetes`, and retry until succeeds.
 
 Misc Terraform problems:
 

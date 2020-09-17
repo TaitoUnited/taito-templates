@@ -64,35 +64,48 @@ kubernetes:
 
   # Ingress controllers
   nginxIngressControllers:
-    - class: nginx
+    - name: nginx-ingress
+      class: nginx
       replicas: 3
       metricsEnabled: true
-      # MaxMind license key for GeoIP2:
-      # https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
+      # MaxMind license key for GeoIP2: https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
       maxmindLicenseKey:
+      # Map TCP/UDP connections to services
+      tcpServices:
+      udpServices:
       # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
-      # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
       configMap:
+        # Hardening
+        # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
         keep-alive: 10
-        hide-headers: Server, X-Powered-By
+        # TODO: Ensure default error and index.html pages do not reference NGINX
+        server-snippet: >
+          location ~ /\.(?!well-known).* {
+            deny all;
+            access_log off;
+            log_not_found off;
+            return 404;
+          }
+        hide-headers: Server,X-Powered-By
         ssl-ciphers: EECDH+AESGCM:EDH+AESGCM
         enable-ocsp: true
         hsts-preload: true
         ssl-session-tickets: false
+        client-header-timeout: 10
+        client-body-timeout: 10
+        large-client-header-buffers: 2 1k
+        client-body-buffer-size: 1k
+        proxy-body-size: 1k
+        # Firewall and access control
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         use-geoip: false
         use-geoip2: true
         enable-real-ip: false
-        enable-opentracing: false
         whitelist-source-range:
-        # Block malicious IPs. See https://www.projecthoneypot.org/list_of_ips.php
         block-cidrs:
         block-user-agents:
         block-referers:
-      # Map TCP/UDP connections to services
-      tcpServices:
-      udpServices:
 
   # Certificate managers
   certManager:

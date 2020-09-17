@@ -112,7 +112,13 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.5.0"
+  version                = "1.7.0"
+
+  # OPTIONAL: Helm app versions
+  nginx_ingress_version  = null
+  cert_manager_version   = null
+  kubernetes_admin_version = null
+  socat_tunneler_version = null
 
   # Settings
   helm_enabled           = var.first_run  # Should be false on the first run, then true
