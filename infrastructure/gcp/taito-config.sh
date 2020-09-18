@@ -81,7 +81,12 @@ taito_public_bucket=$taito_zone-public
 # NOTE: If you remove Kubernetes, remove also kubectl-zone and helm-zone from
 # taito_plugins and kubernetes module from terraform/main.tf
 kubernetes_name="common-kube"
-kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_region}_
+kubernetes_regional=false
+if [[ ${kubernetes_regional} == true ]]; then
+  kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_region}_
+else
+  kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_zone}_
+fi
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
 

@@ -16,6 +16,7 @@ serviceAccounts:
 
 apis:
   - id: "cloudbuild.googleapis.com"
+  # - id: "dns.googleapis.com"
   - id: "cloudfunctions.googleapis.com"
   - id: "cloudkms.googleapis.com"
   - id: "cloudscheduler.googleapis.com"

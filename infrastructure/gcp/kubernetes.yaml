@@ -44,7 +44,7 @@ kubernetes:
   intranodeVisibilityEnabled: false
   configConnectorEnabled: false
   region: ${taito_provider_region}
-  regional: false
+  regional: ${kubernetes_regional}
   zones: [ "${taito_provider_zone}" ]
   masterAuthorizedNetworks:
     - 0.0.0.0/0
@@ -86,8 +86,8 @@ kubernetes:
             log_not_found off;
             return 404;
           }
-        hide-headers: Server,X-Powered-By
-        ssl-ciphers: EECDH+AESGCM:EDH+AESGCM
+        hide-headers: "Server,X-Powered-By"
+        ssl-ciphers: "EECDH+AESGCM:EDH+AESGCM"
         enable-ocsp: true
         hsts-preload: true
         ssl-session-tickets: false

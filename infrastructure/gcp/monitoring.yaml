@@ -1,5 +1,10 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/monitoring/google
 
+# NOTE: Monitoring module is disabled by default. You can enable it with these steps:
+# - Go to monitoring page on Google Cloud web console. This will create you a workspace for monitoring.
+# - Enable the module in terraform/monitoring.tf
+# - Apply changes with 'taito zone apply'
+
 alerts:
   - name: ingress-response-time
     type: log

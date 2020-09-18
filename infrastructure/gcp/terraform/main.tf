@@ -36,13 +36,6 @@ resource "google_project" "zone" {
   }
 }
 
-# NOTE: This is a temporary hack to make Kubernetes module wait for an existing
-# GCP project
-data "external" "project_wait" {
-  depends_on = [ google_project.zone ]
-  program = ["sh", "-c", "sleep 15; echo '{ \"project_id\": \"${google_project.zone.project_id}\", \"project_number\": \"${google_project.zone.number}\" }'"]
-}
-
 locals {
   admin = jsondecode(
     file("${path.root}/../admin.json.tmp")
@@ -100,9 +93,16 @@ module "dns" {
   dns_zones    = local.dns["dnsZones"]
 }
 
+# NOTE: This is a temporary hack to make Kubernetes module wait for an existing
+# GCP project and network
+data "external" "kubernetes_wait" {
+  depends_on = [ google_project.zone, module.network ]
+  program = ["sh", "-c", "sleep 5; echo '{ \"project_id\": \"${google_project.zone.project_id}\", \"project_number\": \"${google_project.zone.number}\" }'"]
+}
+
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.8.4"
+  version                = "1.9.0"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null
@@ -110,8 +110,16 @@ module "kubernetes" {
   kubernetes_admin_version = null
   socat_tunneler_version = null
 
-  project_id             = data.external.project_wait.result.project_id
-  project_number         = data.external.project_wait.result.project_number
+  project_id             = (
+    var.first_run
+    ? data.external.kubernetes_wait.result.project_id
+    : google_project.zone.project_id
+  )
+  project_number         = (
+    var.first_run
+    ? data.external.kubernetes_wait.result.project_number
+    : google_project.zone.number
+  )
 
   # Settings
   helm_enabled           = var.first_run == false  # Should be false on the first run, then true
@@ -131,26 +139,22 @@ module "kubernetes" {
 
   # Database clusters (for db proxies)
   postgresql_cluster_names = [
-    for db in local.databases.postgresqlClusters:
+    for db in (
+      local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
+    ):
     db.name
   ]
   mysql_cluster_names      = [
-    for db in local.databases.mysqlClusters:
+    for db in (
+      local.databases.mysqlClusters != null ? local.databases.mysqlClusters : []
+    ):
     db.name
   ]
-}
-
-module "monitoring" {
-  source       = "TaitoUnited/monitoring/google"
-  version      = "1.0.3"
-  depends_on   = [ module.admin ]
-
-  alerts       = local.monitoring["alerts"]
 }
 
 module "events" {
   source       = "TaitoUnited/events/google"
-  version      = "1.0.1"
+  version      = "1.1.0"
   depends_on   = [ module.admin ]
 
   project_id             = google_project.zone.project_id
@@ -171,7 +175,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.2.2"
+  version      = "1.2.3"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]

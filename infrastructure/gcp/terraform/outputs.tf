@@ -3,6 +3,11 @@ output "taito_zone_id" {
   value       = google_project.zone.number
 }
 
+output "network_name" {
+  description = "Network name"
+  value       = module.network.network_name
+}
+
 output "postgres_hosts" {
   description = "Postgres hosts"
   value       = module.databases.postgres_private_ip_addresses
