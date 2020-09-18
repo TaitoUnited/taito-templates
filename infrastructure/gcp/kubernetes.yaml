@@ -21,7 +21,7 @@ permissions:
 kubernetes:
   name: ${kubernetes_name}
   context: ${taito_zone}
-  releaseChannel: STABLE
+  releaseChannel: REGULAR
   maintenanceStartTime: 02:00
   registryProjectId: ""
   authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
