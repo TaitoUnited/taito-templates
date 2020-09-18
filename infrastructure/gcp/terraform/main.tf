@@ -85,7 +85,7 @@ locals {
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "1.0.1"
+  version          = "1.0.2"
   depends_on       = [ google_project.zone ]
 
   members          = local.admin["members"]
@@ -95,7 +95,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "1.0.1"
+  version             = "1.0.2"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -112,7 +112,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.8.1"
+  version                = "1.8.2"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null
@@ -149,15 +149,34 @@ module "kubernetes" {
 
 module "monitoring" {
   source       = "TaitoUnited/monitoring/google"
-  version      = "1.0.1"
+  version      = "1.0.2"
   depends_on   = [ module.admin ]
 
   alerts       = local.monitoring["alerts"]
 }
 
+module "events" {
+  source       = "TaitoUnited/events/google"
+  version      = "1.0.0"
+  depends_on   = [ module.admin ]
+
+  cloud_build_notify_enabled = var.taito_messaging_webhook != ""
+  cloud_sql_backups_enabled  = var.taito_backup_bucket != ""
+
+  functions_bucket        = var.taito_function_bucket
+  functions_region        = "europe-west1" # Not available on all regions
+  cloud_sql_backup_bucket = var.taito_backup_bucket
+  cloud_sql_backup_path   = "/cloud-sql-backup"
+  slack_webhook_url       = var.taito_messaging_webhook
+  slack_builds_channel    = var.taito_messaging_builds_channel
+
+  postgresql_clusters     = local.databases.postgresqlClusters
+  mysql_clusters          = local.databases.mysqlClusters
+}
+
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.2.0"
+  version      = "1.2.1"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]
@@ -165,7 +184,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "1.2.0"
+  version         = "1.3.0"
   depends_on      = [ module.admin ]
 
   storage_buckets = local.storage["storageBuckets"]

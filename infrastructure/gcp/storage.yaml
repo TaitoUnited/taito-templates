@@ -6,13 +6,25 @@ storageBuckets:
     location: ${taito_provider_region}
     storageClass: REGIONAL
     versioningEnabled: true
-    versioningRetainDays: 30
+    versioningRetainDays: 100
+  - name: ${taito_function_bucket}
+    purpose: state
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+  - name: ${taito_backup_bucket}
+    purpose: state
+    location: ${taito_provider_region}
+    storageClass: COLDLINE
+    autoDeletionRetainDays: 100
+    # TIP: You can also use bucket lock:
+    # lockRetainDays: 100
+    # autoDeletionRetainDays: 0
   - name: ${taito_public_bucket}
     purpose: public
     location: ${taito_provider_region}
     storageClass: REGIONAL
     versioningEnabled: true
-    versioningRetainDays: 30
+    versioningRetainDays: 100
     cors:
       - origin: ["*"]
     cdnDomain: ${taito_default_cdn_domain}

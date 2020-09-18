@@ -46,3 +46,24 @@ variable "postgresql_0_password" {
 variable "mysql_0_password" {
   type = string
 }
+
+/* Buckets */
+
+variable "taito_function_bucket" {
+  type = string
+}
+
+variable "taito_backup_bucket" {
+  type = string
+}
+
+/* Messaging */
+
+variable "taito_messaging_webhook" {
+  type = string
+  default = ""
+}
+
+variable "taito_messaging_builds_channel" {
+  type = string
+}
