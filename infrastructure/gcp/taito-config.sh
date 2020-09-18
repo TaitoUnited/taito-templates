@@ -18,6 +18,7 @@ taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg     # CHANGE
 taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
+taito_zone_id=TAITO_ZONE_ID
 
 # Domains
 taito_default_domain=dev.myorganization.com      # CHANGE
@@ -25,7 +26,10 @@ taito_default_cdn_domain=
 
 # Cloud provider
 taito_provider=gcp
-taito_provider_org_id=0123456789 # CHANGE: leave empty for 'no organization'
+# CHANGE: org_id and org_domain, or leave empty for 'no organization'. Note that
+# kubernetes.authenticatorSecurityGroup should be "" for 'no organization'
+taito_provider_org_id=0123456789
+taito_provider_org_domain=myorganization.com
 taito_provider_billing_account_id=1234AB-1234AB-1234AB # CHANGE
 taito_provider_region=europe-west1
 taito_provider_zone=europe-west1-b

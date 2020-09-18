@@ -24,11 +24,6 @@ provider "google-beta" {
 provider "helm" {
 }
 
-data "google_organization" "org" {
-  count        = var.taito_provider_org_id != "" ? 1 : 0
-  organization = var.taito_provider_org_id
-}
-
 resource "google_project" "zone" {
   name                = var.taito_zone
   project_id          = var.taito_zone
@@ -41,51 +36,46 @@ resource "google_project" "zone" {
   }
 }
 
-locals {
-  admin = yamldecode(replace(
-    file("${path.root}/../admin.json.tmp"),
-    "GCP_PROJECT_NUMBER",
-    google_project.zone.number
-  ))
+# NOTE: This is a temporary hack to make Kubernetes module wait for an existing
+# GCP project
+data "external" "project_wait" {
+  depends_on = [ google_project.zone ]
+  program = ["sh", "-c", "sleep 15; echo '{ \"project_id\": \"${google_project.zone.project_id}\", \"project_number\": \"${google_project.zone.number}\" }'"]
+}
 
-  databases = yamldecode(
+locals {
+  admin = jsondecode(
+    file("${path.root}/../admin.json.tmp")
+  )
+
+  databases = jsondecode(
     file("${path.root}/../databases.json.tmp")
   )
 
-  dns = yamldecode(
+  dns = jsondecode(
     file("${path.root}/../dns.json.tmp")
   )
 
-  kubernetes = yamldecode(
-    replace(
-      replace(
-        file("${path.root}/../kubernetes.json.tmp"),
-        "GCP_PROJECT_NUMBER",
-        google_project.zone.number
-      ),
-      "GKE_SECURITY_GROUP",
-      var.taito_provider_org_id != "gke-security-groups@${data.google_organization.org[0].domain}" ? 1 : ""
-    )
+  kubernetes = jsondecode(
+    file("${path.root}/../kubernetes.json.tmp")
   )
 
-  monitoring = yamldecode(
+  monitoring = jsondecode(
     file("${path.root}/../monitoring.json.tmp")
   )
 
-  network = yamldecode(
+  network = jsondecode(
     file("${path.root}/../network.json.tmp")
   )
 
-  storage = yamldecode(replace(
-    file("${path.root}/../storage.json.tmp"),
-    "GCP_PROJECT_NUMBER",
-    google_project.zone.number
-  ))
+  storage = jsondecode(
+    file("${path.root}/../storage.json.tmp")
+  )
 }
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "1.0.2"
+  version          = "1.0.3"
   depends_on       = [ google_project.zone ]
 
   members          = local.admin["members"]
@@ -95,24 +85,24 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "1.0.2"
+  version             = "1.0.3"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
   mysql_clusters      = local.databases.mysqlClusters
-  private_network_id  = module.network.network
+  private_network_id  = module.network.network_self_link
 }
 
 module "dns" {
   source       = "TaitoUnited/dns/google"
-  version      = "1.0.1"
+  version      = "1.0.2"
   depends_on   = [ module.admin ]
   dns_zones    = local.dns["dnsZones"]
 }
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.8.2"
+  version                = "1.8.4"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null
@@ -120,12 +110,15 @@ module "kubernetes" {
   kubernetes_admin_version = null
   socat_tunneler_version = null
 
+  project_id             = data.external.project_wait.result.project_id
+  project_number         = data.external.project_wait.result.project_number
+
   # Settings
-  helm_enabled           = var.first_run  # Should be false on the first run, then true
+  helm_enabled           = var.first_run == false  # Should be false on the first run, then true
   email                  = var.taito_devops_email
 
   # Network
-  network                = module.network.network
+  network                = module.network.network_name
   subnetwork             = module.network.subnet_names[0]
   pods_ip_range_name     = module.network.pods_ip_range_name
   services_ip_range_name = module.network.services_ip_range_name
@@ -149,7 +142,7 @@ module "kubernetes" {
 
 module "monitoring" {
   source       = "TaitoUnited/monitoring/google"
-  version      = "1.0.2"
+  version      = "1.0.3"
   depends_on   = [ module.admin ]
 
   alerts       = local.monitoring["alerts"]
@@ -157,8 +150,10 @@ module "monitoring" {
 
 module "events" {
   source       = "TaitoUnited/events/google"
-  version      = "1.0.0"
+  version      = "1.0.1"
   depends_on   = [ module.admin ]
+
+  project_id             = google_project.zone.project_id
 
   cloud_build_notify_enabled = var.taito_messaging_webhook != ""
   cloud_sql_backups_enabled  = var.taito_backup_bucket != ""
@@ -176,7 +171,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.2.1"
+  version      = "1.2.2"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]
@@ -184,8 +179,9 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "1.3.0"
+  version         = "1.3.1"
   depends_on      = [ module.admin ]
 
+  project_id      = google_project.zone.project_id
   storage_buckets = local.storage["storageBuckets"]
 }

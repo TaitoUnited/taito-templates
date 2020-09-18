@@ -1,6 +1,6 @@
 # Google Cloud example
 
-Example for a taito zone located in Google Cloud. Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`. Then create the zone by running `taito zone apply`.
+Example for a taito zone located in Google Cloud. Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`. Authenticate with `taito auth`. Create the zone by running `taito zone apply`.
 
 ## Links
 

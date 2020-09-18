@@ -7,27 +7,75 @@ storageBuckets:
     storageClass: REGIONAL
     versioningEnabled: true
     versioningRetainDays: 100
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
   - name: ${taito_function_bucket}
-    purpose: state
+    purpose: function
     location: ${taito_provider_region}
     storageClass: REGIONAL
+    versioningEnabled: false
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
   - name: ${taito_backup_bucket}
-    purpose: state
+    purpose: backup
     location: ${taito_provider_region}
     storageClass: COLDLINE
+    versioningEnabled: false
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
     autoDeletionRetainDays: 100
     # TIP: You can also use bucket lock:
-    # lockRetainDays: 100
     # autoDeletionRetainDays: 0
-  - name: ${taito_public_bucket}
-    purpose: public
-    location: ${taito_provider_region}
-    storageClass: REGIONAL
-    versioningEnabled: true
-    versioningRetainDays: 100
+    # lockRetainDays: 100
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
     cors:
-      - origin: ["*"]
-    cdnDomain: ${taito_default_cdn_domain}
     members:
-      - id: "GCP_PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
-        roles: [ "roles/storage.objectCreator" ]
+
+  # Public static assets bucket
+  # - name: ${taito_public_bucket}
+  #   purpose: public
+  #   location: ${taito_provider_region}
+  #   storageClass: REGIONAL
+  #   versioningEnabled: true
+  #   versioningRetainDays: 100
+  #   lockRetainDays:
+  #   transitionRetainDays:
+  #   transitionStorageClass:
+  #   autoDeletionRetainDays:
+  #   replicationBucket:
+  #   backupRetainDays:
+  #   backupLocation:
+  #   backupLock:
+  #   cdnDomain: ${taito_default_cdn_domain}
+  #   cors:
+  #     - origin: ["*"]
+  #   members:
+  #     - id: "${taito_provider_zone_id}@cloudbuild.gserviceaccount.com"
+  #       roles: [ "roles/storage.objectCreator" ]

@@ -8,6 +8,7 @@ alerts:
       resource.type = "k8s_container"
       resource.labels.namespace_name = "ingress-nginx"
       jsonPayload.responseTimeS >= 3
+
   - name: ingress-response-status
     type: log
     channels: [ "monitoring" ]
@@ -15,6 +16,7 @@ alerts:
       resource.type = "k8s_container"
       resource.labels.namespace_name = "ingress-nginx"
       jsonPayload.status >= 500
+
   - name: container-errors
     type: log
     channels: [ "monitoring" ]

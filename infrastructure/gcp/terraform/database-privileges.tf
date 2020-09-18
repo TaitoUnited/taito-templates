@@ -1,4 +1,5 @@
-# PostgreSQL
+/*
+# PostgreSQL example
 # NOTE: Add provider and module for each PostgreSQL cluster
 
 provider "postgresql" {
@@ -11,14 +12,21 @@ provider "postgresql" {
 
 module "postgresql_0" {
   source                     = "TaitoUnited/privileges/postgresql"
-  version                    = "1.0.2"
+  version                    = "1.0.3"
   privileges                 = local.databases.postgresqlClusters[0]
   providers = {
     postgresql = postgresql.postgresql_0
   }
 }
 
-# MySQL
+variable "postgresql_0_password" {
+  type = string
+  description = "Database admin password is required for setting PostgreSQL roles and users. Leave this empty if the database does not exist yet."
+}
+*/
+
+/*
+# MySQL example
 # NOTE: Add provider and module for each MySQL cluster
 
 provider "mysql" {
@@ -30,9 +38,15 @@ provider "mysql" {
 
 module "mysql_0" {
   source                     = "TaitoUnited/privileges/mysql"
-  version                    = "1.0.2"
+  version                    = "1.0.3"
   privileges                 = local.databases.mysqlClusters[0]
   providers = {
     mysql = mysql.mysql_0
   }
 }
+
+variable "mysql_0_password" {
+  type = string
+  description = "Database admin password is required for setting MySQL roles and users. Leave this empty if the database does not exist yet."
+}
+*/

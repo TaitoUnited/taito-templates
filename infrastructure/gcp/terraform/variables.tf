@@ -37,16 +37,6 @@ variable "taito_devops_email" {
   type = string
 }
 
-/* Database passwords */
-
-variable "postgresql_0_password" {
-  type = string
-}
-
-variable "mysql_0_password" {
-  type = string
-}
-
 /* Buckets */
 
 variable "taito_function_bucket" {

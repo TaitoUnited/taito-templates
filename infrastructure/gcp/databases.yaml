@@ -14,12 +14,11 @@ postgresqlClusters:
     maintenanceDay: 2
     maintenanceHour: 2
     backupStartTime: 05:00
-    storageBackupSchedule: 0 0 1 * *
+    storageBackupSchedule: 0 0 * * 0
     pointInTimeRecoveryEnabled: false
     highAvailabilityEnabled: false
     publicIpEnabled: false
     authorizedNetworks:
-      - 127.127.127.127/32
     flags:
       log_min_duration_statement: 1000
     adminUsername: ${postgres_default_admin}
@@ -37,12 +36,11 @@ mysqlClusters:
     maintenanceDay: 2
     maintenanceHour: 2
     backupStartTime: 05:00
-    storageBackupSchedule: 0 0 1 * *
+    storageBackupSchedule: 0 0 * * 0
     pointInTimeRecoveryEnabled: false
     highAvailabilityEnabled: false
     publicIpEnabled: false
     authorizedNetworks:
-      - 127.127.127.127/32
     adminUsername: ${mysql_default_admin}
 
     # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
