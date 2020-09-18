@@ -14,6 +14,7 @@ postgresqlClusters:
     maintenanceDay: 2
     maintenanceHour: 2
     backupStartTime: 05:00
+    storageBackupSchedule: 0 0 1 * *
     pointInTimeRecoveryEnabled: false
     highAvailabilityEnabled: false
     publicIpEnabled: false
@@ -36,6 +37,7 @@ mysqlClusters:
     maintenanceDay: 2
     maintenanceHour: 2
     backupStartTime: 05:00
+    storageBackupSchedule: 0 0 1 * *
     pointInTimeRecoveryEnabled: false
     highAvailabilityEnabled: false
     publicIpEnabled: false
