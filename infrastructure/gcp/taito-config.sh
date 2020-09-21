@@ -16,13 +16,25 @@ taito_plugins="
 # Labeling
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg     # CHANGE
+
+# Zone settings
 taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
-taito_zone_id=TAITO_ZONE_ID
-
-# Domains
-taito_default_domain=dev.myorganization.com      # CHANGE
+taito_zone_multi_tenant=false
+taito_devops_email=support@myorganization.com # CHANGE
+taito_default_domain=dev.myorganization.com   # CHANGE
 taito_default_cdn_domain=
+
+# Zone buckets
+# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
+taito_state_bucket=$taito_zone-state
+taito_function_bucket=$taito_zone-function
+taito_backup_bucket=$taito_zone-backup
+taito_public_bucket=$taito_zone-public
+taito_projects_bucket=$taito_zone-projects
+if [[ $taito_zone_multi_tenant != true ]]; then
+  taito_projects_bucket=
+fi
 
 # Cloud provider
 taito_provider=gcp
@@ -31,8 +43,11 @@ taito_provider=gcp
 taito_provider_org_id=0123456789
 taito_provider_org_domain=myorganization.com
 taito_provider_billing_account_id=1234AB-1234AB-1234AB # CHANGE
+taito_provider_taito_zone_id=TAITO_PROVIDER_TAITO_ZONE_ID
 taito_provider_region=europe-west1
 taito_provider_zone=europe-west1-b
+taito_provider_secrets_location=taito_resource_namespace_id
+taito_cicd_secrets_path=
 
 # Container registry provider
 taito_container_registry_provider=gcp
@@ -65,27 +80,22 @@ taito_tracing_provider=jaeger
 taito_tracing_provider_url=https://jaeger.${taito_default_domain}
 taito_tracing_organization=$taito_organization
 
-# Settings
-taito_devops_email=support@myorganization.com # CHANGE
-taito_provider_secrets_location=taito_resource_namespace_id
-taito_cicd_secrets_path=
+# Messaging provider
+# CHANGE: Set slack webhook and channels (optional)
+taito_messaging_app=slack
+taito_messaging_webhook=
+taito_messaging_builds_channel=builds
+taito_messaging_critical_channel=critical
+taito_messaging_monitoring_channel=monitoring
 
-# Buckets
-# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
-taito_state_bucket=$taito_zone-state
-taito_function_bucket=$taito_zone-function
-taito_backup_bucket=$taito_zone-backup
-taito_public_bucket=$taito_zone-public
-
-# Kubernetes
+# Default Kubernetes cluster for new projects
 # NOTE: If you remove Kubernetes, remove also kubectl-zone and helm-zone from
 # taito_plugins and kubernetes module from terraform/main.tf
 kubernetes_name="common-kube"
 kubernetes_regional=false
+kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_zone}_
 if [[ ${kubernetes_regional} == true ]]; then
   kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_region}_
-else
-  kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_zone}_
 fi
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
@@ -118,22 +128,22 @@ taito_secrets="
   common-mysql-ssl.key/devops:file
 "
 
-# Secrets:
-# - GitHub personal token for tagging releases (optional)
-#   -> CHANGE: remove token if this zone is not used for production releases
-# - CI/CD tester services account
-taito_secrets="
-  version-control-buildbot.token/devops:manual
-  cicd-tester-serviceaccount.key/devops:file
-"
+# Default binary authentication for new projects
+binauthz_attestor=
+binauthz_secret_name=
+binauthz_public_key_id=
 
-# Messaging
-# CHANGE: Set slack webhook and channels (optional)
-taito_messaging_app=slack
-taito_messaging_webhook=
-taito_messaging_builds_channel=builds
-taito_messaging_critical_channel=critical
-taito_messaging_monitoring_channel=monitoring
+# Secrets
+if [[ $taito_zone_multi_tenant != true ]]; then
+  # These secrets are not required on a multi-tenant zone:
+  # - GitHub personal token for tagging releases (optional)
+  #   -> CHANGE: remove token if this zone is not used for production releases
+  # - CI/CD tester service account
+  taito_secrets="
+    version-control-buildbot.token/devops:manual
+    cicd-tester-serviceaccount.key/devops:file
+  "
+fi
 
 # Links
 link_urls="

@@ -1,5 +1,5 @@
-output "taito_zone_id" {
-  description = "Return GCP project number as zone id"
+output "taito_provider_taito_zone_id" {
+  description = "Return GCP project number as taito zone id"
   value       = google_project.zone.number
 }
 

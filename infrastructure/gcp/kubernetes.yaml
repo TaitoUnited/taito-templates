@@ -6,7 +6,10 @@ permissions:
     # NOTE: Not recommended on production clusters
     - name: taito-developer
       subjects:
-        - "${taito_provider_zone_id}@cloudbuild.gserviceaccount.com"
+        # NOTE: Zone specific Cloud Build service account access is not
+        # required on a multi-tenant zone (add tenant specific Cloud Build
+        # accounts to the namespace limited permission rules instead)
+        - "${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
   namespaces:
     # Grant database access through a db proxy
     - name: db-proxy
@@ -14,6 +17,9 @@ permissions:
         - name: taito-pod-portforwarder
           subjects:
             # NOTE: CI/CD tester account is not required on production clusters
+            # NOTE: Zone specific CI/CD tester account is not required on a
+            # multi-tenant zone (add tenant specific CI/CD tester accounts here
+            # instead)
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
 
 # For Kubernetes setting descriptions, see

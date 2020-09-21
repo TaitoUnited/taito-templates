@@ -37,9 +37,17 @@ resource "google_project" "zone" {
 }
 
 locals {
-  admin = jsondecode(
+
+  adminOrig = jsondecode(
     file("${path.root}/../admin.json.tmp")
   )
+
+  admin = merge(adminOrig, {
+    members = flatten([
+      for member in adminOrig.members:
+      replace(member.id, "TAITO_PROVIDER_TAITO_ZONE_ID", "") == member.id ? [ member ] : []
+    ])
+  })
 
   databases = jsondecode(
     file("${path.root}/../databases.json.tmp")
@@ -175,7 +183,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.2.3"
+  version      = "1.3.0"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]

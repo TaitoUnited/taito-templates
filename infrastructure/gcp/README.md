@@ -1,6 +1,12 @@
 # Google Cloud example
 
-Example for a taito zone located in Google Cloud. Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`. Authenticate with `taito auth`. Create the zone by running `taito zone apply`.
+Example for a taito zone located in Google Cloud. Create infrastructure with the following steps:
+
+- Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`.
+- Authenticate with `taito auth`.
+- Create the zone by running `taito zone apply`.
+
+Infrastructure is provisioned with Terraform and you can customize it to your liking by modifying the `*.yaml` files and terraform scripts.
 
 ## Links
 
@@ -45,7 +51,3 @@ Terraform fails during Helm release execution:
   3. Delete rest of the cert-manager [manually](https://github.com/jetstack/cert-manager/issues/2273#issuecomment-564525232) in case something extra is still lying around.
   4. Set `helm_enabled = true` in `main.tf`
   5. Run `taito terraform apply -target=module.kubernetes`, and retry until succeeds.
-
-## projects.json
-
-TODO: instructions

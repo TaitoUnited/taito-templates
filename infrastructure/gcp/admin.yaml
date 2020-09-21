@@ -1,13 +1,17 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/admin/google
 
-members:
 # TIP: You can create custom roles at the project or organization level
 # https://cloud.google.com/iam/docs/creating-custom-roles
-# - id: "group:developers@mydomain.com"
-#   roles: [ "custom/developer" ]
+members:
+  # NOTE: Zone specific Cloud Build service account access is not required on a
+  # multi-tenant zone (add tenant specific Cloud Build accounts here instead)
+  - id: "serviceAccount:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+    roles: [ "roles/container.clusterViewer" ]
 
 serviceAccounts:
   # NOTE: CI/CD tester service account is not required on production clusters
+  # NOTE: Zone specific CI/CD tester account is not required on a multi-tenant
+  # zone (add tenant specific CI/CD tester accounts here instead)
   - id: "cicd-tester"
     roles: [ "roles/container.clusterViewer" ]
     description: >
@@ -15,16 +19,19 @@ serviceAccounts:
       through a database proxy running on Kubernetes cluster.
 
 apis:
-  - id: "cloudbuild.googleapis.com"
-  # - id: "dns.googleapis.com"
+  - id: "cloudbuild.googleapis.com"        # NOTE: Not required for multi-tenant
   - id: "cloudfunctions.googleapis.com"
   - id: "cloudkms.googleapis.com"
   - id: "cloudscheduler.googleapis.com"
   - id: "compute.googleapis.com"
   - id: "container.googleapis.com"
-  - id: "containerregistry.googleapis.com"
+  - id: "containerregistry.googleapis.com" # NOTE: Not required for multi-tenant
   - id: "monitoring.googleapis.com"
   - id: "pubsub.googleapis.com"
   - id: "servicenetworking.googleapis.com"
   - id: "sql-component.googleapis.com"
   - id: "sqladmin.googleapis.com"
+  # NOTE: You might also want to enable these
+  # - id: "binaryauthorization.googleapis.com"
+  # - id: "dns.googleapis.com"
+  # - id: "containeranalysis.googleapis.com"

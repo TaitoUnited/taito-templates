@@ -37,6 +37,25 @@ storageBuckets:
     cors:
     members:
 
+  # NOTE: taito_projects_bucket not required on a multi-tenant zone
+  - name: ${taito_projects_bucket}
+    purpose: projects
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: false
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
   - name: ${taito_backup_bucket}
     purpose: backup
     location: ${taito_provider_region}
@@ -77,5 +96,5 @@ storageBuckets:
   #   cors:
   #     - origin: ["*"]
   #   members:
-  #     - id: "${taito_provider_zone_id}@cloudbuild.gserviceaccount.com"
+  #     - id: "${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
   #       roles: [ "roles/storage.objectCreator" ]
