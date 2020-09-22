@@ -86,7 +86,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "1.0.3"
+  version             = "1.0.4"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -110,7 +110,7 @@ data "external" "kubernetes_wait" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.10.0"
+  version                = "1.11.0"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null
@@ -183,7 +183,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.3.0"
+  version      = "1.4.0"
   depends_on   = [ module.admin ]
 
   network      = local.network["network"]
