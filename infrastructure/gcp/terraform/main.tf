@@ -42,9 +42,9 @@ locals {
     file("${path.root}/../admin.json.tmp")
   )
 
-  admin = merge(adminOrig, {
+  admin = merge(local.adminOrig, {
     members = flatten([
-      for member in adminOrig.members:
+      for member in local.adminOrig.members:
       replace(member.id, "TAITO_PROVIDER_TAITO_ZONE_ID", "") == member.id ? [ member ] : []
     ])
   })
@@ -59,6 +59,10 @@ locals {
 
   kubernetes = jsondecode(
     file("${path.root}/../kubernetes.json.tmp")
+  )
+
+  kubernetesPermissions = jsondecode(
+    file("${path.root}/../kubernetes-permissions.json.tmp")
   )
 
   monitoring = jsondecode(
@@ -140,7 +144,7 @@ module "kubernetes" {
   services_ip_range_name = module.network.services_ip_range_name
 
   # Permissions
-  permissions            = local.kubernetes["permissions"]
+  permissions            = local.kubernetesPermissions["permissions"]
 
   # Kubernetes
   kubernetes             = local.kubernetes["kubernetes"]

@@ -32,14 +32,12 @@ taito_function_bucket=$taito_zone-function
 taito_backup_bucket=$taito_zone-backup
 taito_public_bucket=$taito_zone-public
 taito_projects_bucket=$taito_zone-projects
-if [[ $taito_zone_multi_tenant != true ]]; then
-  taito_projects_bucket=
-fi
 
 # Cloud provider
 taito_provider=gcp
-# CHANGE: org_id and org_domain, or leave empty for 'no organization'. Note that
-# kubernetes.authenticatorSecurityGroup should be "" for 'no organization'
+# CHANGE: Set org_id and org_domain, or leave them empty for 'no organization'.
+# Note that kubernetes.authenticatorSecurityGroup (kubernetes.yaml) should be
+# set to "" for 'no organization'
 taito_provider_org_id=0123456789
 taito_provider_org_domain=myorganization.com
 taito_provider_billing_account_id=1234AB-1234AB-1234AB # CHANGE
