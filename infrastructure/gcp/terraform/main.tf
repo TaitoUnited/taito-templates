@@ -114,7 +114,7 @@ data "external" "kubernetes_wait" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.11.0"
+  version                = "1.11.1"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null
@@ -166,8 +166,8 @@ module "kubernetes" {
 
 module "events" {
   source       = "TaitoUnited/events/google"
-  version      = "1.1.0"
-  depends_on   = [ module.admin ]
+  version      = "1.1.1"
+  depends_on   = [ module.admin, module.databases ]
 
   project_id             = google_project.zone.project_id
 

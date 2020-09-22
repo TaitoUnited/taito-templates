@@ -3,6 +3,11 @@ output "taito_provider_taito_zone_id" {
   value       = google_project.zone.number
 }
 
+output "network_id" {
+  description = "Network name"
+  value       = module.network.network.network.id
+}
+
 output "network_name" {
   description = "Network name"
   value       = module.network.network_name
