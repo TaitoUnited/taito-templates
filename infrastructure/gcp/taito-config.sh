@@ -104,7 +104,7 @@ postgres_default_host="POSTGRES_HOSTS"
 postgres_default_admin="postgres"
 postgres_ssl_client_cert_enabled="true"
 postgres_ssl_server_cert_enabled="true"
-postgres_proxy_ssl_enabled="false"  # Accessed with GCP db proxy
+postgres_proxy_ssl_enabled="true"
 taito_secrets="
   ${taito_secrets}
   common-postgres-ssl.ca/devops:file
@@ -118,7 +118,7 @@ mysql_default_host="MYSQL_HOSTS"
 mysql_default_admin="${taito_zone_short}"
 mysql_ssl_client_cert_enabled="true"
 mysql_ssl_server_cert_enabled="true"
-mysql_proxy_ssl_enabled="false"  # Accessed with GCP db proxy
+mysql_proxy_ssl_enabled="true"
 taito_secrets="
   ${taito_secrets}
   common-mysql-ssl.ca/devops:file
@@ -138,6 +138,7 @@ if [[ $taito_zone_multi_tenant != true ]]; then
   #   -> CHANGE: remove token if this zone is not used for production releases
   # - CI/CD tester service account
   taito_secrets="
+    ${taito_secrets}
     version-control-buildbot.token/devops:manual
     cicd-tester-serviceaccount.key/devops:file
   "
