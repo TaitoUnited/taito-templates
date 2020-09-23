@@ -29,7 +29,7 @@ kubernetes:
   configConnectorEnabled: false
   region: ${taito_provider_region}
   regional: ${kubernetes_regional}
-  zones: [ "${taito_provider_zone}" ]
+  zones: [ "${taito_provider_zone}" ] # RECOMMENDED: add all three GCP zones here
   masterAuthorizedNetworks:
     - 0.0.0.0/0
 
@@ -43,8 +43,8 @@ kubernetes:
       diskSizeGb: 100
       locations: "" # Leave empty or specify zones, example: europe-west1-b,europe-west1-c
       # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
-      minNodeCount: 1
-      maxNodeCount: 1
+      minNodeCount: 2
+      maxNodeCount: 2
 
   # Ingress controllers
   ingressNginxControllers:

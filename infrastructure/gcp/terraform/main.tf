@@ -114,7 +114,7 @@ data "external" "kubernetes_wait" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.11.1"
+  version                = "1.11.4"
 
   # OPTIONAL: Helm app versions
   ingress_nginx_version  = null

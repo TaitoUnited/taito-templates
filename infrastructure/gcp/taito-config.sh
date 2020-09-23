@@ -101,7 +101,7 @@ kubernetes_user=$kubernetes_cluster
 # Default PostgreSQL cluster for new projects
 postgres_default_name="common-postgres"
 postgres_default_host="POSTGRES_HOSTS"
-postgres_default_admin="${taito_zone_short}"
+postgres_default_admin="postgres"
 postgres_ssl_client_cert_enabled="true"
 postgres_ssl_server_cert_enabled="true"
 postgres_proxy_ssl_enabled="false"  # Accessed with GCP db proxy
