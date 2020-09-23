@@ -28,6 +28,7 @@ apis:
   - id: "containerregistry.googleapis.com" # NOTE: Not required for multi-tenant
   - id: "monitoring.googleapis.com"
   - id: "pubsub.googleapis.com"
+  - id: "secretmanager.googleapis.com"
   - id: "servicenetworking.googleapis.com"
   - id: "sql-component.googleapis.com"
   - id: "sqladmin.googleapis.com"
