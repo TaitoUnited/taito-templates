@@ -10,7 +10,7 @@ kubernetes:
   registryProjectId: ""
   authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
   rbacSecurityGroup: ""
-  clusterFirewallRulesEnabled: false
+  clusterFirewallRulesEnabled: true
   masterPrivateEndpointEnabled: false
   masterGlobalAccessEnabled: true
   privateNodesEnabled: true
