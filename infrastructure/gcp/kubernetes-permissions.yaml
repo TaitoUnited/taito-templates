@@ -25,7 +25,7 @@ permissions:
     # Grant database access through a db proxy
     - name: db-proxy
       clusterRoles:
-        - name: taito-pod-portforwarder
+        - name: taito-proxyer
           subjects:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
