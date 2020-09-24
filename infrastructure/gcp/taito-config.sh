@@ -100,7 +100,7 @@ kubernetes_user=$kubernetes_cluster
 
 # Default PostgreSQL cluster for new projects
 postgres_default_name="common-postgres"
-postgres_default_host="POSTGRES_HOSTS"
+postgres_default_host="POSTGRES_HOST"
 postgres_default_admin="postgres"
 postgres_ssl_client_cert_enabled="true"
 postgres_ssl_server_cert_enabled="true"
@@ -114,7 +114,7 @@ taito_secrets="
 
 # Default MySQL cluster for new projects
 mysql_default_name="common-mysql"
-mysql_default_host="MYSQL_HOSTS"
+mysql_default_host="MYSQL_HOST"
 mysql_default_admin="${taito_zone_short}"
 mysql_ssl_client_cert_enabled="true"
 mysql_ssl_server_cert_enabled="true"
