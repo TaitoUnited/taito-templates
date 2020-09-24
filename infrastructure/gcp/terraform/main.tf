@@ -114,7 +114,7 @@ data "external" "kubernetes_wait" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.13.2"
+  version                = "1.15.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -134,20 +134,22 @@ module "kubernetes" {
   )
 
   # Settings
-  helm_enabled           = var.first_run == false  # Should be false on the first run, then true
-  email                  = var.taito_devops_email
+  # NOTE: helm_enabled should be false on the first run, then true
+  helm_enabled             = var.first_run == false
+  email                    = var.taito_devops_email
+  generate_ingress_dhparam = false # Set to true for additional security
 
   # Network
-  network                = module.network.network_name
-  subnetwork             = module.network.subnet_names[0]
-  pods_ip_range_name     = module.network.pods_ip_range_name
-  services_ip_range_name = module.network.services_ip_range_name
+  network                  = module.network.network_name
+  subnetwork               = module.network.subnet_names[0]
+  pods_ip_range_name       = module.network.pods_ip_range_name
+  services_ip_range_name   = module.network.services_ip_range_name
 
   # Permissions
-  permissions            = local.kubernetesPermissions["permissions"]
+  permissions              = local.kubernetesPermissions["permissions"]
 
   # Kubernetes
-  kubernetes             = local.kubernetes["kubernetes"]
+  kubernetes               = local.kubernetes["kubernetes"]
 
   # Database clusters (for db proxies)
   postgresql_cluster_names = [

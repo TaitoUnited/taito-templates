@@ -1,17 +1,18 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/admin/google
 
-# TIP: You can create custom roles at the project or organization level
+# - NOTE: cicd-tester service account is not required on production clusters
+# - NOTE: On multi-tenant setup, replace the zone specific cloudbuild service
+# account with tenant specific cloudbuild service accounts.
+# - TIP: You can create custom roles at the project or organization level, see:
 # https://cloud.google.com/iam/docs/creating-custom-roles
+# - TIP: You can create groups for your domain, see:
+# https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control#google-groups-for-gke
+
 members:
-  # NOTE: Zone specific Cloud Build service account access is not required on a
-  # multi-tenant zone (add tenant specific Cloud Build accounts here instead)
   - id: "serviceAccount:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
     roles: [ "roles/container.clusterViewer" ]
 
 serviceAccounts:
-  # NOTE: CI/CD tester service account is not required on production clusters
-  # NOTE: Zone specific CI/CD tester account is not required on a multi-tenant
-  # zone (add tenant specific CI/CD tester accounts here instead)
   - id: "cicd-tester"
     roles: [ "roles/container.clusterViewer" ]
     description: >

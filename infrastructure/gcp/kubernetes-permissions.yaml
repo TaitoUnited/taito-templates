@@ -1,23 +1,31 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/google
 
+# NOTE: cicd-tester service account is not required on production clusters
+# NOTE: On multi-tenant setup, replace the zone specific cloudbuild service
+# account with tenant specific cloudbuild service accounts, and give each
+# 'taito-deployer' permissions only to specific namespaces.
+
 permissions:
   clusterRoles:
-    # Grant developer access to ALL namespaces
-    # NOTE: Not recommended on production clusters
-    - name: taito-developer
+    # Grant privileged deployment rights for the zone cloudbuild account
+    - name: taito-privileged-deployer
       subjects:
-        # NOTE: Zone specific Cloud Build service account access is not
-        # required on a multi-tenant zone (add tenant specific Cloud Build
-        # accounts to the namespace limited permission rules instead)
         - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+    # EXAMPLE: Grant global status viewer rights for all developers
+    # NOTE: Not recommended on a multi-tenant setup
+    # - name: taito-status-viewer
+    #   subjects:
+    #     - "group:developers@${taito_provider_org_domain}"
+    # EXAMPLE: Grant global developer rights for all developers
+    # NOTE: Not recommended on a production setup
+    # - name: taito-developer
+    #   subjects:
+    #     - "group:developers@${taito_provider_org_domain}"
   namespaces:
     # Grant database access through a db proxy
     - name: db-proxy
       clusterRoles:
         - name: taito-pod-portforwarder
           subjects:
-            # NOTE: CI/CD tester account is not required on production clusters
-            # NOTE: Zone specific CI/CD tester account is not required on a
-            # multi-tenant zone (add tenant specific CI/CD tester accounts here
-            # instead)
+            - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"

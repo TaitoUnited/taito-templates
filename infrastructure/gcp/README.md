@@ -42,6 +42,14 @@ Terraform lifecycle rules might prevent destroying some resources, namely databa
 
 ## Troubleshooting
 
+The step "dhparam" takes a long time to execute:
+
+- It might take a few minutes, as it is generating Diffie-Hellman key for your ingress. Just be patient.
+
+Terraform freezes during execution:
+
+- Delete the `terraform/.terraform` folder and try again
+
 Terraform fails during Helm release execution:
 
 - Just retry a few times to see if that resolves the issue.
