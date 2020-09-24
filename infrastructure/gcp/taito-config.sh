@@ -107,9 +107,9 @@ postgres_ssl_server_cert_enabled="true"
 postgres_proxy_ssl_enabled="true"
 taito_secrets="
   ${taito_secrets}
-  common-postgres-db-ssl.ca/devops:file
-  common-postgres-db-ssl.cert/devops:file
-  common-postgres-db-ssl.key/devops:file
+  common-postgres-db-ssl.ca/db-proxy:file
+  common-postgres-db-ssl.cert/db-proxy:file
+  common-postgres-db-ssl.key/db-proxy:file
 "
 
 # Default MySQL cluster for new projects
@@ -121,9 +121,9 @@ mysql_ssl_server_cert_enabled="true"
 mysql_proxy_ssl_enabled="true"
 taito_secrets="
   ${taito_secrets}
-  common-mysql-db-ssl.ca/devops:file
-  common-mysql-db-ssl.cert/devops:file
-  common-mysql-db-ssl.key/devops:file
+  common-mysql-db-ssl.ca/db-proxy:file
+  common-mysql-db-ssl.cert/db-proxy:file
+  common-mysql-db-ssl.key/db-proxy:file
 "
 
 # Default binary authentication for new projects
