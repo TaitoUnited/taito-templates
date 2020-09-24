@@ -9,7 +9,7 @@ permissions:
         # NOTE: Zone specific Cloud Build service account access is not
         # required on a multi-tenant zone (add tenant specific Cloud Build
         # accounts to the namespace limited permission rules instead)
-        - "${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+        - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
   namespaces:
     # Grant database access through a db proxy
     - name: db-proxy
