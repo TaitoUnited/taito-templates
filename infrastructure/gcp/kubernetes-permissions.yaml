@@ -29,3 +29,4 @@ permissions:
           subjects:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
+            # - "group:developers@${taito_provider_org_domain}"
