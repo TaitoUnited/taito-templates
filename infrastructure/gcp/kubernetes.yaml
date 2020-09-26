@@ -36,7 +36,7 @@ kubernetes:
   # Node pools
   nodePools:
     - name: pool-1
-      machineType: n1-standard-1
+      machineType: e2-medium
       acceleratorType: ""
       acceleratorCount: 0
       secureBootEnabled: true
