@@ -80,7 +80,7 @@ locals {
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "1.0.3"
+  version          = "1.1.2"
   depends_on       = [ google_project.zone ]
 
   members          = local.admin["members"]
