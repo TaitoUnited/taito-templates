@@ -14,7 +14,7 @@ alerts:
     rule: >
       resource.type = "k8s_container"
       resource.labels.namespace_name = "ingress-nginx"
-      jsonPayload.latency >= "3.0s"
+      httpRequest.latency >= "3.0s"
 
   - name: ingress-response-status
     type: log
