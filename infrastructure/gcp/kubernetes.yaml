@@ -62,7 +62,6 @@ kubernetes:
         # Hardening
         # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
         keep-alive: 10
-        custom-http-errors: 403,404,503,500
         server-snippet: >
           location ~ /\.(?!well-known).* {
             deny all;
@@ -70,7 +69,7 @@ kubernetes:
             log_not_found off;
             return 404;
           }
-        hide-headers: "Server,X-Powered-By"
+        server-tokens: false
         ssl-ciphers: "EECDH+AESGCM:EDH+AESGCM"
         enable-ocsp: true
         hsts-preload: true
