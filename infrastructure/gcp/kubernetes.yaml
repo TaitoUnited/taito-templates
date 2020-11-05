@@ -37,7 +37,7 @@ kubernetes:
   nodePools:
     - name: pool-1
       machineType: e2-medium
-      acceleratorType: "" # Note: e2 machines do not support GPUs
+      acceleratorType: "" # (e.g. nvidia-tesla-t4, note: e2-* do not support GPUs)
       acceleratorCount: 0
       secureBootEnabled: true
       diskSizeGb: 100

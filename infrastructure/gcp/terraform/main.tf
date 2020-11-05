@@ -78,6 +78,12 @@ locals {
   )
 }
 
+# NOTE: This is a hack to make some modules wait for an existing GCP project and network
+data "external" "network_wait" {
+  depends_on = [ google_project.zone, module.network ]
+  program = ["sh", "-c", "sleep 5; echo '{ \"project_id\": \"${google_project.zone.project_id}\", \"project_number\": \"${google_project.zone.number}\", \"network_self_link\": \"${module.network.network_self_link}\" }'"]
+}
+
 module "admin" {
   source           = "TaitoUnited/admin/google"
   version          = "1.2.0"
@@ -97,7 +103,11 @@ module "databases" {
 
   postgresql_clusters = local.databases.postgresqlClusters
   mysql_clusters      = local.databases.mysqlClusters
-  private_network_id  = module.network.network_self_link
+  private_network_id  = (
+    var.first_run
+    ? data.external.network_wait.result.network_self_link
+    : module.network.network_self_link
+  )
 }
 
 module "dns" {
@@ -107,16 +117,9 @@ module "dns" {
   dns_zones    = local.dns["dnsZones"]
 }
 
-# NOTE: This is a temporary hack to make Kubernetes module wait for an existing
-# GCP project and network
-data "external" "kubernetes_wait" {
-  depends_on = [ google_project.zone, module.network ]
-  program = ["sh", "-c", "sleep 5; echo '{ \"project_id\": \"${google_project.zone.project_id}\", \"project_number\": \"${google_project.zone.number}\" }'"]
-}
-
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "1.20.0"
+  version                = "1.21.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -126,12 +129,12 @@ module "kubernetes" {
 
   project_id             = (
     var.first_run
-    ? data.external.kubernetes_wait.result.project_id
+    ? data.external.network_wait.result.project_id
     : google_project.zone.project_id
   )
   project_number         = (
     var.first_run
-    ? data.external.kubernetes_wait.result.project_number
+    ? data.external.network_wait.result.project_number
     : google_project.zone.number
   )
 
