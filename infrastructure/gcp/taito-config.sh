@@ -42,8 +42,8 @@ taito_provider_org_id=0123456789
 taito_provider_org_domain=myorganization.com
 taito_provider_billing_account_id=1234AB-1234AB-1234AB # CHANGE
 taito_provider_taito_zone_id=TAITO_PROVIDER_TAITO_ZONE_ID
-taito_provider_region=europe-west1
-taito_provider_zone=europe-west1-b
+taito_provider_region=europe-west4
+taito_provider_zone=europe-west4-b
 taito_provider_secrets_location=taito_resource_namespace_id
 taito_cicd_secrets_path=
 
