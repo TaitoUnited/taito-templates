@@ -29,4 +29,5 @@ alerts:
     channels: [ "monitoring" ]
     rule: >
       resource.type = "k8s_container"
+      resource.labels.namespace_name:"-prod"
       severity >= ERROR
