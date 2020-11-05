@@ -80,8 +80,10 @@ locals {
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "1.1.2"
+  version          = "1.2.0"
   depends_on       = [ google_project.zone ]
+
+  project_id       = google_project.zone.project_id
 
   members          = local.admin["members"]
   service_accounts = local.admin["serviceAccounts"]
@@ -189,9 +191,10 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "1.4.0"
+  version      = "1.5.0"
   depends_on   = [ module.admin ]
 
+  project_id   = google_project.zone.project_id
   network      = local.network["network"]
 }
 
