@@ -8,6 +8,7 @@ provider "postgresql" {
   port            = 5000
   username        = local.databases.postgresqlClusters[0].adminUsername
   password        = var.postgresql_0_password
+  superuser       = false
 
   sslmode         = "require"
   sslrootcert     = "${path.root}/../tmp/common-postgres-db-ssl.ca"
@@ -19,7 +20,7 @@ provider "postgresql" {
 
 module "postgresql_0" {
   source                     = "TaitoUnited/privileges/postgresql"
-  version                    = "1.0.3"
+  version                    = "1.0.5"
   privileges                 = local.databases.postgresqlClusters[0]
   providers = {
     postgresql = postgresql.postgresql_0
