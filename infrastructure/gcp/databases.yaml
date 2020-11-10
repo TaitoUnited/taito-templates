@@ -2,8 +2,8 @@
 
 # NOTE: If you use the additional database privilege modules for managing
 # roles and users, you need to define database provider for each database
-# in terraform/database-privileges.tf.
-# TODO: And to start a local db proxy for each database cluster
+# in terraform/database-privileges.tf and configure database proxies in
+# taito-config.sh
 
 postgresqlClusters:
   - name: ${postgres_default_name}

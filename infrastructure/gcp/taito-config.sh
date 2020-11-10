@@ -126,6 +126,12 @@ taito_secrets="
   common-mysql-db-ssl.key/db-proxy:file
 "
 
+# Database proxies (required for managing database user privileges)
+# kubernetes_database_proxies="
+#   ${postgres_default_name}:5432:5000
+#   ${mysql_default_name}:3306:6000
+# "
+
 # Default binary authentication for new projects
 binauthz_attestor=
 binauthz_secret_name=

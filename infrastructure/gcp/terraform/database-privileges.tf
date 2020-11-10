@@ -8,6 +8,13 @@ provider "postgresql" {
   port            = 5000
   username        = local.databases.postgresqlClusters[0].adminUsername
   password        = var.postgresql_0_password
+
+  sslmode         = "require"
+  sslrootcert     = "${path.root}/../tmp/common-postgres-db-ssl.ca"
+  clientcert {
+    cert = "${path.root}/../tmp/common-postgres-db-ssl.cert"
+    key  = "${path.root}/../tmp/common-postgres-db-ssl.key"
+  }
 }
 
 module "postgresql_0" {
@@ -28,6 +35,7 @@ variable "postgresql_0_password" {
 /*
 # MySQL example
 # NOTE: Add provider and module for each MySQL cluster
+# NOTE: mysql provider does not support SSL yet.
 
 provider "mysql" {
   alias           = "mysql_0"
