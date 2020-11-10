@@ -20,7 +20,7 @@ provider "postgresql" {
 
 module "postgresql_0" {
   source                     = "TaitoUnited/privileges/postgresql"
-  version                    = "1.0.5"
+  version                    = "1.0.6"
   privileges                 = local.databases.postgresqlClusters[0]
   providers = {
     postgresql = postgresql.postgresql_0
@@ -47,7 +47,7 @@ provider "mysql" {
 
 module "mysql_0" {
   source                     = "TaitoUnited/privileges/mysql"
-  version                    = "1.0.3"
+  version                    = "1.0.4"
   privileges                 = local.databases.mysqlClusters[0]
   providers = {
     mysql = mysql.mysql_0
