@@ -28,7 +28,7 @@ module "postgresql_0" {
 
 variable "postgresql_0_password" {
   type = string
-  description = "Database admin password is required for setting PostgreSQL roles and users. Leave this empty if the database does not exist yet."
+  description = "Database admin password is required for setting PostgreSQL roles and users. Leave this empty if the database does not exist yet. Warning! The password is saved in Terraform state as plain text! It is advisable to change the password after you have run the command."
 }
 */
 
@@ -55,6 +55,6 @@ module "mysql_0" {
 
 variable "mysql_0_password" {
   type = string
-  description = "Database admin password is required for setting MySQL roles and users. Leave this empty if the database does not exist yet."
+  description = "Database admin password is required for setting MySQL roles and users. Leave this empty if the database does not exist yet. Warning! The password is saved in Terraform state as plain text! It is advisable to change the password after you have run the command."
 }
 */
