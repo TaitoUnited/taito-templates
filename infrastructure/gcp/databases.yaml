@@ -24,6 +24,7 @@ postgresqlClusters:
     adminUsername: ${postgres_default_admin}
 
     # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/postgresql
+    # WARNING: Names of roles and users are visible for all database users
     roles:
     users:
 
