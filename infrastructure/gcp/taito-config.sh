@@ -11,6 +11,7 @@ taito_plugins="
   terraform-zone
   kubectl-zone helm-zone
   generate-secrets links-global custom
+  postgres-db mysql-db
 "
 
 # Labeling
@@ -45,6 +46,7 @@ taito_provider_taito_zone_id=TAITO_PROVIDER_TAITO_ZONE_ID
 taito_provider_region=europe-west4
 taito_provider_zone=europe-west4-b
 taito_provider_secrets_location=taito_resource_namespace_id
+taito_provider_secrets_mode=backup
 taito_cicd_secrets_path=
 
 # Container registry provider
@@ -98,13 +100,23 @@ fi
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
 
-# Default PostgreSQL cluster for new projects
-postgres_default_name="common-postgres"
-postgres_default_host="POSTGRES_HOST"
-postgres_default_admin="postgres"
-postgres_ssl_client_cert_enabled="true"
-postgres_ssl_server_cert_enabled="true"
-postgres_proxy_ssl_enabled="true"
+# Databases
+taito_databases="commonpg commonmysql"
+# kubernetes_db_proxy_enabled=true
+
+# Database: common-postgres
+db_commonpg_type=pg
+db_commonpg_instance=common-postgres
+db_commonpg_name=postgres
+db_commonpg_host="127.0.0.1"
+db_commonpg_port=5001
+db_commonpg_real_host="POSTGRES_HOST"
+db_commonpg_real_port="5432"
+db_commonpg_ssl_enabled="true"
+db_commonpg_ssl_client_cert_enabled="true"
+db_commonpg_ssl_server_cert_enabled="true"
+db_commonpg_proxy_ssl_enabled="true"
+db_commonpg_username=postgres
 taito_secrets="
   ${taito_secrets}
   common-postgres-db-ssl.ca/db-proxy:file
@@ -112,13 +124,19 @@ taito_secrets="
   common-postgres-db-ssl.key/db-proxy:file
 "
 
-# Default MySQL cluster for new projects
-mysql_default_name="common-mysql"
-mysql_default_host="MYSQL_HOST"
-mysql_default_admin="${taito_zone_short}"
-mysql_ssl_client_cert_enabled="true"
-mysql_ssl_server_cert_enabled="true"
-mysql_proxy_ssl_enabled="true"
+# Database: common-postgres
+db_commonmysql_type=mysql
+db_commonmysql_instance=common-mysql
+db_commonmysql_name=mysql
+db_commonmysql_host="127.0.0.1"
+db_commonmysql_port=6001
+db_commonmysql_real_host="MYSQL_HOST"
+db_commonmysql_real_port="3306"
+db_commonmysql_ssl_enabled="true"
+db_commonmysql_ssl_client_cert_enabled="true"
+db_commonmysql_ssl_server_cert_enabled="true"
+db_commonmysql_proxy_ssl_enabled="true"
+db_commonmysql_username="${taito_zone_short}"
 taito_secrets="
   ${taito_secrets}
   common-mysql-db-ssl.ca/db-proxy:file
@@ -126,11 +144,21 @@ taito_secrets="
   common-mysql-db-ssl.key/db-proxy:file
 "
 
-# Database proxies (required for managing database user privileges)
-# kubernetes_database_proxies="
-#   ${postgres_default_name}:5432:5000
-#   ${mysql_default_name}:3306:6000
-# "
+# Default PostgreSQL cluster for new projects
+postgres_default_name=$db_commonpg_instance
+postgres_default_host=$db_commonpg_real_host
+postgres_default_admin=$db_commonpg_username
+postgres_ssl_client_cert_enabled=$db_commonpg_ssl_client_cert_enabled
+postgres_ssl_server_cert_enabled=$db_commonpg_ssl_server_cert_enabled
+postgres_proxy_ssl_enabled=$db_commonpg_proxy_ssl_enabled
+
+# Default MySQL cluster for new projects
+mysql_default_name=$db_commonmysql_instance
+mysql_default_host=$db_commonmysql_real_host
+mysql_default_admin=$db_commonmysql_username
+mysql_ssl_client_cert_enabled="true"
+mysql_ssl_server_cert_enabled="true"
+mysql_proxy_ssl_enabled="true"
 
 # Default binary authentication for new projects
 binauthz_attestor=
