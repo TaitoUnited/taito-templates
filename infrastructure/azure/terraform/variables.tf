@@ -34,18 +34,6 @@ variable "taito_provider_region" {
   type = string
 }
 
-/* User rights */
-
-variable "taito_owners" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "taito_developers" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
 /* Settings */
 
 variable "taito_devops_email" {
@@ -62,7 +50,12 @@ variable "taito_high_availability" {
   default = "true"
 }
 
-variable "taito_cicd_deploy_enabled" {
+variable "taito_cicd_cloud_deploy_enabled" {
+  type    = bool
+  default = "true"
+}
+
+variable "taito_cicd_testing_enabled" {
   type    = bool
   default = "true"
 }
@@ -83,99 +76,3 @@ variable "taito_projects_bucket" {
   type    = string
   default = ""
 }
-
-/* Kubernetes */
-
-variable "kubernetes_name" {
-  type    = string
-  default = ""
-}
-
-variable "kubernetes_version" {
-  type    = string
-  default = ""
-}
-
-variable "kubernetes_node_size" {
-    type = string
-    default = "Standard_DS1_v2"
-}
-
-variable "kubernetes_node_count" {
-    type = number
-    default = 1
-}
-
-/* Helm */
-
-variable "helm_nginx_ingress_classes" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "helm_nginx_ingress_replica_counts" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-/* Postgres */
-
-variable "postgres_instances" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_admins" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_versions" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-# See https://docs.microsoft.com/en-us/azure/postgresql/concepts-pricing-tiers#compute-generations-vcores-and-memory
-variable "postgres_sku_names" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-variable "postgres_sku_capacities" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-variable "postgres_sku_tiers" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-variable "postgres_sku_families" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_node_counts" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_storage_sizes" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_auto_grows" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_backup_retention_days" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_geo_redundant_backups" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-/* MySQL */

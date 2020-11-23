@@ -40,13 +40,6 @@ variable "taito_default_domain" {
   type = string
 }
 
-/* User rights */
-
-variable "taito_developers" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
 /* Settings */
 
 variable "taito_devops_email" {
@@ -82,89 +75,6 @@ variable "taito_projects_bucket" {
 variable "taito_public_bucket" {
   type    = string
   default = ""
-}
-
-/* Kubernetes */
-
-variable "kubernetes_name" {
-  type    = string
-  default = ""
-}
-
-variable "kubernetes_machine_type" {
-  type    = string
-  default = "n1-standard-1"
-}
-
-variable "kubernetes_disk_size_gb" {
-  type    = number
-  default = "100"
-}
-
-variable "kubernetes_min_node_count" {
-  type    = number
-  default = 1
-}
-
-variable "kubernetes_max_node_count" {
-  type    = number
-  default = 1
-}
-
-/* Helm */
-
-variable "helm_nginx_ingress_classes" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "helm_nginx_ingress_replica_counts" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-/* Postgres clusters */
-
-variable "postgres_instances" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_tiers" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_sizes" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "postgres_admins" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-/* MySQL clusters */
-
-variable "mysql_instances" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "mysql_tiers" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "mysql_sizes" {
-  type    = string  # whitespace delimited strings
-  default = ""
-}
-
-variable "mysql_admins" {
-  type    = string  # whitespace delimited strings
-  default = "dummy"
 }
 
 /* Messaging */
