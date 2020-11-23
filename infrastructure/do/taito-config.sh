@@ -8,12 +8,18 @@ set -a
 taito_version=1
 taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
-taito_plugins="do-zone terraform-zone kubectl-zone helm-zone links-global custom"
+taito_plugins="
+  do-zone do-secrets
+  terraform-zone
+  kubectl-zone helm-zone
+  generate-secrets links-global custom
+"
 
 # Labeling
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
+taito_zone_short="${taito_zone//-/}"
 
 # Domains
 taito_default_domain=dev.myorganization.com # CHANGE
@@ -37,50 +43,51 @@ taito_ci_provider=github
 taito_ci_organization=$taito_organization
 taito_vc_provider=github
 taito_vc_domain=github.com
-taito_vc_organization=$taito_organization
+taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
 # TODO: Users
 
 # Settings
 taito_devops_email=support@myorganization.com # CHANGE
+taito_provider_secrets_location=
+taito_cicd_secrets_path=
 
 # Buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
 taito_state_bucket=$taito_zone-state
+taito_projects_bucket=$taito_zone-projects
+taito_public_bucket=$taito_zone-public
 
 # Kubernetes
 # NOTE: If you disable Kubernetes, remove also kubectl-zone and helm-zone from
 # taito_plugins.
 kubernetes_name="$taito_zone-kube"
-kubernetes_version="1.16.2-do.1"
 kubernetes_cluster_prefix="do-${taito_provider_region}-"
 kubernetes_cluster="${kubernetes_cluster_prefix}${kubernetes_name}"
 kubernetes_user="${kubernetes_cluster}-admin"
-kubernetes_node_size=s-2vcpu-2gb
-kubernetes_node_count=1
 
-# Helm (for Kubernetes)
-helm_nginx_ingress_classes="nginx"
-helm_nginx_ingress_replica_counts="${kubernetes_node_count}"
-
-# Postgres clusters
+# Default PostgreSQL cluster for new projects
 # TODO: prevent access to public endpoint on DO UI (or with terraform if supported)
-postgres_instances="$taito_zone-postgres"
-postgres_hosts="private-$taito_zone-postgres-do-user-${taito_provider_org_id}-0.db.ondigitalocean.com"
-postgres_ports="25060"
-postgres_node_sizes="db-s-1vcpu-1gb"
-postgres_node_counts="1"
+postgres_default_name="$taito_zone-postgres"
+postgres_default_host="private-$taito_zone-postgres-do-user-${taito_provider_org_id}-0.db.ondigitalocean.com"
+postgres_default_port="25060"
 
-# MySQL clusters
+# Default MySQL cluster for new projects
 # TODO: prevent access to public endpoint on DO UI (or with terraform if supported)
-mysql_instances="$taito_zone-mysql"
-mysql_hosts="private-$taito_zone-mysql-do-user-${taito_provider_org_id}-0.db.ondigitalocean.com"
-mysql_ports="25060"
-mysql_node_sizes="db-s-1vcpu-1gb"
-mysql_node_counts="1"
+mysql_default_name="$taito_zone-mysql"
+mysql_default_host="private-$taito_zone-mysql-do-user-${taito_provider_org_id}-0.db.ondigitalocean.com"
+mysql_default_port="25060"
+
+# Secrets:
+# - GitHub personal token for tagging releases (optional)
+#   -> CHANGE: remove token if this zone is not used for production releases
+taito_secrets="
+  version-control-buildbot.token/devops:manual
+"
 
 # Messaging
-# TODO: not used yet
+# CHANGE: Set slack webhook and channels (optional)
+# TODO: implement
 taito_messaging_app=slack
 taito_messaging_webhook=
 taito_messaging_builds_channel=builds

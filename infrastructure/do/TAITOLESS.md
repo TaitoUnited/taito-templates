@@ -34,10 +34,10 @@ Creating a zone without Taito CLI:
     terraform apply
     ```
 
-10) Check nginx-ingress load balancer external IP address:
+10) Check ingress-nginx load balancer external IP address:
 
     ```
-    kubectl get services --namespace nginx-ingress
+    kubectl get services --namespace ingress-nginx
     ```
 
 11) Add A record for the load balancer IP address (e.g. `A *.do.mydomain.com -> 123.123.123.123`)

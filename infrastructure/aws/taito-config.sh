@@ -45,7 +45,7 @@ taito_container_registry=${taito_provider_org_id}.dkr.ecr.${taito_provider_regio
 taito_ci_provider=aws
 taito_vc_provider=github
 taito_vc_domain=github.com
-taito_vc_organization=$taito_organization
+taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
 # Settings
 taito_devops_email=support@myorganization.com # CHANGE
@@ -99,8 +99,8 @@ mysql_ssl_server_cert_enabled="true"
 # - Database certificates
 taito_secrets="
   version-control-buildbot.token/devops:manual
-  $taito_zone-common-postgres-ssl.ca/devops:file
-  $taito_zone-common-mysql-ssl.ca/devops:file
+  $taito_zone-common-postgres-db-ssl.ca/devops:file
+  $taito_zone-common-mysql-db-ssl.ca/devops:file
 "
 
 # Messaging

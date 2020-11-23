@@ -31,36 +31,17 @@ provider "digitalocean" {
 
 # Convert whitespace delimited strings into list(string)
 locals {
-  # TODO
-  # taito_developers = (var.taito_developers == "" ? [] :
-  #   split(" ", trimspace(replace(var.taito_developers, "/\\s+/", " "))))
-  # taito_authorized_networks = (var.taito_authorized_networks == "" ? [] :
-  #   split(" ", trimspace(replace(var.taito_authorized_networks, "/\\s+/", " "))))
-  #
-
-  helm_nginx_ingress_classes = (var.helm_nginx_ingress_classes == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_classes, "/\\s+/", " "))))
-  helm_nginx_ingress_replica_counts = (var.helm_nginx_ingress_replica_counts == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_replica_counts, "/\\s+/", " "))))
-
-  postgres_instances   = (var.postgres_instances == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_instances, "/\\s+/", " "))))
-  postgres_node_sizes  = (var.postgres_node_sizes == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_node_sizes, "/\\s+/", " "))))
-  postgres_node_counts = (var.postgres_node_counts == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_node_counts, "/\\s+/", " "))))
-
-  mysql_instances    = (var.mysql_instances == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_instances, "/\\s+/", " "))))
-  mysql_node_sizes   = (var.mysql_node_sizes == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_node_sizes, "/\\s+/", " "))))
-  mysql_node_counts  = (var.mysql_node_counts == "" ? [] :
-    split(" ", trimspace(replace(var.mysql_node_counts, "/\\s+/", " "))))
+  # Read json file
+  variables = (
+    fileexists("${path.root}/../terraform-substituted.yaml")
+      ? yamldecode(file("${path.root}/../terraform-substituted.yaml"))
+      : jsondecode(file("${path.root}/../terraform.json.tmp"))
+  )["settings"]
 }
 
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/digitalocean"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # Labeling
   name                    = var.taito_zone
@@ -78,23 +59,8 @@ module "taito_zone" {
   state_bucket            = var.taito_state_bucket
 
   # Helm
-  helm_enabled                       = var.first_run != true
-  helm_nginx_ingress_classes         = local.helm_nginx_ingress_classes
-  helm_nginx_ingress_replica_counts  = local.helm_nginx_ingress_replica_counts
+  helm_enabled            = var.first_run != true
 
-  # Kubernetes
-  kubernetes_name         = var.kubernetes_name
-  kubernetes_version      = var.kubernetes_version
-  kubernetes_node_size    = var.kubernetes_node_size
-  kubernetes_node_count   = var.kubernetes_node_count
-
-  # Postgres
-  postgres_instances      = local.postgres_instances
-  postgres_node_sizes     = local.postgres_node_sizes
-  postgres_node_counts    = local.postgres_node_counts
-
-  # MySQL
-  mysql_instances         = local.mysql_instances
-  mysql_node_sizes        = local.mysql_node_sizes
-  mysql_node_counts       = local.mysql_node_counts
+  # Variables
+  variables               = local.variables
 }
