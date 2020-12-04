@@ -42,7 +42,7 @@ storageBuckets:
     purpose: projects
     location: ${taito_provider_region}
     storageClass: REGIONAL
-    versioningEnabled: false
+    versioningEnabled: true
     versioningRetainDays:
     lockRetainDays:
     transitionRetainDays:
