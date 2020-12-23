@@ -16,5 +16,8 @@ terraform {
     postgresql = {
       source = "terraform-providers/postgresql"
     }
+    external = {
+      source = "hashicorp/external"
+    }
   }
 }
