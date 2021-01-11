@@ -22,6 +22,14 @@ permissions:
     #   subjects:
     #     - "group:developers@${taito_provider_org_domain}"
   namespaces:
+    # Grant reading common secrets
+    - name: common
+      clusterRoles:
+        - name: taito-secret-viewer
+          subjects:
+            - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+            - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
+            # - "group:developers@${taito_provider_org_domain}"
     # Grant database access through a db proxy
     - name: db-proxy
       clusterRoles:

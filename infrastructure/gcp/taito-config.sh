@@ -119,9 +119,9 @@ db_commonpg_proxy_ssl_enabled="true"
 db_commonpg_username=postgres
 taito_secrets="
   ${taito_secrets}
-  common-postgres-db-ssl.ca/db-proxy:file
-  common-postgres-db-ssl.cert/db-proxy:file
-  common-postgres-db-ssl.key/db-proxy:file
+  common-postgres-db-ssl.ca/common:file
+  common-postgres-db-ssl.cert/common:file
+  common-postgres-db-ssl.key/common:file
 "
 
 # Database: common-postgres
@@ -139,9 +139,9 @@ db_commonmysql_proxy_ssl_enabled="true"
 db_commonmysql_username="${taito_zone_short}"
 taito_secrets="
   ${taito_secrets}
-  common-mysql-db-ssl.ca/db-proxy:file
-  common-mysql-db-ssl.cert/db-proxy:file
-  common-mysql-db-ssl.key/db-proxy:file
+  common-mysql-db-ssl.ca/common:file
+  common-mysql-db-ssl.cert/common:file
+  common-mysql-db-ssl.key/common:file
 "
 
 # Default PostgreSQL cluster for new projects
@@ -166,15 +166,17 @@ binauthz_secret_name=
 binauthz_public_key_id=
 
 # Secrets
+# CHANGE: remove CI/CD tester service account if this zone is not used for testing
+taito_secrets="
+  ${taito_secrets}
+  cicd-tester-serviceaccount.key/common:file
+"
 if [[ $taito_zone_multi_tenant != true ]]; then
-  # These secrets are not required on a multi-tenant zone:
   # - GitHub personal token for tagging releases (optional)
   #   -> CHANGE: remove token if this zone is not used for production releases
-  # - CI/CD tester service account
   taito_secrets="
     ${taito_secrets}
-    version-control-buildbot.token/devops:manual
-    cicd-tester-serviceaccount.key/devops:file
+    version-control-buildbot.token/common:manual
   "
 fi
 
