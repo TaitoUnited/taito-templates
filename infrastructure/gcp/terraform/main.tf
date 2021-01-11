@@ -119,7 +119,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "2.0.0"
+  version                = "2.1.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
