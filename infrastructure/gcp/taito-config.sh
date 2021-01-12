@@ -93,6 +93,7 @@ taito_messaging_monitoring_channel=monitoring
 # taito_plugins and kubernetes module from terraform/main.tf
 kubernetes_name="common-kube"
 kubernetes_regional=false
+kubernetes_network_policy_provider=CALICO  # TODO: use CILIUM as default
 kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_zone}_
 if [[ ${kubernetes_regional} == true ]]; then
   kubernetes_cluster_prefix=gke_${taito_zone}_${taito_provider_region}_
