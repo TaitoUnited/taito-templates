@@ -22,6 +22,9 @@ provider "google-beta" {
 }
 
 provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
 }
 
 resource "google_project" "zone" {
