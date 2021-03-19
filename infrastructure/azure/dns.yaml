@@ -1,0 +1,3 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/dns/azurerm
+
+dnsZones:

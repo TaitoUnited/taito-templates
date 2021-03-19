@@ -1,0 +1,106 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/azurerm
+
+# For Kubernetes setting descriptions, see
+# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/beta-private-cluster
+kubernetes:
+  name: ${kubernetes_name}
+  context: ${taito_zone}
+  releaseChannel: REGULAR
+  maintenanceStartTime: 02:00
+  registryProjectId: ""
+  authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
+  rbacSecurityGroup: ""
+  clusterFirewallRulesEnabled: true
+  masterPrivateEndpointEnabled: false
+  masterGlobalAccessEnabled: true
+  privateNodesEnabled: true
+  shieldedNodesEnabled: true
+  networkPolicyEnabled: false
+  dbEncryptionEnabled: false
+  podSecurityPolicyEnabled: false
+  verticalPodAutoscalingEnabled: true
+  dnsCacheEnabled: true
+  pdCsiDriverEnabled: true
+  resourceConsumptionExportEnabled: false
+  resourceConsumptionExportDatasetId: ""
+  networkEgressExportEnabled: false
+  binaryAuthorizationEnabled: false
+  intranodeVisibilityEnabled: false
+  configConnectorEnabled: false
+  region: ${taito_provider_region}
+  regional: ${kubernetes_regional}
+  zones: [ "${taito_provider_zone}" ] # RECOMMENDED: add all three GCP zones here
+  masterAuthorizedNetworks:
+    - 0.0.0.0/0
+
+  # Node pools
+  nodePools:
+    - name: pool-1
+      machineType: e2-medium
+      acceleratorType: "" # (e.g. nvidia-tesla-t4, note: e2-* do not support GPUs)
+      acceleratorCount: 0
+      secureBootEnabled: true
+      diskSizeGb: 100
+      locations: "" # Leave empty or specify zones, example: europe-west1-b,europe-west1-c
+      # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
+      minNodeCount: 2
+      maxNodeCount: 2
+
+  # Ingress controllers
+  ingressNginxControllers:
+    - name: ingress-nginx
+      class: nginx
+      replicas: 3
+      metricsEnabled: true
+      # MaxMind license key for GeoIP2: https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
+      maxmindLicenseKey: ""
+      # Map TCP/UDP connections to services
+      tcpServices:
+      udpServices:
+      # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+      configMap:
+        # Hardening
+        # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
+        keep-alive: 10
+        server-tokens: false
+        ssl-ciphers: "EECDH+AESGCM:EDH+AESGCM"
+        enable-ocsp: true
+        hsts-preload: true
+        ssl-session-tickets: false
+        client-header-timeout: 10
+        client-body-timeout: 10
+        large-client-header-buffers: 2 1k
+        client-body-buffer-size: 1k
+        proxy-body-size: 1k
+        # Firewall and access control
+        enable-modsecurity: true
+        enable-owasp-modsecurity-crs: true
+        use-geoip: false
+        use-geoip2: true
+        enable-real-ip: false
+        whitelist-source-range: ""
+        block-cidrs: ""
+        block-user-agents: ""
+        block-referers: ""
+
+  # Certificate managers
+  certManager:
+    enabled: true
+
+  # Platforms
+  istio:
+    enabled: false
+  knative:
+    enabled: false
+
+  # Logging, monitoring, and tracing
+  falco:
+    enabled: false
+  jaeger:
+    enabled: false
+  sentry:
+    enabled: false
+
+  # CI/CD
+  jenkinsx:
+    enabled: false

@@ -1,0 +1,100 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/storage/azurerm
+
+storageBuckets:
+  - name: ${taito_state_bucket}
+    purpose: state
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: true
+    versioningRetainDays: 100
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
+  - name: ${taito_function_bucket}
+    purpose: function
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: false
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
+  # NOTE: taito_projects_bucket not required on a multi-tenant zone
+  - name: ${taito_projects_bucket}
+    purpose: projects
+    location: ${taito_provider_region}
+    storageClass: REGIONAL
+    versioningEnabled: true
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays:
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
+  - name: ${taito_backup_bucket}
+    purpose: backup
+    location: ${taito_provider_region}
+    storageClass: COLDLINE
+    versioningEnabled: false
+    versioningRetainDays:
+    lockRetainDays:
+    transitionRetainDays:
+    transitionStorageClass:
+    autoDeletionRetainDays: 100
+    # TIP: You can also use bucket lock:
+    # autoDeletionRetainDays: 0
+    # lockRetainDays: 100
+    replicationBucket:
+    backupRetainDays:
+    backupLocation:
+    backupLock:
+    cdnDomain:
+    cors:
+    members:
+
+  # Public static assets bucket
+  # - name: ${taito_public_bucket}
+  #   purpose: public
+  #   location: ${taito_provider_region}
+  #   storageClass: REGIONAL
+  #   versioningEnabled: true
+  #   versioningRetainDays: 100
+  #   lockRetainDays:
+  #   transitionRetainDays:
+  #   transitionStorageClass:
+  #   autoDeletionRetainDays:
+  #   replicationBucket:
+  #   backupRetainDays:
+  #   backupLocation:
+  #   backupLock:
+  #   cdnDomain: ${taito_default_cdn_domain}
+  #   cors:
+  #     - origin: ["*"]
+  #   members:
+  #     - id: "${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+  #       roles: [ "roles/storage.objectCreator" ]

@@ -1,0 +1,49 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/databases/azurerm
+
+# NOTE: If you use the additional database privilege modules for managing
+# roles and users, you need to define database provider for each database
+# in terraform/database-privileges.tf and enable kubernetes_db_proxy_enabled
+# in taito-config.sh
+
+postgresqlClusters:
+  - name: ${postgres_default_name}
+    region: ${taito_provider_region}
+    zone: ${taito_provider_zone}
+    version: POSTGRES_12
+    tier: db-custom-1-3840
+    maintenanceDay: 2
+    maintenanceHour: 2
+    backupStartTime: 05:00
+    storageBackupSchedule: 0 0 * * 0
+    pointInTimeRecoveryEnabled: false
+    highAvailabilityEnabled: false
+    publicIpEnabled: false
+    authorizedNetworks:
+    flags:
+      log_min_duration_statement: 1000
+    adminUsername: ${postgres_default_admin}
+
+    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/postgresql
+    # WARNING: Names of roles and users are visible for all database users
+    roles:
+    users:
+
+mysqlClusters:
+  - name: ${mysql_default_name}
+    region: ${taito_provider_region}
+    zone: ${taito_provider_zone}
+    version: MYSQL_8_0
+    tier: db-custom-1-3840
+    maintenanceDay: 2
+    maintenanceHour: 2
+    backupStartTime: 05:00
+    storageBackupSchedule: 0 0 * * 0
+    pointInTimeRecoveryEnabled: false
+    highAvailabilityEnabled: false
+    publicIpEnabled: false
+    authorizedNetworks:
+    adminUsername: ${mysql_default_admin}
+
+    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
+    roles:
+    users:
