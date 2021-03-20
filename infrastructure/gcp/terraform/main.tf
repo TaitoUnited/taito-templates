@@ -124,12 +124,6 @@ module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
   version                = "2.1.0"
 
-  # OPTIONAL: Helm app versions
-  # ingress_nginx_version  = ...
-  # cert_manager_version   = ...
-  # kubernetes_admin_version = ...
-  # socat_tunneler_version = ...
-
   project_id             = (
     var.first_run
     ? data.external.network_wait.result.project_id
@@ -141,11 +135,7 @@ module "kubernetes" {
     : google_project.zone.number
   )
 
-  # Settings
-  # NOTE: helm_enabled should be false on the first run, then true
-  helm_enabled             = var.first_run == false
   email                    = var.taito_devops_email
-  generate_ingress_dhparam = false # Set to true for additional security
 
   # Network
   network                  = module.network.network_name
@@ -159,7 +149,11 @@ module "kubernetes" {
   # Kubernetes
   kubernetes               = local.kubernetes["kubernetes"]
 
-  # Database clusters (for db proxies)
+  # Helm infrastructure apps
+  # NOTE: helm_enabled should be false on the first run, then true
+  helm_enabled               = var.first_run == false
+  generate_ingress_dhparam   = false # Set to true for additional security   # TODO: pass these from YAML
+  use_kubernetes_as_db_proxy = true                                          # TODO: pass these from YAML
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
@@ -172,6 +166,12 @@ module "kubernetes" {
     ):
     db.name
   ]
+
+  # OPTIONAL: Helm app versions
+  # ingress_nginx_version  = ...
+  # cert_manager_version   = ...
+  # kubernetes_admin_version = ...
+  # socat_tunneler_version = ...  
 }
 
 module "events" {

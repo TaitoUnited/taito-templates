@@ -117,33 +117,26 @@ module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/azurerm"
   version                = "0.0.1"
 
-  # OPTIONAL: Helm app versions
-  # ingress_nginx_version  = ...
-  # cert_manager_version   = ...
-  # kubernetes_admin_version = ...
-  # socat_tunneler_version = ...
-
-  resource_group_name = azurerm_resource_group.zone.name
-
-  # Settings
-  # NOTE: helm_enabled should be false on the first run, then true
-  helm_enabled             = var.first_run == false
-  email                    = var.taito_devops_email
-  generate_ingress_dhparam = false # Set to true for additional security
+  resource_group_name        = azurerm_resource_group.zone.name
+  name                       = azurerm_resource_group.zone.name
+  location                   = azurerm_resource_group.zone.location
+  log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
+  email                      = var.taito_devops_email
 
   # Network
-  network                  = module.network.network_name
-  subnetwork               = module.network.subnet_names[0]
-  pods_ip_range_name       = module.network.pods_ip_range_name
-  services_ip_range_name   = module.network.services_ip_range_name
+  subnet_id                  = module.network.internal_subnet_id
 
   # Permissions
-  permissions              = local.kubernetesPermissions["permissions"]
+  permissions                = local.kubernetesPermissions["permissions"]
 
   # Kubernetes
-  kubernetes               = local.kubernetes["kubernetes"]
+  kubernetes                 = local.kubernetes["kubernetes"]
 
-  # Database clusters (for db proxies)
+  # Helm infrastructure apps
+  # NOTE: helm_enabled should be false on the first run, then true
+  helm_enabled               = var.first_run == false
+  generate_ingress_dhparam   = false # Set to true for additional security   # TODO: pass these from YAML
+  use_kubernetes_as_db_proxy = true                                          # TODO: pass these from YAML
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
@@ -156,6 +149,12 @@ module "kubernetes" {
     ):
     db.name
   ]
+
+  # OPTIONAL: Helm app versions
+  # ingress_nginx_version  = ...
+  # cert_manager_version   = ...
+  # kubernetes_admin_version = ...
+  # socat_tunneler_version = ...
 }
 
 module "integrations" {

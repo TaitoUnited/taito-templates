@@ -45,6 +45,7 @@ taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or
 # Settings
 taito_devops_email=support@myorganization.com # CHANGE
 # NOTE: Also CI/CD requires access if CI/CD is used for automatic deployment
+taito_ad_kubernetes_admin_group_id=1234567a-123b-123c-123d-1e2345a6c7e8  # CHANGE: Kubernetes admin group id on Active Directory
 taito_authorized_networks="0.0.0.0/0"
 taito_provider_secrets_location=
 taito_cicd_secrets_path=

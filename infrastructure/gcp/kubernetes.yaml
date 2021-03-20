@@ -93,14 +93,5 @@ kubernetes:
   knative:
     enabled: false
 
-  # Logging, monitoring, and tracing
-  falco:
-    enabled: false
-  jaeger:
-    enabled: false
-  sentry:
-    enabled: false
-
-  # CI/CD
-  jenkinsx:
-    enabled: false
+  # TIP: You can install more infrastructure apps on your Kubernetes with:
+  # https://github.com/TaitoUnited/infra-apps-template

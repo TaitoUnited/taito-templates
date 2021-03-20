@@ -4,47 +4,34 @@
 # https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/beta-private-cluster
 kubernetes:
   name: ${kubernetes_name}
-  context: ${taito_zone}
-  releaseChannel: REGULAR
-  maintenanceStartTime: 02:00
-  registryProjectId: ""
-  authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
-  rbacSecurityGroup: ""
-  clusterFirewallRulesEnabled: true
-  masterPrivateEndpointEnabled: false
-  masterGlobalAccessEnabled: true
-  privateNodesEnabled: true
-  shieldedNodesEnabled: true
-  networkPolicyEnabled: false
-  dbEncryptionEnabled: false
-  podSecurityPolicyEnabled: false
-  verticalPodAutoscalingEnabled: true
-  dnsCacheEnabled: true
-  pdCsiDriverEnabled: true
-  resourceConsumptionExportEnabled: false
-  resourceConsumptionExportDatasetId: ""
-  networkEgressExportEnabled: false
-  binaryAuthorizationEnabled: false
-  intranodeVisibilityEnabled: false
-  configConnectorEnabled: false
-  region: ${taito_provider_region}
-  regional: ${kubernetes_regional}
-  zones: [ "${taito_provider_zone}" ] # RECOMMENDED: add all three GCP zones here
+  skuTier: Free  # Free, Paid
+  automaticChannelUpgrade: stable  # none, patch, rapid, stable
+
+  # Network
+  networkPlugin: azure  # azure, kubenet
+  networkPolicy: azure  # azure, calico
+  privateClusterEnabled: false
   masterAuthorizedNetworks:
     - 0.0.0.0/0
+
+  # RBAC
+  rbacEnabled: true
+  azureAdManaged: true
+
+  # Monitoring
+  omsAgentEnabled: true
+
+  # Add-ons
+  aciEnabled: false
+  azurePolicyEnabled: false
 
   # Node pools
   nodePools:
     - name: pool-1
-      machineType: e2-medium
-      acceleratorType: "" # (e.g. nvidia-tesla-t4, note: e2-* do not support GPUs)
-      acceleratorCount: 0
-      secureBootEnabled: true
-      diskSizeGb: 100
-      locations: "" # Leave empty or specify zones, example: europe-west1-b,europe-west1-c
-      # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
-      minNodeCount: 2
-      maxNodeCount: 2
+      vmSize: Standard_D2_v2
+      availabilityZones: 1 2 3
+      minNodeCount: 3
+      maxNodeCount: 3
 
   # Ingress controllers
   ingressNginxControllers:
@@ -93,14 +80,5 @@ kubernetes:
   knative:
     enabled: false
 
-  # Logging, monitoring, and tracing
-  falco:
-    enabled: false
-  jaeger:
-    enabled: false
-  sentry:
-    enabled: false
-
-  # CI/CD
-  jenkinsx:
-    enabled: false
+  # TIP: You can install more infrastructure apps on your Kubernetes with:
+  # https://github.com/TaitoUnited/infra-apps-template
