@@ -1,0 +1,6 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/integrations/google
+
+# EXAMPLE:
+# --------
+# kafkas:
+#   - name: my-kafka

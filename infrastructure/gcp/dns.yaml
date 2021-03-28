@@ -1,7 +1,7 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/dns/google
 
 # EXAMPLE:
-#
+# --------
 # dnsZones:
 #   - name: my-domain
 #     dnsName: mydomain.com.

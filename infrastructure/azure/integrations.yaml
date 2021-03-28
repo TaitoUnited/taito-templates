@@ -1,0 +1,6 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/integrations/azurerm
+
+# EXAMPLE:
+# --------
+# kafkas:
+#   - name: my-kafka

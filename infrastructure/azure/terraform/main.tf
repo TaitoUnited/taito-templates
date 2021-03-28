@@ -23,16 +23,6 @@ provider "helm" {
   }
 }
 
-# Convert whitespace delimited strings into list(string)
-locals {
-  # Read json file
-  variables = (
-    fileexists("${path.root}/../terraform-substituted.yaml")
-      ? yamldecode(file("${path.root}/../terraform-substituted.yaml"))
-      : jsondecode(file("${path.root}/../terraform.json.tmp"))
-  )["settings"]
-}
-
 resource "azurerm_resource_group" "zone" {
   name     = var.taito_zone
   location = var.taito_provider_region
@@ -64,12 +54,20 @@ locals {
     file("${path.root}/../dns.json.tmp")
   )
 
+  compute = jsondecode(
+    file("${path.root}/../compute.json.tmp")
+  )
+
   kubernetes = jsondecode(
     file("${path.root}/../kubernetes.json.tmp")
   )
 
   kubernetesPermissions = jsondecode(
     file("${path.root}/../kubernetes-permissions.json.tmp")
+  )
+
+  integrations = jsondecode(
+    file("${path.root}/../integrations.json.tmp")
   )
 
   monitoring = jsondecode(
@@ -86,59 +84,66 @@ locals {
 }
 
 module "admin" {
-  source           = "TaitoUnited/admin/azurerm"
-  version          = "0.0.1"
+  source              = "TaitoUnited/admin/azurerm"
+  version             = "0.0.1"
 
-  resource_group_name = azurerm_resource_group.zone.name
+  subscription_id     = "/subscriptions/${var.taito_provider_billing_account_id}"
 
-  members          = local.admin["members"]
-  service_accounts = local.admin["serviceAccounts"]
-  apis             = local.admin["apis"]
+  permissions         = try(local.admin["permissions"], [])
+  custom_roles        = try(local.admin["customRoles"], [])
 }
 
 module "databases" {
   source              = "TaitoUnited/databases/azurerm"
   version             = "0.0.1"
 
-  postgresql_clusters = local.databases.postgresqlClusters
-  mysql_clusters      = local.databases.mysqlClusters
-  private_network_id  = (
-    var.first_run
-    ? data.external.network_wait.result.network_self_link
-    : module.network.network_self_link
-  )
+  resource_group_name = azurerm_resource_group.zone.name
+  subnet_id           = module.network.internal_subnet_id
+
+  postgresql_clusters = try(local.databases.postgresqlClusters, [])
+  mysql_clusters      = try(local.databases.mysqlClusters, [])
+
+  # TODO: long_term_backup_bucket = ...
 }
 
 module "dns" {
-  source       = "TaitoUnited/dns/azurerm"
-  version      = "0.0.1"
-  dns_zones    = local.dns["dnsZones"]
+  source              = "TaitoUnited/dns/azurerm"
+  version             = "0.0.1"
+  resource_group_name = azurerm_resource_group.zone.name
+  dns_zones           = local.dns["dnsZones"]
+}
+
+module "compute" {
+  source              = "TaitoUnited/compute/azurerm"
+  version             = "0.0.1"
+  virtual_machines    = local.compute["virtualMachines"]
 }
 
 module "kubernetes" {
-  source                 = "TaitoUnited/kubernetes/azurerm"
-  version                = "0.0.1"
+  source                     = "TaitoUnited/kubernetes/azurerm"
+  version                    = "0.0.1"
 
   resource_group_name        = azurerm_resource_group.zone.name
+
   name                       = azurerm_resource_group.zone.name
   location                   = azurerm_resource_group.zone.location
-  log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
   email                      = var.taito_devops_email
+  log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
 
   # Network
   subnet_id                  = module.network.internal_subnet_id
 
   # Permissions
-  permissions                = local.kubernetesPermissions["permissions"]
+  permissions                = try(local.kubernetesPermissions["permissions"], {})
 
   # Kubernetes
-  kubernetes                 = local.kubernetes["kubernetes"]
+  kubernetes                 = try(local.kubernetes["kubernetes"], {})
 
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
   helm_enabled               = var.first_run == false
-  generate_ingress_dhparam   = false # Set to true for additional security   # TODO: pass these from YAML
-  use_kubernetes_as_db_proxy = true                                          # TODO: pass these from YAML
+  generate_ingress_dhparam   = ${var.taito_zone_extra_security}
+  use_kubernetes_as_db_proxy = ${var.kubernetes_db_proxy_enabled}
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
@@ -160,37 +165,28 @@ module "kubernetes" {
 }
 
 module "integrations" {
-  source       = "TaitoUnited/integrations/azurerm"
-  version      = "0.0.1"
+  source              = "TaitoUnited/integrations/azurerm"
+  version             = "0.0.1"
 
-  resource_group_name = azurerm_resource_group.zone.name
-
-  cloud_build_notify_enabled = var.taito_messaging_webhook != ""
-  cloud_sql_backups_enabled  = var.taito_backup_bucket != ""
-
-  functions_bucket        = var.taito_function_bucket
-  functions_region        = "europe-west1" # Not available on all regions
-  cloud_sql_backup_bucket = var.taito_backup_bucket
-  cloud_sql_backup_path   = "/cloud-sql-backup"
-  slack_webhook_url       = var.taito_messaging_webhook
-  slack_builds_channel    = var.taito_messaging_builds_channel
-
-  postgresql_clusters     = local.databases.postgresqlClusters
-  mysql_clusters          = local.databases.mysqlClusters
+  kafkas              = try(local.integrations["kafkas"], [])
 }
 
 module "network" {
-  source       = "TaitoUnited/network/azurerm"
-  version      = "0.0.1"
+  source              = "TaitoUnited/network/azurerm"
+  version             = "0.0.1"
 
   resource_group_name = azurerm_resource_group.zone.name
-  network      = local.network["network"]
+
+  name                = azurerm_resource_group.zone.name
+  location            = azurerm_resource_group.zone.location
+
+  network             = local.network["network"]
 }
 
 module "storage" {
-  source          = "TaitoUnited/storage/azurerm"
-  version         = "0.0.1"
+  source              = "TaitoUnited/storage/azurerm"
+  version             = "0.0.1"
 
   resource_group_name = azurerm_resource_group.zone.name
-  storage_buckets = local.storage["storageBuckets"]
+  storage_accounts    = local.storage["storageAccounts"]
 }
