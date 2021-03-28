@@ -58,6 +58,7 @@ taito_container_registry=eu.gcr.io/$taito_zone
 # CI/CD provider
 taito_ci_provider=gcp
 taito_ci_provider_url=
+taito_ci_organization=$taito_organization
 
 # Version control provider
 taito_vc_provider=github
@@ -90,7 +91,7 @@ taito_messaging_monitoring_channel=monitoring
 
 # Default Kubernetes cluster for new projects
 # NOTE: If you remove Kubernetes, remove also kubectl-zone and helm-zone from
-# taito_plugins and kubernetes module from terraform/main.tf
+# taito_plugins
 kubernetes_name="common-kube"
 kubernetes_regional=false
 kubernetes_network_policy_provider=CALICO  # TODO: use CILIUM as default
@@ -100,10 +101,10 @@ if [[ ${kubernetes_regional} == true ]]; then
 fi
 kubernetes_cluster=${kubernetes_cluster_prefix}${kubernetes_name}
 kubernetes_user=$kubernetes_cluster
+kubernetes_db_proxy_enabled=true
 
 # Databases
 taito_databases="commonpg commonmysql"
-# kubernetes_db_proxy_enabled=true
 
 # Database: common-postgres
 db_commonpg_type=pg
@@ -157,9 +158,9 @@ postgres_proxy_ssl_enabled=$db_commonpg_proxy_ssl_enabled
 mysql_default_name=$db_commonmysql_instance
 mysql_default_host=$db_commonmysql_real_host
 mysql_default_admin=$db_commonmysql_username
-mysql_ssl_client_cert_enabled="true"
-mysql_ssl_server_cert_enabled="true"
-mysql_proxy_ssl_enabled="true"
+mysql_ssl_client_cert_enabled=$db_commonmysql_ssl_client_cert_enabled
+mysql_ssl_server_cert_enabled=$db_commonmysql_ssl_server_cert_enabled
+mysql_proxy_ssl_enabled=$db_commonmysql_proxy_ssl_enabled
 
 # Default binary authentication for new projects
 binauthz_attestor=

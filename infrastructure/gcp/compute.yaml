@@ -1,0 +1,8 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/compute/google
+
+# EXAMPLE:
+#
+# virtualMachines:
+#   - name: my-server
+#     location: northeurope
+#     vmSize: Standard_DS1_v2

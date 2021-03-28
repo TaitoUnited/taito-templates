@@ -30,6 +30,32 @@ locals {
   )["settings"]
 }
 
+# TODO: PASS TAGS TO EVERY RESOURCE!
+/* Resource group for all resources */
+/* TODO: how to use terraform variable inside a JSON block?
+resource "aws_resourcegroups_group" "zone" {
+  name = "${var.name}"
+  tags = local.tags
+
+  resource_query {
+    query = <<JSON
+{
+  "TagFilters": [
+    {
+      "Key": "project",
+      "Values": ["${var.name}"]
+    }
+  ]
+}
+JSON
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+*/
+
 module "taito_zone" {
   source  = "TaitoUnited/kubernetes-infrastructure/aws"
   version = "2.2.4"

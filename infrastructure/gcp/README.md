@@ -1,5 +1,7 @@
 # Google Cloud example
 
+TODO: tip -> does not provide point-to-site vpn -> linux templates + infra-apps-template
+
 Example for a taito zone located in Google Cloud. Create infrastructure with the following steps:
 
 - Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`.
@@ -10,11 +12,11 @@ Infrastructure is provisioned with Terraform and you can customize it to your li
 
 ## Links
 
-[//]: # (GENERATED LINKS START)
+[//]: # "GENERATED LINKS START"
 
 LINKS WILL BE GENERATED HERE
 
-[//]: # (GENERATED LINKS END)
+[//]: # "GENERATED LINKS END"
 
 > You can update this section by configuring links in `taito-config.sh` and running `taito project docs`.
 

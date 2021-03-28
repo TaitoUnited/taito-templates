@@ -1,1 +1,39 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/admin/azurerm
+
+# EXAMPLE:
+# --------
+# permissions:
+#   - name: devops
+#     type: group
+#     roles:
+#       - name: Azure Kubernetes Service Cluster Admin Role
+#       - name: Log Analytics Reader
+#   - name: developers
+#     type: group
+#     roles:
+#       - name: Azure Kubernetes Service Cluster User Role
+#         scope: /subscriptions/${taito_provider_billing_account_id}/resourceGroups/${taito_zone}
+#       - name: Log Analytics Reader
+#         scope: /subscriptions/${taito_provider_billing_account_id}/resourceGroups/${taito_zone}
+#   - name: john.doe@mydomain.com
+#     type: user
+#     roles:
+#       - name: Log Analytics Reader
+#         scope: /subscriptions/${taito_provider_billing_account_id}/resourceGroups/production
+#   - name: my-app-dev
+#     type: service
+#     roles:
+#       - name: my-app-dev
+#         type: custom
+#         scope: /subscriptions/${taito_provider_billing_account_id}/resourceGroups/${taito_zone}
+#
+# customRoles:
+#   - name: my-app
+#     description: Custom role for my app
+#     actions:
+#       - Microsoft.Storage/storageAccounts/queueServices/queues/read
+#     dataActions:
+#       - Microsoft.Storage/storageAccounts/queueServices/queues/messages/read
+#     assignableScopes:
+#       - /subscriptions/${taito_provider_billing_account_id}/resourceGroups/${taito_zone}
+#       - /subscriptions/${taito_provider_billing_account_id}/resourceGroups/production

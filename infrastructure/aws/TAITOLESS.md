@@ -1,5 +1,7 @@
 # Taitoless: without Taito CLI
 
+> TODO: Update instructions (nowadays multiple yaml files)
+
 Creating a zone without Taito CLI:
 
 1) Configure settings in *taito-config.sh* and add terraform specific `TF_VAR_` prefix to each variable.

@@ -7,22 +7,21 @@
 
 postgresqlClusters:
   - name: ${postgres_default_name}
-    region: ${taito_provider_region}
-    zone: ${taito_provider_zone}
-    version: POSTGRES_12
-    tier: db-custom-1-3840
-    maintenanceDay: 2
-    maintenanceHour: 2
-    backupStartTime: 05:00
-    storageBackupSchedule: 0 0 * * 0
-    pointInTimeRecoveryEnabled: false
-    highAvailabilityEnabled: false
-    publicIpEnabled: false
-    authorizedNetworks:
-    flags:
-      log_min_duration_statement: 1000
+    location: ${taito_provider_region}
+    version: "11"
+    skuName: GP_Gen5_2
+    storageMb: 20
+    autoGrowEnabled: true
+    backupRetentionDays: 30
+    geoRedundantBackupEnabled: true
+    infrastructureEncryptionEnabled: false
+    publicNetworkAccessEnabled: false
+    sslEnforcementEnabled: true
+    sslMinimalTlsVersionEnforced: TLS1_2
+    # authorizedNetworks:
+    #   - start: 127.127.127.10
+    #     end: 127.127.127.20
     adminUsername: ${postgres_default_admin}
-
     # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/postgresql
     # WARNING: Names of roles and users are visible for all database users
     roles:
@@ -30,20 +29,21 @@ postgresqlClusters:
 
 mysqlClusters:
   - name: ${mysql_default_name}
-    region: ${taito_provider_region}
-    zone: ${taito_provider_zone}
-    version: MYSQL_8_0
-    tier: db-custom-1-3840
-    maintenanceDay: 2
-    maintenanceHour: 2
-    backupStartTime: 05:00
-    storageBackupSchedule: 0 0 * * 0
-    pointInTimeRecoveryEnabled: false
-    highAvailabilityEnabled: false
-    publicIpEnabled: false
-    authorizedNetworks:
+    location: ${taito_provider_region}
+    version: "8.0"
+    skuName: GP_Gen5_2
+    storageMb: 20
+    autoGrowEnabled: true
+    backupRetentionDays: 30
+    geoRedundantBackupEnabled: true
+    infrastructureEncryptionEnabled: false
+    publicNetworkAccessEnabled: false
+    sslEnforcementEnabled: true
+    sslMinimalTlsVersionEnforced: TLS1_2
+    # authorizedNetworks:
+    #   - start: 127.127.127.10
+    #     end: 127.127.127.20
     adminUsername: ${mysql_default_admin}
-
     # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
     roles:
     users:

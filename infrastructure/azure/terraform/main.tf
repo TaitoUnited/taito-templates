@@ -14,6 +14,7 @@ terraform {
 /* Provider */
 
 provider "azurerm" {
+  features {}
 }
 
 provider "helm" {
@@ -36,6 +37,7 @@ resource "azurerm_resource_group" "zone" {
   name     = var.taito_zone
   location = var.taito_provider_region
 
+  # TODO: conventions https://registry.terraform.io/modules/kumarvna/vpn-gateway/azurerm/latest#metadata-tags
   tags = {
     zone = var.taito_zone
   }

@@ -6,7 +6,7 @@
 # 'taito-deployer' permissions only to specific namespaces.
 
 permissions:
-  adminGroupObjectIds: [ "${taito_ad_kubernetes_admin_group_id}" ] # CHANGE
+  # adminGroupObjectIds: [ "1234567a-123b-123c-123d-1e2345a6c7e8" ] # CHANGE
   clusterRoles:
     # Grant privileged deployment rights for the zone cloudbuild account
     - name: taito-privileged-deployer
