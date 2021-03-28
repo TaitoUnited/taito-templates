@@ -152,8 +152,8 @@ module "kubernetes" {
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
   helm_enabled               = var.first_run == false
-  generate_ingress_dhparam   = false # Set to true for additional security   # TODO: pass these from YAML
-  use_kubernetes_as_db_proxy = true                                          # TODO: pass these from YAML
+  generate_ingress_dhparam   = ${var.taito_zone_extra_security}
+  use_kubernetes_as_db_proxy = ${var.kubernetes_db_proxy_enabled}
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
@@ -171,7 +171,7 @@ module "kubernetes" {
   # ingress_nginx_version  = ...
   # cert_manager_version   = ...
   # kubernetes_admin_version = ...
-  # socat_tunneler_version = ...  
+  # socat_tunneler_version = ...
 }
 
 module "events" {
