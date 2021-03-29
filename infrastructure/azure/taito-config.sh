@@ -24,16 +24,16 @@ taito_zone_short="${taito_zone//-/}"
 taito_zone_multi_tenant=false
 taito_zone_extra_security=false
 taito_devops_email=support@myorganization.com # CHANGE
-taito_default_domain=dev.myorganization.com # CHANGE
+taito_default_domain=${taito_zone}.myorganization.com # CHANGE
 taito_default_cdn_domain=
 
 # Zone buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
-taito_state_bucket=$taito_zone-state
-taito_function_bucket=$taito_zone-function
-taito_backup_bucket=$taito_zone-backup
-taito_public_bucket=$taito_zone-public
-taito_projects_bucket=$taito_zone-projects
+taito_state_bucket=${taito_zone_short}state
+taito_function_bucket=${taito_zone_short}function
+taito_backup_bucket=${taito_zone_short}backup
+taito_public_bucket=${taito_zone_short}public
+taito_projects_bucket=${taito_zone_short}projects
 
 # Cloud provider
 taito_provider=azure
@@ -97,35 +97,35 @@ kubernetes_db_proxy_enabled=true
 # Databases
 taito_databases="commonpg commonmysql"
 
-# Database: common-postgres
+# Database: PostgreSQL
 db_commonpg_type=pg
-db_commonpg_instance=$taito_zone-common-postgres
+db_commonpg_instance=$taito_zone-postgres
 db_commonpg_name=postgres
 db_commonpg_host="127.0.0.1"
 db_commonpg_port=5001
-db_commonpg_real_host="POSTGRES_HOST" # $taito_zone-common-postgres.postgres.database.azure.com
+db_commonpg_real_host="POSTGRES_HOST" # $taito_zone-postgres.postgres.database.azure.com
 db_commonpg_real_port="5432"
 db_commonpg_ssl_enabled="true"
 db_commonpg_ssl_client_cert_enabled="false"
 db_commonpg_ssl_server_cert_enabled="true"
 db_commonpg_proxy_ssl_enabled="true"
 db_commonpg_username="${taito_zone_short}"
-db_commonpg_username_suffix="@$taito_zone-common-postgres"
+db_commonpg_username_suffix="@$taito_zone-postgres"
 
-# Database: common-postgres
+# Database: MySQL
 db_commonmysql_type=mysql
-db_commonmysql_instance=common-mysql
+db_commonmysql_instance=$taito_zone-mysql
 db_commonmysql_name=mysql
 db_commonmysql_host="127.0.0.1"
 db_commonmysql_port=6001
-db_commonmysql_real_host="MYSQL_HOST" # $taito_zone-common-mysql.mysql.database.azure.com
+db_commonmysql_real_host="MYSQL_HOST" # $taito_zone-mysql.mysql.database.azure.com
 db_commonmysql_real_port="3306"
 db_commonmysql_ssl_enabled="true"
 db_commonmysql_ssl_client_cert_enabled="false"
 db_commonmysql_ssl_server_cert_enabled="true"
 db_commonmysql_proxy_ssl_enabled="true"
 db_commonmysql_username="${taito_zone_short}"
-db_commonmysql_username_suffix="@$taito_zone-common-mysql"
+db_commonmysql_username_suffix="@$taito_zone-mysql"
 
 # Default PostgreSQL cluster for new projects
 postgres_default_name=$db_commonpg_instance

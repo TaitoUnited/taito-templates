@@ -35,16 +35,9 @@ resource "azurerm_resource_group" "zone" {
 
 locals {
 
-  adminOrig = jsondecode(
+  admin = jsondecode(
     file("${path.root}/../admin.json.tmp")
   )
-
-  admin = merge(local.adminOrig, {
-    members = flatten([
-      for member in local.adminOrig.members:
-      replace(member.id, "TAITO_PROVIDER_TAITO_ZONE_ID", "") == member.id ? [ member ] : []
-    ])
-  })
 
   databases = jsondecode(
     file("${path.root}/../databases.json.tmp")
@@ -85,43 +78,44 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/azurerm"
-  version             = "0.0.1"
+  version             = "0.0.3"
 
-  subscription_id     = "/subscriptions/${var.taito_provider_billing_account_id}"
+  subscription_id     = var.taito_provider_billing_account_id
 
   permissions         = try(local.admin["permissions"], [])
   custom_roles        = try(local.admin["customRoles"], [])
 }
 
 module "databases" {
-  source              = "TaitoUnited/databases/azurerm"
-  version             = "0.0.1"
+  source               = "TaitoUnited/databases/azurerm"
+  version              = "0.0.5"
 
-  resource_group_name = azurerm_resource_group.zone.name
-  subnet_id           = module.network.internal_subnet_id
+  resource_group_name  = azurerm_resource_group.zone.name
+  virtual_network_id   = module.network.virtual_network_id
+  subnet_id            = module.network.subnet_id
 
-  postgresql_clusters = try(local.databases.postgresqlClusters, [])
-  mysql_clusters      = try(local.databases.mysqlClusters, [])
+  postgresql_clusters  = try(local.databases.postgresqlClusters, [])
+  mysql_clusters       = try(local.databases.mysqlClusters, [])
 
   # TODO: long_term_backup_bucket = ...
 }
 
 module "dns" {
   source              = "TaitoUnited/dns/azurerm"
-  version             = "0.0.1"
+  version             = "0.0.3"
   resource_group_name = azurerm_resource_group.zone.name
-  dns_zones           = local.dns["dnsZones"]
+  dns_zones           = try(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source              = "TaitoUnited/compute/azurerm"
-  version             = "0.0.1"
-  virtual_machines    = local.compute["virtualMachines"]
+  version             = "0.0.3"
+  # TODO: virtual_machines    = try(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "0.0.1"
+  version                    = "0.0.6"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -131,7 +125,7 @@ module "kubernetes" {
   log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
 
   # Network
-  subnet_id                  = module.network.internal_subnet_id
+  subnet_id                  = module.network.subnet_id
 
   # Permissions
   permissions                = try(local.kubernetesPermissions["permissions"], {})
@@ -142,17 +136,17 @@ module "kubernetes" {
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
   helm_enabled               = var.first_run == false
-  generate_ingress_dhparam   = ${var.taito_zone_extra_security}
-  use_kubernetes_as_db_proxy = ${var.kubernetes_db_proxy_enabled}
+  generate_ingress_dhparam   = var.taito_zone_extra_security
+  use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
-      local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
+      try(local.databases.postgresqlClusters, [])
     ):
     db.name
   ]
   mysql_cluster_names      = [
     for db in (
-      local.databases.mysqlClusters != null ? local.databases.mysqlClusters : []
+      try(local.databases.mysqlClusters, [])
     ):
     db.name
   ]
@@ -166,14 +160,19 @@ module "kubernetes" {
 
 module "integrations" {
   source              = "TaitoUnited/integrations/azurerm"
-  version             = "0.0.1"
+  version             = "0.0.3"
 
-  kafkas              = try(local.integrations["kafkas"], [])
+  resource_group_name = azurerm_resource_group.zone.name
+
+  name                = azurerm_resource_group.zone.name
+  location            = azurerm_resource_group.zone.location
+
+  # TODO: kafkas        = try(local.integrations["kafkas"], [])
 }
 
 module "network" {
   source              = "TaitoUnited/network/azurerm"
-  version             = "0.0.1"
+  version             = "0.0.5"
 
   resource_group_name = azurerm_resource_group.zone.name
 
@@ -183,10 +182,22 @@ module "network" {
   network             = local.network["network"]
 }
 
-module "storage" {
-  source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.1"
+module "monitoring" {
+  source              = "TaitoUnited/monitoring/azurerm"
+  version             = "0.0.3"
 
   resource_group_name = azurerm_resource_group.zone.name
-  storage_accounts    = local.storage["storageAccounts"]
+
+  name                = azurerm_resource_group.zone.name
+  location            = azurerm_resource_group.zone.location
+
+  alert_email         = var.taito_devops_email
+}
+
+module "storage" {
+  source              = "TaitoUnited/storage/azurerm"
+  version             = "0.0.5"
+
+  resource_group_name = azurerm_resource_group.zone.name
+  storage_accounts    = try(local.storage["storageAccounts"], [])
 }
