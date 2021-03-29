@@ -5,7 +5,13 @@
 kubernetes:
   name: ${kubernetes_name}
   skuTier: Free  # Free, Paid
-  automaticChannelUpgrade: stable  # none, patch, rapid, stable
+
+  # automaticChannelUpgrade: stable  # none, patch, rapid, stable
+  # NOTE: You need to enable the automaticChannelUpgrade feature by running the following commands
+  # > taito auth
+  # > taito -- az feature register --namespace Microsoft.ContainerService -n AutoUpgradePreview
+  # > (wait for 20 minutes)
+  # > taito -- az provider register --namespace Microsoft.ContainerService
 
   # Network
   networkPlugin: azure  # azure, kubenet
