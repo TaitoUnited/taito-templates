@@ -1,0 +1,37 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/storage/azurerm
+
+storageBuckets:
+  - name: ${taito_state_bucket}
+    purpose: zone state
+    location: ${taito_provider_region}
+    accessTier: hot
+    accountReplicationType: ZRS
+    containerAccessType: private
+    allowBlobPublicAccess: false
+
+  # NOTE: taito_projects_bucket not required on a multi-tenant zone
+  - name: ${taito_projects_bucket}
+    purpose: projects state
+    location: ${taito_provider_region}
+    accessTier: hot
+    accountReplicationType: ZRS
+    containerAccessType: private
+    allowBlobPublicAccess: false
+
+  - name: ${taito_backup_bucket}
+    purpose: backup
+    location: ${taito_provider_region}
+    accessTier: cold
+    accountReplicationType: ZRS
+    containerAccessType: private
+    allowBlobPublicAccess: false
+
+  # - name: ${taito_public_bucket}
+  #   purpose: public static assets
+  #   location: ${taito_provider_region}
+  #   accessTier: hot
+  #   accountReplicationType: ZRS
+  #   containerAccessType: blob
+  #   allowBlobPublicAccess: true
+  #   cors:
+  #     - origin: ["*"]

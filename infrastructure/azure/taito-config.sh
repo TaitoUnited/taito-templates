@@ -6,17 +6,34 @@ set -a
 taito_version=1
 taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
-taito_plugins="azure-zone terraform-zone kubectl-zone helm-zone links-global custom"
+taito_plugins="
+  azure-zone azure-secrets
+  terraform-zone
+  kubectl-zone helm-zone
+  generate-secrets links-global custom
+  postgres-db mysql-db
+"
 
 # Labeling
 taito_organization=myorganization # CHANGE
 taito_organization_abbr=myorg # CHANGE
-taito_zone=my-zone
-taito_provider_secrets_location=
 
-# Domains
+# Zone settings
+taito_zone=my-zone
+taito_zone_short="${taito_zone//-/}"
+taito_zone_multi_tenant=false
+taito_zone_extra_security=false
+taito_devops_email=support@myorganization.com # CHANGE
 taito_default_domain=dev.myorganization.com # CHANGE
 taito_default_cdn_domain=
+
+# Zone buckets
+# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
+taito_state_bucket=$taito_zone-state
+taito_function_bucket=$taito_zone-function
+taito_backup_bucket=$taito_zone-backup
+taito_public_bucket=$taito_zone-public
+taito_projects_bucket=$taito_zone-projects
 
 # Cloud provider
 taito_provider=azure
@@ -24,77 +41,122 @@ taito_provider_org_id=mytenant.onmicrosoft.com # CHANGE: Azure tenant
 taito_provider_region=northeurope # CHANGE
 # Billing account subscription id (Billing -> Subscriptions):
 taito_provider_billing_account_id=a1234567-b123-c123-d123-e12345678901 # CHANGE
+taito_provider_secrets_location=
+taito_provider_secrets_mode=backup
+taito_cicd_secrets_path=
 
-# Other providers
-taito_uptime_provider=azure
-taito_uptime_provider_org_id=$taito_provider_org_id
-taito_uptime_channels=""
+# Container registry provider
 taito_container_registry_provider=azure
+taito_container_registry_provider_url=
+taito_container_registry_organization=$taito_organization
 taito_container_registry="${taito_zone//-/}.azurecr.io/${taito_zone//-/}"
+
+# CI/CD provider (TODO: use GitHub Actions by default?)
 taito_ci_provider=azure
+taito_ci_provider_url=
 taito_ci_organization=$taito_organization  # e.g. Azure DevOps organization
+
+# Version control provider
 taito_vc_provider=github
 taito_vc_domain=github.com
-taito_vc_organization=$taito_organization
+taito_vc_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
-# User rights. A set of user or group object ids, for example:
-# taito_owners="
-#   1234567a-123b-123c-123d-1e2345a6c7e8
-#   3456789a-321b-321c-321d-3e5432a1c3e2
-# "
-taito_owners=
-taito_developers=
+# Uptime monitoring provider
+taito_uptime_provider=azure
+taito_uptime_provider_url=
+taito_uptime_provider_org_id=$taito_provider_org_id
+taito_uptime_channels=""
 
-# Settings
-taito_devops_email=support@myorganization.com # CHANGE
-# NOTE: Also CI/CD requires access if CI/CD is used for automatic deployment
-taito_authorized_networks="0.0.0.0/0"
+# Error tracking provider
+taito_tracking_provider=sentry
+taito_tracking_provider_url=
+taito_tracking_organization=$taito_organization
 
-# Buckets
-# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
-taito_state_bucket=$taito_zone-state
-taito_projects_bucket=$taito_zone-projects
+# Distributed tracing provider
+taito_tracing_provider=jaeger
+taito_tracing_provider_url=https://jaeger.${taito_default_domain}
+taito_tracing_organization=$taito_organization
 
-# Kubernetes
-# NOTE: If you disable Kubernetes, remove also kubectl-zone and helm-zone from
-# taito_plugins.
-kubernetes_name="common-kube"
-kubernetes_cluster="${kubernetes_name}"
-kubernetes_user="clusterUser_${taito_zone}_${kubernetes_cluster}"
-kubernetes_node_size=Standard_DS1_v2
-kubernetes_node_count=1
-
-# Helm (for Kubernetes)
-helm_nginx_ingress_classes="nginx"
-helm_nginx_ingress_replica_counts="${kubernetes_node_count}"
-
-# Postgres clusters
-postgres_instances="$taito_zone-common-postgres"
-postgres_hosts="$taito_zone-common-postgres.postgres.database.azure.com"
-postgres_admins="${taito_zone//-/}"
-postgres_username_suffixes="@$taito_zone-common-postgres"
-postgres_versions="11"
-# See https://docs.microsoft.com/en-us/azure/postgresql/concepts-pricing-tiers#compute-generations-vcores-and-memory
-postgres_sku_tiers="GeneralPurpose"
-postgres_sku_families="Gen5"
-postgres_sku_names="GP_Gen5_2" # name=TIER_FAMILY_CORES
-postgres_sku_capacities="2"
-postgres_node_counts="1"
-postgres_storage_sizes="10240" # Megabytes
-postgres_auto_grows="Enabled"
-postgres_backup_retention_days="7"
-postgres_geo_redundant_backups="Disabled"
-
-# TODO: MySQL
-
-# Messaging
+# Messaging provider
+# CHANGE: Set slack webhook and channels (optional)
 taito_messaging_app=slack
 taito_messaging_webhook=
 taito_messaging_builds_channel=builds
 taito_messaging_critical_channel=critical
 taito_messaging_monitoring_channel=monitoring
 
+# Default Kubernetes cluster for new projects
+# NOTE: If you remove Kubernetes, remove also kubectl-zone and helm-zone from
+# taito_plugins
+kubernetes_name="common-kube"
+kubernetes_network_policy_provider=azure
+kubernetes_cluster="${kubernetes_name}"
+kubernetes_user="clusterUser_${taito_zone}_${kubernetes_cluster}"
+kubernetes_db_proxy_enabled=true
+
+# Databases
+taito_databases="commonpg commonmysql"
+
+# Database: common-postgres
+db_commonpg_type=pg
+db_commonpg_instance=$taito_zone-common-postgres
+db_commonpg_name=postgres
+db_commonpg_host="127.0.0.1"
+db_commonpg_port=5001
+db_commonpg_real_host="POSTGRES_HOST" # $taito_zone-common-postgres.postgres.database.azure.com
+db_commonpg_real_port="5432"
+db_commonpg_ssl_enabled="true"
+db_commonpg_ssl_client_cert_enabled="false"
+db_commonpg_ssl_server_cert_enabled="true"
+db_commonpg_proxy_ssl_enabled="true"
+db_commonpg_username="${taito_zone_short}"
+db_commonpg_username_suffix="@$taito_zone-common-postgres"
+
+# Database: common-postgres
+db_commonmysql_type=mysql
+db_commonmysql_instance=common-mysql
+db_commonmysql_name=mysql
+db_commonmysql_host="127.0.0.1"
+db_commonmysql_port=6001
+db_commonmysql_real_host="MYSQL_HOST" # $taito_zone-common-mysql.mysql.database.azure.com
+db_commonmysql_real_port="3306"
+db_commonmysql_ssl_enabled="true"
+db_commonmysql_ssl_client_cert_enabled="false"
+db_commonmysql_ssl_server_cert_enabled="true"
+db_commonmysql_proxy_ssl_enabled="true"
+db_commonmysql_username="${taito_zone_short}"
+db_commonmysql_username_suffix="@$taito_zone-common-mysql"
+
+# Default PostgreSQL cluster for new projects
+postgres_default_name=$db_commonpg_instance
+postgres_default_host=$db_commonpg_real_host
+postgres_default_admin=$db_commonpg_username
+postgres_default_username_suffix=$db_commonpg_username_suffix
+postgres_ssl_client_cert_enabled=$db_commonpg_ssl_client_cert_enabled
+postgres_ssl_server_cert_enabled=$db_commonpg_ssl_server_cert_enabled
+postgres_proxy_ssl_enabled=$db_commonpg_proxy_ssl_enabled
+
+# Default MySQL cluster for new projects
+mysql_default_name=$db_commonmysql_instance
+mysql_default_host=$db_commonmysql_real_host
+mysql_default_admin=$db_commonmysql_username
+mysql_default_username_suffix=$db_commonpg_username_suffix
+mysql_ssl_client_cert_enabled=$db_commonmysql_ssl_client_cert_enabled
+mysql_ssl_server_cert_enabled=$db_commonmysql_ssl_server_cert_enabled
+mysql_proxy_ssl_enabled=$db_commonmysql_proxy_ssl_enabled
+
+# Secrets
+if [[ $taito_zone_multi_tenant != true ]]; then
+  # - GitHub personal token for tagging releases (optional)
+  #   -> CHANGE: remove token if this zone is not used for production releases
+  taito_secrets="
+    ${taito_secrets}
+    version-control-buildbot.token/common:manual
+  "
+fi
+
 # Links
+# TODO: more links
 link_urls="
   * dashboard=https://portal.azure.com/#@${taito_provider_org_id}/resource/subscriptions/${taito_provider_billing_account_id}/resourceGroups/${taito_zone}/overview Azure dashboard
 "
