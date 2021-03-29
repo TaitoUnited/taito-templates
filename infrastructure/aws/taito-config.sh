@@ -27,7 +27,7 @@ taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
 
 # Domains
-taito_default_domain=dev.myorganization.com # CHANGE
+taito_default_domain=${taito_zone}.myorganization.com # CHANGE
 taito_default_cdn_domain=$taito_zone-public.s3.amazonaws.com
 
 # Cloud provider

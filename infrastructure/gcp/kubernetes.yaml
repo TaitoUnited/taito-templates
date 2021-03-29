@@ -46,6 +46,16 @@ kubernetes:
       minNodeCount: 2
       maxNodeCount: 2
 
+  # Platforms
+  istio:
+    enabled: false
+  knative:
+    enabled: false
+
+  # Certificate managers
+  certManager:
+    enabled: true
+
   # Ingress controllers
   ingressNginxControllers:
     - name: ingress-nginx
@@ -82,16 +92,6 @@ kubernetes:
         block-cidrs: ""
         block-user-agents: ""
         block-referers: ""
-
-  # Certificate managers
-  certManager:
-    enabled: true
-
-  # Platforms
-  istio:
-    enabled: false
-  knative:
-    enabled: false
 
   # TIP: You can install more infrastructure apps on your Kubernetes with:
   # https://github.com/TaitoUnited/infra-apps-template

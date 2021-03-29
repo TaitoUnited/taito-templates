@@ -152,8 +152,8 @@ module "kubernetes" {
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
   helm_enabled               = var.first_run == false
-  generate_ingress_dhparam   = ${var.taito_zone_extra_security}
-  use_kubernetes_as_db_proxy = ${var.kubernetes_db_proxy_enabled}
+  generate_ingress_dhparam   = var.taito_zone_extra_security
+  use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
