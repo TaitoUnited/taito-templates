@@ -88,7 +88,7 @@ module "admin" {
 
 module "databases" {
   source               = "TaitoUnited/databases/azurerm"
-  version              = "0.0.4"
+  version              = "0.0.5"
 
   resource_group_name  = azurerm_resource_group.zone.name
   virtual_network_id   = module.network.virtual_network_id
@@ -115,7 +115,7 @@ module "compute" {
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "0.0.3"
+  version                    = "0.0.5"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -196,7 +196,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.5"
 
   resource_group_name = azurerm_resource_group.zone.name
   storage_accounts    = try(local.storage["storageAccounts"], [])
