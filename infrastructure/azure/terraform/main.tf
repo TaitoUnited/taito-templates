@@ -14,107 +14,179 @@ terraform {
 /* Provider */
 
 provider "azurerm" {
+  features {}
 }
 
-# Convert whitespace delimited strings into list(string)
-locals {
-  taito_owners = (var.taito_owners == "" ? [] :
-    split(" ", trimspace(replace(var.taito_owners, "/\\s+/", " "))))
-  taito_developers = (var.taito_developers == "" ? [] :
-    split(" ", trimspace(replace(var.taito_developers, "/\\s+/", " "))))
-  taito_authorized_networks = (var.taito_authorized_networks == "" ? [] :
-    split(" ", trimspace(replace(var.taito_authorized_networks, "/\\s+/", " "))))
-
-  helm_nginx_ingress_classes = (var.helm_nginx_ingress_classes == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_classes, "/\\s+/", " "))))
-  helm_nginx_ingress_replica_counts = (var.helm_nginx_ingress_replica_counts == "" ? [] :
-    split(" ", trimspace(replace(var.helm_nginx_ingress_replica_counts, "/\\s+/", " "))))
-
-  postgres_instances = (var.postgres_instances == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_instances, "/\\s+/", " "))))
-  postgres_admins = (var.postgres_admins == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_admins, "/\\s+/", " "))))
-  postgres_versions = (var.postgres_versions == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_versions, "/\\s+/", " "))))
-  postgres_sku_names = (var.postgres_sku_names == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_sku_names, "/\\s+/", " "))))
-  postgres_sku_capacities = (var.postgres_sku_capacities == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_sku_capacities, "/\\s+/", " "))))
-  postgres_sku_tiers = (var.postgres_sku_tiers == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_sku_tiers, "/\\s+/", " "))))
-  postgres_sku_families = (var.postgres_sku_families == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_sku_families, "/\\s+/", " "))))
-  postgres_node_counts = (var.postgres_node_counts == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_node_counts, "/\\s+/", " "))))
-  postgres_storage_sizes = (var.postgres_storage_sizes == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_storage_sizes, "/\\s+/", " "))))
-  postgres_auto_grows = (var.postgres_auto_grows == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_auto_grows, "/\\s+/", " "))))
-  postgres_backup_retention_days = (var.postgres_backup_retention_days == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_backup_retention_days, "/\\s+/", " "))))
-  postgres_geo_redundant_backups = (var.postgres_geo_redundant_backups == "" ? [] :
-    split(" ", trimspace(replace(var.postgres_geo_redundant_backups, "/\\s+/", " "))))
-
-  # TODO: MySQL
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
 }
 
 resource "azurerm_resource_group" "zone" {
   name     = var.taito_zone
   location = var.taito_provider_region
 
+  # TODO: conventions https://registry.terraform.io/modules/kumarvna/vpn-gateway/azurerm/latest#metadata-tags
   tags = {
     zone = var.taito_zone
   }
 }
 
-module "taito_zone" {
-  source  = "TaitoUnited/kubernetes-infrastructure/azurerm"
-  version = "1.0.3"
+locals {
 
-  # Labeling
-  name                               = var.taito_zone
+  adminOrig = jsondecode(
+    file("${path.root}/../admin.json.tmp")
+  )
 
-  # Azure provider
-  resource_group_name                = azurerm_resource_group.zone.name
-  resource_group_location            = azurerm_resource_group.zone.location
+  admin = merge(local.adminOrig, {
+    members = flatten([
+      for member in local.adminOrig.members:
+      replace(member.id, "TAITO_PROVIDER_TAITO_ZONE_ID", "") == member.id ? [ member ] : []
+    ])
+  })
 
-  # Users
-  owners                             = local.taito_owners
-  developers                         = local.taito_developers
+  databases = jsondecode(
+    file("${path.root}/../databases.json.tmp")
+  )
 
-  # Settings
-  email                              = var.taito_devops_email
+  dns = jsondecode(
+    file("${path.root}/../dns.json.tmp")
+  )
 
-  # Buckets
-  state_bucket                       = var.taito_state_bucket
-  projects_bucket                    = var.taito_projects_bucket
+  compute = jsondecode(
+    file("${path.root}/../compute.json.tmp")
+  )
 
-  # Helm
-  helm_enabled                       = var.first_run != true
-  helm_nginx_ingress_classes         = local.helm_nginx_ingress_classes
-  helm_nginx_ingress_replica_counts  = local.helm_nginx_ingress_replica_counts
+  kubernetes = jsondecode(
+    file("${path.root}/../kubernetes.json.tmp")
+  )
+
+  kubernetesPermissions = jsondecode(
+    file("${path.root}/../kubernetes-permissions.json.tmp")
+  )
+
+  integrations = jsondecode(
+    file("${path.root}/../integrations.json.tmp")
+  )
+
+  monitoring = jsondecode(
+    file("${path.root}/../monitoring.json.tmp")
+  )
+
+  network = jsondecode(
+    file("${path.root}/../network.json.tmp")
+  )
+
+  storage = jsondecode(
+    file("${path.root}/../storage.json.tmp")
+  )
+}
+
+module "admin" {
+  source              = "TaitoUnited/admin/azurerm"
+  version             = "0.0.1"
+
+  subscription_id     = "/subscriptions/${var.taito_provider_billing_account_id}"
+
+  permissions         = try(local.admin["permissions"], [])
+  custom_roles        = try(local.admin["customRoles"], [])
+}
+
+module "databases" {
+  source              = "TaitoUnited/databases/azurerm"
+  version             = "0.0.1"
+
+  resource_group_name = azurerm_resource_group.zone.name
+  subnet_id           = module.network.internal_subnet_id
+
+  postgresql_clusters = try(local.databases.postgresqlClusters, [])
+  mysql_clusters      = try(local.databases.mysqlClusters, [])
+
+  # TODO: long_term_backup_bucket = ...
+}
+
+module "dns" {
+  source              = "TaitoUnited/dns/azurerm"
+  version             = "0.0.1"
+  resource_group_name = azurerm_resource_group.zone.name
+  dns_zones           = local.dns["dnsZones"]
+}
+
+module "compute" {
+  source              = "TaitoUnited/compute/azurerm"
+  version             = "0.0.1"
+  virtual_machines    = local.compute["virtualMachines"]
+}
+
+module "kubernetes" {
+  source                     = "TaitoUnited/kubernetes/azurerm"
+  version                    = "0.0.1"
+
+  resource_group_name        = azurerm_resource_group.zone.name
+
+  name                       = azurerm_resource_group.zone.name
+  location                   = azurerm_resource_group.zone.location
+  email                      = var.taito_devops_email
+  log_analytics_workspace_id = module.monitoring.log_analytics_workspace_id
+
+  # Network
+  subnet_id                  = module.network.internal_subnet_id
+
+  # Permissions
+  permissions                = try(local.kubernetesPermissions["permissions"], {})
 
   # Kubernetes
-  kubernetes_name                    = var.kubernetes_name
-  kubernetes_authorized_networks     = local.taito_authorized_networks
-  kubernetes_node_size               = var.kubernetes_node_size
-  kubernetes_node_count              = var.kubernetes_node_count
-  kubernetes_subnet_id               = azurerm_subnet.internal.id
+  kubernetes                 = try(local.kubernetes["kubernetes"], {})
 
-  # Postgres
-  postgres_subnet_id                 = azurerm_subnet.internal.id
-  postgres_instances                 = local.postgres_instances
-  postgres_admins                    = local.postgres_admins
-  postgres_versions                  = local.postgres_versions
-  postgres_sku_names                 = local.postgres_sku_names
-  postgres_sku_capacities            = local.postgres_sku_capacities
-  postgres_sku_tiers                 = local.postgres_sku_tiers
-  postgres_sku_families              = local.postgres_sku_families
-  postgres_node_counts               = local.postgres_node_counts
-  postgres_storage_sizes             = local.postgres_storage_sizes
-  postgres_auto_grows                = local.postgres_auto_grows
-  postgres_backup_retention_days     = local.postgres_backup_retention_days
-  postgres_geo_redundant_backups     = local.postgres_geo_redundant_backups
+  # Helm infrastructure apps
+  # NOTE: helm_enabled should be false on the first run, then true
+  helm_enabled               = var.first_run == false
+  generate_ingress_dhparam   = ${var.taito_zone_extra_security}
+  use_kubernetes_as_db_proxy = ${var.kubernetes_db_proxy_enabled}
+  postgresql_cluster_names = [
+    for db in (
+      local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
+    ):
+    db.name
+  ]
+  mysql_cluster_names      = [
+    for db in (
+      local.databases.mysqlClusters != null ? local.databases.mysqlClusters : []
+    ):
+    db.name
+  ]
 
-  # TODO: MySQL
+  # OPTIONAL: Helm app versions
+  # ingress_nginx_version  = ...
+  # cert_manager_version   = ...
+  # kubernetes_admin_version = ...
+  # socat_tunneler_version = ...
+}
+
+module "integrations" {
+  source              = "TaitoUnited/integrations/azurerm"
+  version             = "0.0.1"
+
+  kafkas              = try(local.integrations["kafkas"], [])
+}
+
+module "network" {
+  source              = "TaitoUnited/network/azurerm"
+  version             = "0.0.1"
+
+  resource_group_name = azurerm_resource_group.zone.name
+
+  name                = azurerm_resource_group.zone.name
+  location            = azurerm_resource_group.zone.location
+
+  network             = local.network["network"]
+}
+
+module "storage" {
+  source              = "TaitoUnited/storage/azurerm"
+  version             = "0.0.1"
+
+  resource_group_name = azurerm_resource_group.zone.name
+  storage_accounts    = local.storage["storageAccounts"]
 }
