@@ -139,7 +139,7 @@ db_commonmysql_ssl_enabled="true"
 db_commonmysql_ssl_client_cert_enabled="true"
 db_commonmysql_ssl_server_cert_enabled="true"
 db_commonmysql_proxy_ssl_enabled="true"
-db_commonmysql_username="${taito_zone_short}"
+db_commonmysql_username=root
 taito_secrets="
   ${taito_secrets}
   common-mysql-db-ssl.ca/common:file
