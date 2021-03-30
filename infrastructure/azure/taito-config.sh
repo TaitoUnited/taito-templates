@@ -107,9 +107,9 @@ db_commonpg_real_host="POSTGRES_HOST" # $taito_zone-postgres.postgres.database.a
 db_commonpg_real_port="5432"
 db_commonpg_ssl_enabled="true"
 db_commonpg_ssl_client_cert_enabled="false"
-db_commonpg_ssl_server_cert_enabled="true"
+db_commonpg_ssl_server_cert_enabled="false"
 db_commonpg_proxy_ssl_enabled="true"
-db_commonpg_username="${taito_zone_short}"
+db_commonpg_username=postgres
 db_commonpg_username_suffix="@$taito_zone-postgres"
 
 # Database: MySQL
@@ -122,9 +122,9 @@ db_commonmysql_real_host="MYSQL_HOST" # $taito_zone-mysql.mysql.database.azure.c
 db_commonmysql_real_port="3306"
 db_commonmysql_ssl_enabled="true"
 db_commonmysql_ssl_client_cert_enabled="false"
-db_commonmysql_ssl_server_cert_enabled="true"
+db_commonmysql_ssl_server_cert_enabled="false"
 db_commonmysql_proxy_ssl_enabled="true"
-db_commonmysql_username="${taito_zone_short}"
+db_commonmysql_username=root
 db_commonmysql_username_suffix="@$taito_zone-mysql"
 
 # Default PostgreSQL cluster for new projects
