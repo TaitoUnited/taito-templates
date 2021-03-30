@@ -4,7 +4,7 @@ terraform {
   /* TODO: ENABLE TERRAFORM BACKEND HERE
   backend "azurerm" {
     resource_group_name  = "TAITO_ZONE"
-    storage_account_name = "TAITO_ZONE_ABBR"
+    storage_account_name = "TAITO_STATE_BUCKET"
     container_name       = "TAITO_STATE_BUCKET"
     key                  = "terraform/state/zone"
   }
