@@ -78,7 +78,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.4"
 
   subscription_id     = var.taito_provider_billing_account_id
 
@@ -88,7 +88,7 @@ module "admin" {
 
 module "databases" {
   source               = "TaitoUnited/databases/azurerm"
-  version              = "0.0.5"
+  version              = "0.0.6"
 
   resource_group_name  = azurerm_resource_group.zone.name
   virtual_network_id   = module.network.virtual_network_id
@@ -102,20 +102,20 @@ module "databases" {
 
 module "dns" {
   source              = "TaitoUnited/dns/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.4"
   resource_group_name = azurerm_resource_group.zone.name
   dns_zones           = coalesce(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source              = "TaitoUnited/compute/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.4"
   # TODO: virtual_machines    = coalesce(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "0.0.6"
+  version                    = "0.0.8"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -160,7 +160,7 @@ module "kubernetes" {
 
 module "integrations" {
   source              = "TaitoUnited/integrations/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.4"
 
   resource_group_name = azurerm_resource_group.zone.name
 
@@ -172,7 +172,7 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/azurerm"
-  version             = "0.0.5"
+  version             = "0.0.6"
 
   resource_group_name = azurerm_resource_group.zone.name
 
@@ -184,7 +184,7 @@ module "network" {
 
 module "monitoring" {
   source              = "TaitoUnited/monitoring/azurerm"
-  version             = "0.0.3"
+  version             = "0.0.4"
 
   resource_group_name = azurerm_resource_group.zone.name
 
@@ -196,7 +196,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.5"
+  version             = "0.0.6"
 
   resource_group_name = azurerm_resource_group.zone.name
   storage_accounts    = coalesce(local.storage["storageAccounts"], [])
