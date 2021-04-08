@@ -1,7 +1,5 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/azurerm
 
-# For Kubernetes setting descriptions, see
-# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/beta-private-cluster
 kubernetes:
   name: ${kubernetes_name}
   skuTier: Free  # Free, Paid

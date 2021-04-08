@@ -94,9 +94,9 @@ module "admin" {
 
   project_id       = google_project.zone.project_id
 
-  members          = local.admin["members"]
-  service_accounts = local.admin["serviceAccounts"]
-  apis             = local.admin["apis"]
+  members          = coalesce(local.admin["members"], [])
+  service_accounts = coalesce(local.admin["serviceAccounts"], [])
+  apis             = coalesce(local.admin["apis"], [])
 }
 
 module "databases" {
@@ -104,8 +104,8 @@ module "databases" {
   version             = "2.0.0"
   depends_on          = [ module.admin ]
 
-  postgresql_clusters = local.databases.postgresqlClusters
-  mysql_clusters      = local.databases.mysqlClusters
+  postgresql_clusters = coalesce(local.databases.postgresqlClusters, [])
+  mysql_clusters      = coalesce(local.databases.mysqlClusters, [])
   private_network_id  = (
     var.first_run
     ? data.external.network_wait.result.network_self_link
@@ -117,7 +117,14 @@ module "dns" {
   source       = "TaitoUnited/dns/google"
   version      = "2.0.0"
   depends_on   = [ module.admin ]
-  dns_zones    = local.dns["dnsZones"]
+  dns_zones    = coalesce(local.dns["dnsZones"], [])
+}
+
+module "compute" {
+  source                   = "TaitoUnited/compute/google"
+  version                  = "1.0.0"
+  depends_on               = [ module.admin ]
+  # TODO: virtual_machines = coalesce(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
@@ -144,10 +151,10 @@ module "kubernetes" {
   services_ip_range_name   = module.network.services_ip_range_name
 
   # Permissions
-  permissions              = local.kubernetesPermissions["permissions"]
+  permissions              = coalesce(local.kubernetesPermissions["permissions"], {})
 
   # Kubernetes
-  kubernetes               = local.kubernetes["kubernetes"]
+  kubernetes               = coalesce(local.kubernetes["kubernetes"], {})
 
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
@@ -156,13 +163,13 @@ module "kubernetes" {
   use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
-      local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []
+      coalesce(local.databases.postgresqlClusters, [])
     ):
     db.name
   ]
   mysql_cluster_names      = [
     for db in (
-      local.databases.mysqlClusters != null ? local.databases.mysqlClusters : []
+      coalesce(local.databases.mysqlClusters, [])
     ):
     db.name
   ]
@@ -174,6 +181,17 @@ module "kubernetes" {
   # socat_tunneler_version = ...
 }
 
+module "integrations" {
+  source              = "TaitoUnited/integrations/google"
+  version             = "1.0.0"
+  depends_on          = [ module.admin, module.databases ]
+
+  project_id          = google_project.zone.project_id
+
+  # TODO: kafkas      = coalesce(local.integrations["kafkas"], [])
+}
+
+# TODO: remove event module
 module "events" {
   source       = "TaitoUnited/events/google"
   version      = "2.0.0"
@@ -210,5 +228,5 @@ module "storage" {
   depends_on      = [ module.admin ]
 
   project_id      = google_project.zone.project_id
-  storage_buckets = local.storage["storageBuckets"]
+  storage_buckets = coalesce(local.storage["storageBuckets"], [])
 }
