@@ -51,10 +51,10 @@ taito_container_registry_provider_url=
 taito_container_registry_organization=$taito_organization
 taito_container_registry="${taito_zone//-/}.azurecr.io/${taito_zone//-/}"
 
-# CI/CD provider (TODO: use GitHub Actions by default?)
-taito_ci_provider=azure
+# CI/CD provider
+taito_ci_provider=github  # NOTE: Set to "azure" if you want to use Azure DevOps instead
 taito_ci_provider_url=
-taito_ci_organization=$taito_organization  # e.g. Azure DevOps organization
+taito_ci_organization=$taito_organization  # e.g. GitHub organization or Azure DevOps organization
 
 # Version control provider
 taito_vc_provider=github

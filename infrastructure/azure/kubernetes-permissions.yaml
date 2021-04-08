@@ -6,8 +6,11 @@
 # 'taito-deployer' permissions only to specific namespaces.
 
 permissions:
-  # NOTE: adminGroupObjectIds is required only if azureAdManaged has been enabled
-  # adminGroupObjectIds: [ "1234567a-123b-123c-123d-1e2345a6c7e8" ]
+  # CHANGE: Set your user object id here. Note that adminGroupObjectIds is
+  # required only if azureAdManaged has been enabled
+  # adminGroupObjectIds:
+  #   - 1234567a-123b-123c-123d-1e2345a6c7e8 # john.doe@mytenant.com
+
   clusterRoles:
     # EXAMPLE: Grant privileged deployment rights for the CI/CD service account
     # - name: taito-privileged-deployer

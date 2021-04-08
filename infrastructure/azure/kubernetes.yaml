@@ -1,17 +1,9 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/azurerm
 
-# For Kubernetes setting descriptions, see
-# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/beta-private-cluster
 kubernetes:
   name: ${kubernetes_name}
   skuTier: Free  # Free, Paid
-
-  # automaticChannelUpgrade: stable  # none, patch, rapid, stable
-  # NOTE: You need to enable the automaticChannelUpgrade feature by running the following commands
-  # > taito auth
-  # > taito -- az feature register --namespace Microsoft.ContainerService -n AutoUpgradePreview
-  # > (wait for 20 minutes)
-  # > taito -- az provider register --namespace Microsoft.ContainerService
+  automaticChannelUpgrade: stable  # none, patch, rapid, stable
 
   # Network
   networkPlugin: azure  # azure, kubenet
@@ -21,8 +13,8 @@ kubernetes:
     - 0.0.0.0/0
 
   # RBAC
-  rbacEnabled: false
-  azureAdManaged: false
+  rbacEnabled: true
+  azureAdManaged: true
 
   # Monitoring
   omsAgentEnabled: true
