@@ -196,7 +196,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.6"
+  version             = "0.0.7"
 
   resource_group_name = azurerm_resource_group.zone.name
   storage_accounts    = try(local.storage["storageAccounts"], [])

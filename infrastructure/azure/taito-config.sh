@@ -92,6 +92,7 @@ kubernetes_name="common-kube"
 kubernetes_network_policy_provider=azure
 kubernetes_cluster="${kubernetes_name}"
 kubernetes_user="clusterUser_${taito_zone}_${kubernetes_cluster}"
+kubernetes_admin="clusterAdmin_${taito_zone}_${kubernetes_cluster}"
 kubernetes_db_proxy_enabled=true
 
 # Databases
@@ -124,7 +125,7 @@ db_commonmysql_ssl_enabled="true"
 db_commonmysql_ssl_client_cert_enabled="false"
 db_commonmysql_ssl_server_cert_enabled="false"
 db_commonmysql_proxy_ssl_enabled="true"
-db_commonmysql_username=root
+db_commonmysql_username=mysql
 db_commonmysql_username_suffix="@$taito_zone-mysql"
 
 # Default PostgreSQL cluster for new projects
