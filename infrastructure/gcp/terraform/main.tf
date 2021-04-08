@@ -94,9 +94,9 @@ module "admin" {
 
   project_id       = google_project.zone.project_id
 
-  members          = coalesce(local.admin["members"], [])
-  service_accounts = coalesce(local.admin["serviceAccounts"], [])
-  apis             = coalesce(local.admin["apis"], [])
+  members          = try(local.admin["members"], [])
+  service_accounts = try(local.admin["serviceAccounts"], [])
+  apis             = try(local.admin["apis"], [])
 }
 
 module "databases" {
@@ -104,8 +104,8 @@ module "databases" {
   version             = "2.0.0"
   depends_on          = [ module.admin ]
 
-  postgresql_clusters = coalesce(local.databases.postgresqlClusters, [])
-  mysql_clusters      = coalesce(local.databases.mysqlClusters, [])
+  postgresql_clusters = try(local.databases.postgresqlClusters, [])
+  mysql_clusters      = try(local.databases.mysqlClusters, [])
   private_network_id  = (
     var.first_run
     ? data.external.network_wait.result.network_self_link
@@ -117,14 +117,14 @@ module "dns" {
   source       = "TaitoUnited/dns/google"
   version      = "2.0.0"
   depends_on   = [ module.admin ]
-  dns_zones    = coalesce(local.dns["dnsZones"], [])
+  dns_zones    = try(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source                   = "TaitoUnited/compute/google"
   version                  = "1.0.0"
   depends_on               = [ module.admin ]
-  # TODO: virtual_machines = coalesce(local.compute["virtualMachines"], [])
+  # TODO: virtual_machines = try(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
@@ -151,10 +151,10 @@ module "kubernetes" {
   services_ip_range_name   = module.network.services_ip_range_name
 
   # Permissions
-  permissions              = coalesce(local.kubernetesPermissions["permissions"], {})
+  permissions              = try(local.kubernetesPermissions["permissions"], {})
 
   # Kubernetes
-  kubernetes               = coalesce(local.kubernetes["kubernetes"], {})
+  kubernetes               = try(local.kubernetes["kubernetes"], {})
 
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
@@ -163,13 +163,13 @@ module "kubernetes" {
   use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
-      coalesce(local.databases.postgresqlClusters, [])
+      try(local.databases.postgresqlClusters, [])
     ):
     db.name
   ]
   mysql_cluster_names      = [
     for db in (
-      coalesce(local.databases.mysqlClusters, [])
+      try(local.databases.mysqlClusters, [])
     ):
     db.name
   ]
@@ -188,7 +188,7 @@ module "integrations" {
 
   project_id          = google_project.zone.project_id
 
-  # TODO: kafkas      = coalesce(local.integrations["kafkas"], [])
+  # TODO: kafkas      = try(local.integrations["kafkas"], [])
 }
 
 # TODO: remove event module
@@ -228,5 +228,5 @@ module "storage" {
   depends_on      = [ module.admin ]
 
   project_id      = google_project.zone.project_id
-  storage_buckets = coalesce(local.storage["storageBuckets"], [])
+  storage_buckets = try(local.storage["storageBuckets"], [])
 }
