@@ -4,7 +4,7 @@ TODO: tip -> does not provide point-to-site vpn -> linux templates + infra-apps-
 
 Example for a taito zone located in Google Cloud. Create infrastructure with the following steps:
 
-- Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the `taito-config.sh` settings that have been marked with `CHANGE`.
+- Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the settings that have been marked with `CHANGE`.
 - Authenticate with `taito auth`.
 - Create the zone by running `taito zone apply`.
 

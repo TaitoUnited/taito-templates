@@ -1,6 +1,12 @@
 # Azure example
 
-Example for a taito zone located in Azure. Configure settings in `taito-config.sh` and then create the zone by running `taito zone apply`.
+Example for a taito zone located in Azure. Create infrastructure with the following steps:
+
+- Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the settings that have been marked with `CHANGE`.
+- Authenticate with `taito auth`.
+- Create the zone by running `taito zone apply`.
+
+Infrastructure is provisioned with Terraform and you can customize it to your liking by modifying the `*.yaml` files and terraform scripts.
 
 ## Links
 

@@ -13,8 +13,8 @@ kubernetes:
     - 0.0.0.0/0
 
   # RBAC
-  rbacEnabled: false
-  azureAdManaged: false
+  rbacEnabled: true
+  azureAdManaged: true
 
   # Monitoring
   omsAgentEnabled: true
