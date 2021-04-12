@@ -1,48 +1,53 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/azurerm
 
-# NOTE: cicd-tester service account is not required on production clusters
-# NOTE: On multi-tenant setup, replace the zone specific CI/CD service
-# account with tenant specific CI/CD service accounts, and give each
-# 'taito-deployer' permissions only to specific namespaces.
-
 permissions:
-  # CHANGE: Set your user object id here. Note that adminGroupObjectIds is
-  # required only if azureAdManaged has been enabled
-  # adminGroupObjectIds:
-  #   - 1234567a-123b-123c-123d-1e2345a6c7e8 # john.doe@mytenant.com
+  adminGroupObjectIds:
+    # CHANGE: either set your personal user object id here or give object id
+    # of a group that already exists (e.g. object id of admins group)
+    - 1234567a-123b-123c-123d-1e2345a6c7e8
 
   clusterRoles:
-    # EXAMPLE: Grant privileged deployment rights for the CI/CD service account
-    # - name: taito-privileged-deployer
-    #   subjects:
-    #     - "2222222a-123b-123c-123d-1e2345a6c7e8"  # CI/CD service account object id
+    # Grant global access management rights for some users/groups
+    - name: taito-iam-admin
+      subjects:
+        # CHANGE: either set your personal user object id here or give object id
+        # of a group that already exists (e.g. object id of admins group)
+        - user:1234567a-123b-123c-123d-1e2345a6c7e8
 
-    # EXAMPLE: Grant global status viewer rights for all developers
-    # NOTE: Not recommended on a multi-tenant setup
+    # Grant global development rights for some users/groups
+    - name: taito-developer
+      subjects:
+        # CHANGE: either set your personal user object id here or give object id
+        # of a group that already exists (e.g. object id of developers group)
+        - user:1234567a-123b-123c-123d-1e2345a6c7e8
+
+    # EXAMPLE: Grant global status viewer rights for some users/groups
     # - name: taito-status-viewer
     #   subjects:
-    #     - "3333333a-123b-123c-123d-1e2345a6c7e8"  # developer group object id
-
-    # EXAMPLE: Grant global developer rights for all developers
-    # NOTE: Not recommended on a production setup
-    # - name: taito-developer
-    #   subjects:
-    #     - "3333333a-123b-123c-123d-1e2345a6c7e8"  # developer group object id
+    #     - user:2222222b-123b-123c-123d-1e2345a6c7e8
 
   namespaces:
-    # EXAMPLE: Grant reading common secrets
+    # EXAMPLE: Grant reading common secrets for some users/groups
     # - name: common
     #   clusterRoles:
     #     - name: taito-secret-viewer
     #       subjects:
-    #         - "2222222a-123b-123c-123d-1e2345a6c7e8"  # CI/CD service account object id
-    #         - "3222222a-123b-123c-123d-1e2345a6c7e8"  # CI/CD tester service account object id
-    #         - "3333333a-123b-123c-123d-1e2345a6c7e8"  # developer group object id
+    #         - group:5555555a-123b-123c-123d-1e2345a6c7e8
 
-    # EXAMPLE: Grant database access through a db proxy
+    # EXAMPLE: Grant database access through a db proxy for some users/groups
     # - name: db-proxy
     #   clusterRoles:
     #     - name: taito-proxyer
     #       subjects:
-    #         - "2222222a-123b-123c-123d-1e2345a6c7e8"  # CI/CD service account object id
-    #         - "3222222a-123b-123c-123d-1e2345a6c7e8"  # CI/CD tester service account object id
+    #         - group:5555555a-123b-123c-123d-1e2345a6c7e8
+
+    # EXAMPLE: Grant project env specific development and access management
+    # rights for some users/groups
+    # - name: my-project-dev
+    #   clusterRoles:
+    #     - name: taito-iam-admin
+    #       subjects:
+    #         - user:11111111b-123b-123c-123d-1e2345a6c7e8
+    #     - name: taito-developer
+    #       subjects:
+    #         - group:3333333a-123b-123c-123d-1e2345a6c7e8
