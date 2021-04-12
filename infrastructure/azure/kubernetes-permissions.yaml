@@ -41,8 +41,7 @@ permissions:
     #       subjects:
     #         - group:5555555a-123b-123c-123d-1e2345a6c7e8
 
-    # EXAMPLE: Grant project env specific development and access management
-    # rights for some users/groups
+    # EXAMPLE: Grant project env development and access management rights
     # - name: my-project-dev
     #   clusterRoles:
     #     - name: taito-iam-admin
@@ -51,3 +50,8 @@ permissions:
     #     - name: taito-developer
     #       subjects:
     #         - group:3333333a-123b-123c-123d-1e2345a6c7e8
+
+    # TIP: Alternatively you can configure project env specific permissions
+    # directly in the project git repository using Helm terraform provider with
+    # the namespace Helm chart. Examples:
+    # https://github.com/TaitoUnited/full-stack-template/blob/master/scripts/terraform/examples.yaml
