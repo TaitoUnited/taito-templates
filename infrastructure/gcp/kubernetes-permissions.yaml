@@ -11,18 +11,21 @@ permissions:
     - name: taito-privileged-deployer
       subjects:
         - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
+
     # EXAMPLE: Grant global status viewer rights for all developers
     # NOTE: Not recommended on a multi-tenant setup
     # - name: taito-status-viewer
     #   subjects:
     #     - "group:developers@${taito_provider_org_domain}"
+
     # EXAMPLE: Grant global developer rights for all developers
     # NOTE: Not recommended on a production setup
     # - name: taito-developer
     #   subjects:
     #     - "group:developers@${taito_provider_org_domain}"
+
   namespaces:
-    # Grant reading common secrets
+    # Grant reading common secrets for some users/groups
     - name: common
       clusterRoles:
         - name: taito-secret-viewer
@@ -30,7 +33,8 @@ permissions:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
             # - "group:developers@${taito_provider_org_domain}"
-    # Grant database access through a db proxy
+
+    # Grant database access through a db proxy for some users/groups
     - name: db-proxy
       clusterRoles:
         - name: taito-proxyer
@@ -38,3 +42,18 @@ permissions:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
             # - "group:developers@${taito_provider_org_domain}"
+
+    # EXAMPLE: Grant project env development and access management rights
+    # - name: my-project-dev
+    #   clusterRoles:
+    #     - name: taito-iam-admin
+    #       subjects:
+    #         - user:jane.doe@gmail.com
+    #     - name: taito-developer
+    #       subjects:
+    #         - user:john.doe@gmail.com
+
+    # TIP: Alternatively you can configure project env specific permissions
+    # directly in the project git repository using Helm terraform provider with
+    # the namespace Helm chart. Examples:
+    # https://github.com/TaitoUnited/full-stack-template/blob/master/scripts/terraform/examples.yaml
