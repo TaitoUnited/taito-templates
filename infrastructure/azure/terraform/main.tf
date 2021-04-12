@@ -115,7 +115,7 @@ module "compute" {
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "0.0.9"
+  version                    = "1.0.0"
 
   resource_group_name        = azurerm_resource_group.zone.name
 

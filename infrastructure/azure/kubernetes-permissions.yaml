@@ -7,10 +7,19 @@ permissions:
     - 1234567a-123b-123c-123d-1e2345a6c7e8
 
   clusterRoles:
-    # EXAMPLE: Grant global development rights for some users/groups
-    # - name: taito-developer
-    #   subjects:
-    #     - group:3333333a-123b-123c-123d-1e2345a6c7e8
+    # Grant global access management rights for some users/groups
+    - name: taito-iam-admin
+      subjects:
+        # CHANGE: either set your personal user object id here or give object id
+        # of a group that already exists (e.g. object id of admins group)
+        - user:1234567a-123b-123c-123d-1e2345a6c7e8
+
+    # Grant global development rights for some users/groups
+    - name: taito-developer
+      subjects:
+        # CHANGE: either set your personal user object id here or give object id
+        # of a group that already exists (e.g. object id of developers group)
+        - user:1234567a-123b-123c-123d-1e2345a6c7e8
 
     # EXAMPLE: Grant global status viewer rights for some users/groups
     # - name: taito-status-viewer
@@ -31,3 +40,14 @@ permissions:
     #     - name: taito-proxyer
     #       subjects:
     #         - group:5555555a-123b-123c-123d-1e2345a6c7e8
+
+    # EXAMPLE: Grant project env specific development and access management
+    # rights for some users/groups
+    # - name: my-project-dev
+    #   clusterRoles:
+    #     - name: taito-iam-admin
+    #       subjects:
+    #         - user:11111111b-123b-123c-123d-1e2345a6c7e8
+    #     - name: taito-developer
+    #       subjects:
+    #         - group:3333333a-123b-123c-123d-1e2345a6c7e8
