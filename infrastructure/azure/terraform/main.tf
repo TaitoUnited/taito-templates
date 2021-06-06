@@ -78,12 +78,12 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/azurerm"
-  version             = "0.0.4"
+  version             = "0.0.5"
 
   subscription_id     = var.taito_provider_billing_account_id
 
-  permissions         = coalesce(local.admin["permissions"], [])
-  custom_roles        = coalesce(local.admin["customRoles"], [])
+  permissions         = try(local.admin["permissions"], [])
+  custom_roles        = try(local.admin["customRoles"], [])
 }
 
 module "databases" {
@@ -94,8 +94,8 @@ module "databases" {
   virtual_network_id   = module.network.virtual_network_id
   subnet_id            = module.network.subnet_id
 
-  postgresql_clusters  = coalesce(local.databases.postgresqlClusters, [])
-  mysql_clusters       = coalesce(local.databases.mysqlClusters, [])
+  postgresql_clusters  = try(local.databases.postgresqlClusters, [])
+  mysql_clusters       = try(local.databases.mysqlClusters, [])
 
   # TODO: long_term_backup_bucket = ...
 }
@@ -104,18 +104,18 @@ module "dns" {
   source              = "TaitoUnited/dns/azurerm"
   version             = "0.0.4"
   resource_group_name = azurerm_resource_group.zone.name
-  dns_zones           = coalesce(local.dns["dnsZones"], [])
+  dns_zones           = try(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source              = "TaitoUnited/compute/azurerm"
   version             = "0.0.4"
-  # TODO: virtual_machines    = coalesce(local.compute["virtualMachines"], [])
+  # TODO: virtual_machines    = try(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "0.0.8"
+  version                    = "1.1.0"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -128,10 +128,10 @@ module "kubernetes" {
   subnet_id                  = module.network.subnet_id
 
   # Permissions
-  permissions                = coalesce(local.kubernetesPermissions["permissions"], {})
+  permissions                = try(local.kubernetesPermissions["permissions"], {})
 
   # Kubernetes
-  kubernetes                 = coalesce(local.kubernetes["kubernetes"], {})
+  kubernetes                 = try(local.kubernetes["kubernetes"], {})
 
   # Helm infrastructure apps
   # NOTE: helm_enabled should be false on the first run, then true
@@ -140,13 +140,13 @@ module "kubernetes" {
   use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
-      coalesce(local.databases.postgresqlClusters, [])
+      try(local.databases.postgresqlClusters, [])
     ):
     db.name
   ]
   mysql_cluster_names      = [
     for db in (
-      coalesce(local.databases.mysqlClusters, [])
+      try(local.databases.mysqlClusters, [])
     ):
     db.name
   ]
@@ -167,12 +167,12 @@ module "integrations" {
   name                = azurerm_resource_group.zone.name
   location            = azurerm_resource_group.zone.location
 
-  # TODO: kafkas        = coalesce(local.integrations["kafkas"], [])
+  # TODO: kafkas        = try(local.integrations["kafkas"], [])
 }
 
 module "network" {
   source              = "TaitoUnited/network/azurerm"
-  version             = "0.0.6"
+  version             = "0.0.7"
 
   resource_group_name = azurerm_resource_group.zone.name
 
@@ -196,8 +196,8 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.6"
+  version             = "0.0.7"
 
   resource_group_name = azurerm_resource_group.zone.name
-  storage_accounts    = coalesce(local.storage["storageAccounts"], [])
+  storage_accounts    = try(local.storage["storageAccounts"], [])
 }

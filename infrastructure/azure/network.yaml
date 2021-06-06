@@ -1,6 +1,6 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/network/azurerm
 
 network:
-  vpnEnabled: false
-  vpnCertificateFilePath: vpn.pem
+  vpnEnabled: ${taito_vpn_enabled}
+  vpnCertificateFilePath: ../vpn/pki/ca.crt
   aciEnabled: false

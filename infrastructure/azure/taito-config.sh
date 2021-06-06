@@ -12,6 +12,7 @@ taito_plugins="
   kubectl-zone helm-zone
   generate-secrets links-global custom
   postgres-db mysql-db
+  vpn
 "
 
 # Labeling
@@ -22,10 +23,15 @@ taito_organization_abbr=myorg # CHANGE
 taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
 taito_zone_multi_tenant=false
-taito_zone_extra_security=false
+taito_zone_extra_security=false # CHANGE
+taito_vpn_enabled=false # CHANGE
 taito_devops_email=support@myorganization.com # CHANGE
 taito_default_domain=${taito_zone}.myorganization.com # CHANGE
 taito_default_cdn_domain=
+
+# CHANGE: If you enable VPN, you most likely want to do also the following:
+# - Enable VPN in terraform/vpn.tf
+# - Set 'privateClusterEnabled: true' in kubernetes.yaml
 
 # Zone buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
