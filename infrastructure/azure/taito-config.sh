@@ -2,6 +2,12 @@
 # shellcheck disable=SC2034
 set -a
 
+# CHANGE: To enable VPN you must do the following:
+# - Add 'vpn' to taito_plugins
+# - Set taito_vpn_enabled to true
+# - Enable VPN in terraform/vpn.tf
+# - Set 'privateClusterEnabled: true' in kubernetes.yaml
+
 # Taito CLI
 taito_version=1
 taito_type=zone
@@ -12,7 +18,6 @@ taito_plugins="
   kubectl-zone helm-zone
   generate-secrets links-global custom
   postgres-db mysql-db
-  vpn
 "
 
 # Labeling
@@ -28,10 +33,6 @@ taito_vpn_enabled=false # CHANGE
 taito_devops_email=support@myorganization.com # CHANGE
 taito_default_domain=${taito_zone}.myorganization.com # CHANGE
 taito_default_cdn_domain=
-
-# CHANGE: If you enable VPN, you most likely want to do also the following:
-# - Enable VPN in terraform/vpn.tf
-# - Set 'privateClusterEnabled: true' in kubernetes.yaml
 
 # Zone buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
@@ -99,7 +100,11 @@ kubernetes_network_policy_provider=azure
 kubernetes_cluster="${kubernetes_name}"
 kubernetes_user="clusterUser_${taito_zone}_${kubernetes_cluster}"
 kubernetes_admin="clusterAdmin_${taito_zone}_${kubernetes_cluster}"
-kubernetes_db_proxy_enabled=true
+if [[ ${taito_vpn_enabled} == "true" ]]; then
+  kubernetes_db_proxy_enabled=false
+else
+  kubernetes_db_proxy_enabled=true
+fi
 
 # Databases
 taito_databases="commonpg commonmysql"
