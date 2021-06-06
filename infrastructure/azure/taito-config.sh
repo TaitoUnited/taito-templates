@@ -158,14 +158,8 @@ mysql_ssl_server_cert_enabled=$db_commonmysql_ssl_server_cert_enabled
 mysql_proxy_ssl_enabled=$db_commonmysql_proxy_ssl_enabled
 
 # Secrets
-if [[ $taito_zone_multi_tenant != true ]]; then
-  # - GitHub personal token for tagging releases (optional)
-  #   -> CHANGE: remove token if this zone is not used for production releases
-  taito_secrets="
-    ${taito_secrets}
-    version-control-buildbot.token/common:manual
-  "
-fi
+taito_secrets="
+"
 
 # Links
 # TODO: more links
