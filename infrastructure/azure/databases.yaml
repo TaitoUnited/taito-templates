@@ -28,22 +28,22 @@ postgresqlClusters:
     users:
 
 mysqlClusters:
-  - name: ${mysql_default_name}
-    location: ${taito_provider_region}
-    version: "8.0"
-    skuName: GP_Gen5_2
-    storageMb: 20480
-    autoGrowEnabled: true
-    backupRetentionDays: 30
-    geoRedundantBackupEnabled: true
-    infrastructureEncryptionEnabled: false
-    publicNetworkAccessEnabled: false
-    sslEnforcementEnabled: true
-    sslMinimalTlsVersionEnforced: TLS1_2
-    # authorizedNetworks:
-    #   - start: 127.127.127.10
-    #     end: 127.127.127.20
-    adminUsername: ${mysql_default_admin}
-    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
-    roles:
-    users:
+  # - name: ${mysql_default_name}
+  #   location: ${taito_provider_region}
+  #   version: "8.0"
+  #   skuName: GP_Gen5_2
+  #   storageMb: 20480
+  #   autoGrowEnabled: true
+  #   backupRetentionDays: 30
+  #   geoRedundantBackupEnabled: true
+  #   infrastructureEncryptionEnabled: false
+  #   publicNetworkAccessEnabled: false
+  #   sslEnforcementEnabled: true
+  #   sslMinimalTlsVersionEnforced: TLS1_2
+  #   # authorizedNetworks:
+  #   #   - start: 127.127.127.10
+  #   #     end: 127.127.127.20
+  #   adminUsername: ${mysql_default_admin}
+  #   # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
+  #   roles:
+  #   users:

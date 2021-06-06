@@ -78,7 +78,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/azurerm"
-  version             = "0.0.4"
+  version             = "0.0.5"
 
   subscription_id     = var.taito_provider_billing_account_id
 
@@ -115,7 +115,7 @@ module "compute" {
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "1.0.0"
+  version                    = "1.1.0"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -172,7 +172,7 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/azurerm"
-  version             = "0.0.6"
+  version             = "0.0.7"
 
   resource_group_name = azurerm_resource_group.zone.name
 

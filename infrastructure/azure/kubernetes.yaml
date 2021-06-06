@@ -8,9 +8,9 @@ kubernetes:
   # Network
   networkPlugin: azure  # azure, kubenet
   networkPolicy: ${kubernetes_network_policy_provider}  # azure, calico
-  privateClusterEnabled: false
+  privateClusterEnabled: false # CHANGE
   masterAuthorizedNetworks:
-    - 0.0.0.0/0
+    - 0.0.0.0/0 # CHANGE: For private cluster use the GatewaySubnet range: 10.2.0.0/24
 
   # RBAC
   rbacEnabled: true
@@ -27,6 +27,7 @@ kubernetes:
   nodePools:
     - name: default
       vmSize: Standard_D2_v2
+      # CHANGE: If just trying it out, you might want start with 1 node only.
       availabilityZones: [ "1", "2", "3" ]
       minNodeCount: 3
       maxNodeCount: 3
@@ -39,6 +40,7 @@ kubernetes:
   ingressNginxControllers:
     - name: ingress-nginx
       class: nginx
+      # CHANGE: If just trying it out, you might want start with 2 replicas only.
       replicas: 3
       metricsEnabled: true
       # MaxMind license key for GeoIP2: https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
