@@ -159,6 +159,8 @@ mysql_proxy_ssl_enabled=$db_commonmysql_proxy_ssl_enabled
 
 # Secrets
 taito_secrets="
+  ${taito_secrets}
+  common-example-secret.key/common:random
 "
 
 # Links
