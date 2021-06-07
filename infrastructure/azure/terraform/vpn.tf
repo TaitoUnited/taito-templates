@@ -7,6 +7,12 @@ resource "azurerm_subnet" "gateway_subnet" {
   address_prefixes     = [ "10.1.1.0/24" ]
 }
 
+# NOTE: This is a hack to make vpn module wait for an existing resource group and network
+data "external" "network_wait" {
+  depends_on = [ azurerm_resource_group.zone, module.network ]
+  program = ["sh", "-c", "sleep 5; echo '{ \"azurerm_resource_group_name\": \"${azurerm_resource_group.zone.name}\", \"virtual_network_name\": \"${module.network.virtual_network_name}\" }'"]
+}
+
 module "vpn" {
   source  = "kumarvna/vpn-gateway/azurerm"
   version = "1.1.0"
