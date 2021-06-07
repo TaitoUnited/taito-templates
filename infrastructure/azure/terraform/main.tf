@@ -98,7 +98,7 @@ module "admin" {
 
 module "databases" {
   source               = "TaitoUnited/databases/azurerm"
-  version              = "0.0.6"
+  version              = "0.0.7"
 
   resource_group_name  = azurerm_resource_group.zone.name
   virtual_network_id   = module.network.virtual_network_id
