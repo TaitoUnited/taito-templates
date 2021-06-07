@@ -2,7 +2,7 @@
 
 kubernetes:
   name: ${kubernetes_name}
-  skuTier: Free  # Free, Paid
+  skuTier: Free  # Free or Paid (Paid includes Uptime SLA)
   automaticChannelUpgrade: stable  # none, patch, rapid, stable
 
   # Network
@@ -26,11 +26,14 @@ kubernetes:
   # Node pools
   nodePools:
     - name: default
-      vmSize: Standard_D2_v2
-      # CHANGE: If just trying it out, you might want start with 1 node only.
-      availabilityZones: [ "1", "2", "3" ]
-      minNodeCount: 3
-      maxNodeCount: 3
+      vmSize: Standard_D2_v3
+      # CHANGE: Using at least 3 nodes in 3 availabilityZones is recommended
+      # availabilityZones: [ "1", "2", "3" ]
+      # minNodeCount: 3
+      # maxNodeCount: 3
+      availabilityZones: [ "1" ]
+      minNodeCount: 1
+      maxNodeCount: 1
 
   # Certificate managers
   certManager:
@@ -40,8 +43,8 @@ kubernetes:
   ingressNginxControllers:
     - name: ingress-nginx
       class: nginx
-      # CHANGE: If just trying it out, you might want start with 2 replicas only.
-      replicas: 3
+      # CHANGE: Increase replicas based on chosen Kubernetes node count
+      replicas: 2
       metricsEnabled: true
       # MaxMind license key for GeoIP2: https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
       maxmindLicenseKey: ""
