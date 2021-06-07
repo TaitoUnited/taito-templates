@@ -76,11 +76,21 @@ locals {
   )
 }
 
+# NOTE: This is a hack to make some modules wait for an existing resource group and network
+data "external" "network_wait" {
+  depends_on = [ azurerm_resource_group.zone, module.network, module.kubernetes ]
+  program = ["sh", "-c", "sleep 5; echo '{ \"taito_provider_billing_account_id\": \"${var.taito_provider_billing_account_id}\", \"azurerm_resource_group_name\": \"${azurerm_resource_group.zone.name}\", \"virtual_network_name\": \"${module.network.virtual_network_name}\" }'"]
+}
+
 module "admin" {
   source              = "TaitoUnited/admin/azurerm"
   version             = "0.0.5"
 
-  subscription_id     = var.taito_provider_billing_account_id
+  subscription_id  = (
+    var.first_run
+    ? data.external.network_wait.result.taito_provider_billing_account_id
+    : var.taito_provider_billing_account_id
+  )
 
   permissions         = try(local.admin["permissions"], [])
   custom_roles        = try(local.admin["customRoles"], [])

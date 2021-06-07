@@ -10,7 +10,7 @@ kubernetes:
   networkPolicy: ${kubernetes_network_policy_provider}  # azure, calico
   privateClusterEnabled: false # CHANGE
   masterAuthorizedNetworks:
-    - 0.0.0.0/0 # CHANGE: For private cluster use the GatewaySubnet range: 10.2.0.0/24
+    - 0.0.0.0/0 # CHANGE: For private cluster use: masterAuthorizedNetworks: []
 
   # RBAC
   rbacEnabled: true

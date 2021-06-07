@@ -8,8 +8,8 @@
 postgresqlClusters:
   - name: ${postgres_default_name}
     location: ${taito_provider_region}
-    version: "12"
-    skuName: GP_S_Gen5_1 # CHANGE: For more cpu/mem, use GP_Gen4_1, GP_Gen5_2, ...
+    version: "11"
+    skuName: GP_Gen5_2
     storageMb: 10240
     autoGrowEnabled: true
     backupRetentionDays: 30
@@ -27,11 +27,11 @@ postgresqlClusters:
     roles:
     users:
 
-mysqlClusters:
+mysqlClusters: []
   # - name: ${mysql_default_name}
   #   location: ${taito_provider_region}
   #   version: "8.0"
-  #   skuName: GP_S_Gen5_1 # CHANGE: For more cpu/mem, use GP_Gen4_1, GP_Gen5_2, ...
+  #   skuName: GP_Gen5_2
   #   storageMb: 10240
   #   autoGrowEnabled: true
   #   backupRetentionDays: 30
