@@ -16,8 +16,9 @@ module "vpn" {
   # Resource Group, location, VNet and Subnet details
   resource_group_name  = azurerm_resource_group.zone.name
   virtual_network_name = module.network.virtual_network_name
-  # subnet_name          = azurerm_subnet.gateway_subnet.name
   vpn_gateway_name     = "${azurerm_resource_group.zone.name}-vpn"
+  vpn_gw_sku           = "Basic"
+  public_ip_sku        = "Basic"
 
   # client configuration for Point-to-Site VPN Gateway connections
   vpn_client_configuration = {
