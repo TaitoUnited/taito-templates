@@ -26,12 +26,9 @@ kubernetes:
   # Node pools
   nodePools:
     - name: default
-      vmSize: Standard_D2_v3
-      # CHANGE: Using at least 3 nodes in 3 availabilityZones is recommended
-      # availabilityZones: [ "1", "2", "3" ]
-      # minNodeCount: 3
-      # maxNodeCount: 3
-      availabilityZones: [ "1" ]
+      vmSize: Standard_D2_v2
+      availabilityZones: [ "1", "2", "3" ]
+      # CHANGE: Using at least 3 nodes is recommended
       minNodeCount: 1
       maxNodeCount: 1
 
