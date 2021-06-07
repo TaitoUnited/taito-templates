@@ -182,7 +182,7 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/azurerm"
-  version             = "0.0.7"
+  version             = "0.0.8"
 
   resource_group_name = azurerm_resource_group.zone.name
 

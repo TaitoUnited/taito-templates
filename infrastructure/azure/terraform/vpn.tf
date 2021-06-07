@@ -4,7 +4,7 @@ resource "azurerm_subnet" "gateway_subnet" {
   name                 = "GatewaySubnet"
   resource_group_name  = azurerm_resource_group.zone.name
   virtual_network_name = module.network.virtual_network_name
-  address_prefixes     = [ "10.2.0.0/24" ]
+  address_prefixes     = [ "10.1.1.0/24" ]
 }
 
 module "vpn" {
@@ -29,7 +29,7 @@ module "vpn" {
 
   # client configuration for Point-to-Site VPN Gateway connections
   vpn_client_configuration = {
-    address_space        = "10.20.0.0/24"
+    address_space        = "10.2.0.0/24"
     vpn_client_protocols = ["OpenVPN"]
     certificate          = trimspace(
       replace(
