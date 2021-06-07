@@ -14,7 +14,7 @@ postgresqlClusters:
     autoGrowEnabled: true
     backupRetentionDays: 30
     geoRedundantBackupEnabled: true
-    infrastructureEncryptionEnabled: false
+    infrastructureEncryptionEnabled: false # This property is currently still in development and not supported by Microsoft.
     publicNetworkAccessEnabled: false
     sslEnforcementEnabled: true
     sslMinimalTlsVersionEnforced: TLS1_2
