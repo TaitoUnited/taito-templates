@@ -16,7 +16,7 @@ LINKS WILL BE GENERATED HERE
 
 [//]: # "GENERATED LINKS END"
 
-> You can update this section by configuring links in `taito-config.sh` and running `taito project docs`.
+> You can update this section by configuring links in `taito-config.sh` and running `taito project generate`.
 
 ## Interactive operations
 
@@ -27,25 +27,20 @@ LINKS WILL BE GENERATED HERE
 - `taito zone destroy`: Destroy the zone.
 - `taito project settings`: Show project template settings for this zone.
 
+## User permissions
+
+Grant permissions for user groups in zone configuration:
+
+- In **admin.yaml** grant `Azure Kubernetes Service Cluster Admin Role` role for `Administrators` group.
+- In **admin.yaml** grant `Azure Kubernetes Service Cluster User Role` role for `External developers` group. This allows external developers to connect to Kubernetes, but they don't have permissions to any namespaces by default.
+- In **kubernetes-permissions.yaml** grant `taito-proxyer` role on `db-proxy` namespace for `External developers` group. This allows external developers to connect to database clusters, but they don't have access to any database credentials by default.
+
+Use project specific configuration to grant access to project specific namespaces and database credentials. See [the example](https://github.com/TaitoUnited/full-stack-template/blob/dev/scripts/terraform/examples.yaml).
+
 ## Troubleshooting
-
-Terraform fails during Helm release execution:
-
-- Just retry a few times to see if that resolves the issue.
-- Reinstall all Helm releases:
-  1. Set `helm_enabled = false` in `main.tf`
-  2. Run `taito zone apply`, and retry until it succeeds.
-  3. Delete rest of the cert-manager [manually](https://github.com/jetstack/cert-manager/issues/2273#issuecomment-564525232) in case something extra is still lying around.
-  4. Set `helm_enabled = true` in `main.tf`
-  5. Run `taito zone apply`, and retry until succeeds.
 
 Misc Terraform problems:
 
-- Use `terraform_init_options` and `terraform_apply_options` in `taito-config.sh` to pass extra parameters for terraform (e.g. `teffaform_target`).
+- Just retry a few times to see if that resolves the issue.
+- Use `terraform_init_options` and `terraform_apply_options` in `taito-config.sh` to pass extra parameters for terraform (e.g. `-target=module.vpn`).
 - Run `taito shell` and execute terraform commands directly.
-
-## TODO
-
-taito zone maintenance:
-
-- [Update AKS credentials](https://docs.microsoft.com/bs-latn-ba/azure/aks/update-credentials)
