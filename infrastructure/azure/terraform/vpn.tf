@@ -8,14 +8,21 @@ resource "azurerm_subnet" "gateway_subnet" {
 }
 
 module "vpn" {
-  depends_on       = [ azurerm_subnet.gateway_subnet ]
-
   source  = "kumarvna/vpn-gateway/azurerm"
   version = "1.1.0"
 
   # Resource Group, location, VNet and Subnet details
-  resource_group_name  = azurerm_resource_group.zone.name
-  virtual_network_name = module.network.virtual_network_name
+  resource_group_name  = (
+    var.first_run
+    ? data.external.network_wait.result.azurerm_resource_group_name
+    : azurerm_resource_group.zone.name
+  )
+  virtual_network_name  = (
+    var.first_run
+    ? data.external.network_wait.result.virtual_network_name
+    : module.network.virtual_network_name
+  )
+  subnet_name          = azurerm_subnet.gateway_subnet.name
   vpn_gateway_name     = "${azurerm_resource_group.zone.name}-vpn"
   vpn_gw_sku           = "Basic"
   public_ip_sku        = "Basic"
