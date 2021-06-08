@@ -30,7 +30,7 @@ module "vpn" {
   )
   subnet_name          = azurerm_subnet.gateway_subnet.name
   vpn_gateway_name     = "${azurerm_resource_group.zone.name}-vpn"
-  vpn_gw_sku           = "Basic"
+  vpn_gw_sku           = "VpnGw1"
   public_ip_sku        = "Basic"
 
   # client configuration for Point-to-Site VPN Gateway connections
