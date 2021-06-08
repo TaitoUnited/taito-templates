@@ -28,7 +28,7 @@ module "vpn" {
     ? data.external.network_wait.result.virtual_network_name
     : module.network.virtual_network_name
   )
-  subnet_name          = azurerm_subnet.gateway_subnet.name
+  # TODO: obsolete? subnet_name          = azurerm_subnet.gateway_subnet.name
   vpn_gateway_name     = "${azurerm_resource_group.zone.name}-vpn"
   vpn_gw_sku           = "VpnGw1"
   public_ip_sku        = "Basic"
