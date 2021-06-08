@@ -31,7 +31,3 @@ variable "taito_devops_email" {
 variable "kubernetes_db_proxy_enabled" {
   type    = bool
 }
-
-variable "taito_zone_extra_security" {
-  type    = bool
-}
