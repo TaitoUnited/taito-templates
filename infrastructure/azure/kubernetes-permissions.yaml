@@ -1,25 +1,30 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/azurerm
 
+# IMPORTANT: Roles are assigned using the object id of a user or group. However,
+# there is an exception. If user belongs to the same AD tenant, you should use
+# the userPrincipalName instead (e.g. user:john.doe@domain.com).
+
 permissions:
   adminGroupObjectIds:
-    # CHANGE: either set your personal user object id here or give object id
-    # of a group that already exists (e.g. object id of admins group)
+    # CHANGE: Either set your personal user account object id here or give
+    # object id of a group (e.g. object id of admins group). Note that you
+    # must always use object id here.
     - 1234567a-123b-123c-123d-1e2345a6c7e8
 
   clusterRoles:
     # Grant global access management rights for some users/groups
     - name: taito-iam-admin
       subjects:
-        # CHANGE: either set your personal user object id here or give object id
-        # of a group that already exists (e.g. object id of admins group)
-        - user:1234567a-123b-123c-123d-1e2345a6c7e8
+        # CHANGE: Either set your personal user account here or give object id
+        # of a group (e.g. object id of admins group)
+        - user:jane.doe@mydomain.com
 
     # Grant global development rights for some users/groups
     - name: taito-developer
       subjects:
-        # CHANGE: either set your personal user object id here or give object id
-        # of a group that already exists (e.g. object id of developers group)
-        - user:1234567a-123b-123c-123d-1e2345a6c7e8
+        # CHANGE: Either set your personal user account here or give object id
+        # of a group (e.g. object id of admins group)
+        - user:jane.doe@mydomain.com
 
     # EXAMPLE: Grant global status viewer rights for some users/groups
     # - name: taito-status-viewer
