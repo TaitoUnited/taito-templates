@@ -4,6 +4,9 @@ kubernetes:
   name: ${kubernetes_name}
   skuTier: Free  # Free or Paid (Paid includes Uptime SLA)
   automaticChannelUpgrade: stable  # none, patch, rapid, stable
+  maintenanceAllowed:
+    - day: Sunday
+      hours: [ 4, 5, 6, 7 ]
 
   # Network
   networkPlugin: azure  # azure, kubenet
