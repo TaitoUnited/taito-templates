@@ -15,11 +15,11 @@ IDEA: Add support for Docker Swarm?
 
 ## Links
 
-[//]: # (GENERATED LINKS START)
+[//]: # "GENERATED LINKS START"
 
-* [Dashboard](https://CHANGE-TO-LINK-THAT-POINTS-TO-SERVERS)
+- [Dashboard](https://CHANGE-TO-LINK-THAT-POINTS-TO-SERVERS)
 
-[//]: # (GENERATED LINKS END)
+[//]: # "GENERATED LINKS END"
 
 > You can update this section by configuring links in `taito-config.sh` and running `taito project docs`.
 
@@ -30,7 +30,7 @@ The infrastructure is configured in `ansible-playbooks` folder. Most of the `tai
 Initial configuration:
 
 1. Get one or two Debian servers from any provider and enable automatic backups for them, if such option is available.
-2. Configure DNS for the servers (e.g. *.dev1.mydomain.com, *.prod1.mydomain.com).
+2. Configure DNS for the servers (e.g. _.dev1.mydomain.com, _.prod1.mydomain.com).
 3. Check that ssh login works properly with domain name x prefix (e.g. x.dev1.mydomain.com, x.dev1.mydomain.com). This step adds servers to known hosts.
 4. Configure all the "CHANGE" parts in taito-config.sh.
 5. Apply infrastructure changes with `taito zone apply` for both development and production. To save time, you can run taito commands for both simultaneously in two different terminals. Note that if you login as root the first time, you need to run the `taito zone apply` command again as a normal user using ssh key authentication, as one of the steps disables root ssh access and therefore interrupts process.
@@ -39,17 +39,17 @@ Initial configuration:
 Add new server:
 
 1. Get a Debian server from any provider and enable automatic backups for it, if such option is available.
-2. Configure DNS for the server (e.g. *.dev2.mydomain.com, or *.prod2.mydomain.com).
+2. Configure DNS for the server (e.g. _.dev2.mydomain.com, or _.prod2.mydomain.com).
 3. Check that ssh login works properly with domain name x prefix (e.g. x.dev2.mydomain.com, x.prod2.mydomain.com). This step adds servers to known hosts.
 4. Increase server counts in ansible-playbooks/development and/or ansible-playbooks/production (e.g. `dev[1:1].mydomain.com` -> `dev[1:2].mydomain.com`).
 5. Apply infrastructure changes with `taito zone apply`. Note that if you login as root the first time, you need to run the `taito zone apply` command again as a normal user using ssh key authentication, as one of the steps disables root ssh access and therefore interrupts process.
 6. Optional: Create personal or organizational taito-config.sh file based on settings shown by `taito project settings`, but change the settings listed below, if required:
-    - taito_template_default_domain
-    - taito_template_default_domain_prod
-    - template_default_postgres_host
-    - template_default_postgres_host_prod
-    - template_default_mysql_host
-    - template_default_mysql_host_prod
+   - taito_template_default_domain
+   - taito_template_default_domain_prod
+   - template_default_postgres_host
+   - template_default_postgres_host_prod
+   - template_default_mysql_host
+   - template_default_mysql_host_prod
 
 Backups:
 
@@ -57,6 +57,7 @@ Currently this example does not provide any backup mechanisms. If virtual machin
 
 ## Interactive operations
 
+- `taito zone init`: Initialize configuration by upgrading dependencies, etc.
 - `taito zone apply`: Apply infrastructure changes to the zone.
 - `taito zone status`: Show status summary of the zone.
 - `taito zone doctor`: Analyze and repair the zone.

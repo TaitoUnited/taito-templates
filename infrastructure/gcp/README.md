@@ -10,16 +10,17 @@ Infrastructure is provisioned with Terraform and you can customize it to your li
 
 ## Links
 
-[//]: # (GENERATED LINKS START)
+[//]: # "GENERATED LINKS START"
 
 LINKS WILL BE GENERATED HERE
 
-[//]: # (GENERATED LINKS END)
+[//]: # "GENERATED LINKS END"
 
 > You can update this section by configuring links in `taito-config.sh` and running `taito project docs`.
 
 ## Interactive operations
 
+- `taito zone init`: Initialize configuration by upgrading dependencies, etc.
 - `taito zone apply`: Apply infrastructure changes to the zone.
 - `taito zone status`: Show status summary of the zone.
 - `taito zone doctor`: Analyze and repair the zone.

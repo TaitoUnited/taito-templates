@@ -20,6 +20,7 @@ LINKS WILL BE GENERATED HERE
 
 ## Interactive operations
 
+- `taito zone init`: Initialize configuration by upgrading dependencies, etc.
 - `taito zone apply`: Apply infrastructure changes to the zone.
 - `taito zone status`: Show status summary of the zone.
 - `taito zone doctor`: Analyze and repair the zone.
