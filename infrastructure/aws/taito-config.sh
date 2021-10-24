@@ -6,8 +6,9 @@ set -a
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
 # - Remove kubernetes_* settings from this file
-# - Enable bastion host by setting taito_bastion_enabled=true
 # - Delete kubernetes.yaml and kubernetes-permissions.yaml
+# - Enable bastion host by setting taito_bastion_enabled=true
+# - Uncomment DNS settings in dns.yaml
 
 # Taito CLI
 taito_version=1
