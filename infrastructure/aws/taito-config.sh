@@ -96,7 +96,7 @@ taito_messaging_monitoring_channel=monitoring
 taito_messaging_uptime_channels="arn:aws:sns:${taito_provider_region}:${taito_provider_org_id}:${taito_zone}-uptimez"
 
 # Default network settings for new projects
-taito_network_tags="{ name = \"${taito_zone}\" }"
+taito_network_tags="{ Name = \"${taito_zone}-vpc\" }"
 taito_function_subnet_tags='{ tier = "private" }'
 taito_function_security_group_tags='{}'
 taito_cache_subnet_tags='{ tier = "elasticache" }'
