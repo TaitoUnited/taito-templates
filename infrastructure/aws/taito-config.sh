@@ -103,12 +103,8 @@ taito_cache_subnet_tags='{ tier = "elasticache" }'
 taito_cache_security_group_tags='{}'
 
 # Default policies for new projects
-taito_gateway_policies='[]'
-taito_cicd_policies="[
-  \"arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser\",
-  \"arn:aws:iam::$taito_provider_org_id:policy/$taito_zone-serverlessdeployer\",
-  \"arn:aws:iam::$taito_provider_org_id:policy/$taito_zone-devopssecretreader\"
-]"
+taito_gateway_policies="[]"
+taito_cicd_policies="[]"
 
 # Default Kubernetes cluster for new projects
 # NOTE: If you remove Kubernetes, remove also kubectl-zone and helm-zone from
