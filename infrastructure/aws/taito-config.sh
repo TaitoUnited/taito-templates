@@ -177,8 +177,8 @@ mysql_proxy_ssl_enabled=$db_commonmysql_proxy_ssl_enabled
 # Secrets:
 # - Database certificates
 taito_secrets="
-  $taito_zone-common-postgres-db-ssl.ca/common:file
-  $taito_zone-common-mysql-db-ssl.ca/common:file
+  $db_commonpg_instance-db-ssl.ca/common:file
+  $db_commonmysql_instance-mysql-db-ssl.ca/common:file
 "
 
 # Links
