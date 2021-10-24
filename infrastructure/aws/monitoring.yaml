@@ -1,0 +1,23 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/monitoring/aws
+
+# alerts:
+#   - name: ingress-response-time
+#     type: log
+#     channels: [ "monitoring" ]
+#     rule: >
+#       resource.type = "k8s_container"
+#       resource.labels.namespace_name = "ingress-nginx"
+#       jsonPayload.responseTimeS >= 3
+#   - name: ingress-response-status
+#     type: log
+#     channels: [ "monitoring" ]
+#     rule: >
+#       resource.type = "k8s_container"
+#       resource.labels.namespace_name = "ingress-nginx"
+#       jsonPayload.status >= 500
+#   - name: container-errors
+#     type: log
+#     channels: [ "monitoring" ]
+#     rule: >
+#       resource.type = "k8s_container"
+#       severity >= ERROR

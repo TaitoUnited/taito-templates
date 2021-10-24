@@ -1,0 +1,6 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/integrations/aws
+
+# EXAMPLE:
+# --------
+# kafkas:
+#   - name: my-kafka

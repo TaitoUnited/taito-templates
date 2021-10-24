@@ -1,0 +1,58 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/aws
+
+# For Kubernetes setting descriptions, see
+# https://registry.terraform.io/modules/terraform-aws-modules/eks/aws
+kubernetes:
+  name: ${kubernetes_name}
+  version: latest
+
+  # Node pools
+  nodePools:
+    - instanceType: n1-standard-1
+      minNodeCount: 1
+      maxNodeCount: 1
+
+  # Certificate managers
+  certManager:
+    enabled: true
+
+  # Ingress controllers
+  ingressNginxControllers:
+    - name: ingress-nginx
+      class: nginx
+      # CHANGE: Increase replicas based on chosen Kubernetes node count
+      replicas: 2
+      metricsEnabled: true
+      # MaxMind license key for GeoIP2: https://support.maxmind.com/account-faq/license-keys/how-do-i-generate-a-license-key/
+      maxmindLicenseKey: ""
+      # Map TCP/UDP connections to services
+      tcpServices:
+      udpServices:
+      # See https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+      configMap:
+        # Hardening
+        # See https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
+        keep-alive: 10
+        server-tokens: false
+        ssl-ciphers: "EECDH+AESGCM:EDH+AESGCM"
+        enable-ocsp: true
+        hsts-preload: true
+        ssl-session-tickets: false
+        client-header-timeout: 10
+        client-body-timeout: 10
+        large-client-header-buffers: 2 1k
+        client-body-buffer-size: 1k
+        proxy-body-size: 1k
+        # Firewall and access control
+        enable-modsecurity: true
+        enable-owasp-modsecurity-crs: true
+        use-geoip: false
+        use-geoip2: true
+        enable-real-ip: false
+        whitelist-source-range: ""
+        block-cidrs: ""
+        block-user-agents: ""
+        block-referers: ""
+
+  # TIP: You can install more infrastructure apps on your Kubernetes with:
+  # https://github.com/TaitoUnited/infra-apps-template

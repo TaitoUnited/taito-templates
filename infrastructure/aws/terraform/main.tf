@@ -6,7 +6,6 @@ terraform {
     profile = "TAITO_ORGANIZATION"
     bucket  = "TAITO_STATE_BUCKET"
     region  = "TAITO_PROVIDER_REGION"
-    skip_region_validation = true   # support brand new regions (e.g. stockholm)
     key  = "terraform/state/zone"
   }
   TODO: ENABLE TERRAFORM BACKEND HERE */
@@ -20,49 +19,191 @@ provider "aws" {
   shared_credentials_file = "/home/taito/.aws/credentials"
 }
 
-# Convert whitespace delimited strings into list(string)
-locals {
-  # Read json file
-  variables = (
-    fileexists("${path.root}/../terraform-substituted.yaml")
-      ? yamldecode(file("${path.root}/../terraform-substituted.yaml"))
-      : jsondecode(file("${path.root}/../terraform.json.tmp"))
-  )["settings"]
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
 }
 
-module "taito_zone" {
-  source  = "TaitoUnited/kubernetes-infrastructure/aws"
-  version = "2.2.4"
+locals {
 
-  # Labeling
+  admin = jsondecode(
+    file("${path.root}/../admin.json.tmp")
+  )
+
+  databases = jsondecode(
+    file("${path.root}/../databases.json.tmp")
+  )
+
+  dns = jsondecode(
+    file("${path.root}/../dns.json.tmp")
+  )
+
+  compute = jsondecode(
+    file("${path.root}/../compute.json.tmp")
+  )
+
+  kubernetes = jsondecode(
+    file("${path.root}/../kubernetes.json.tmp")
+  )
+
+  kubernetesPermissions = jsondecode(
+    file("${path.root}/../kubernetes-permissions.json.tmp")
+  )
+
+  integrations = jsondecode(
+    file("${path.root}/../integrations.json.tmp")
+  )
+
+  monitoring = jsondecode(
+    file("${path.root}/../monitoring.json.tmp")
+  )
+
+  network = jsondecode(
+    file("${path.root}/../network.json.tmp")
+  )
+
+  storage = jsondecode(
+    file("${path.root}/../storage.json.tmp")
+  )
+}
+
+module "admin" {
+  source              = "TaitoUnited/admin/aws"
+  version             = "0.0.1"
+
+  account_id          = var.taito_provider_org_id
+
+  groups              = try(local.admin["groups"], [])
+  users               = try(local.admin["users"], [])
+  roles               = try(local.admin["roles"], [])
+
+  # For predefined policies
+  create_predefined_policies = true
+  predefined_policy_prefix   = ""
+  cicd_secrets_path          = "/cicd/"
+  shared_cdn_bucket          = var.taito_public_bucket
+  shared_state_bucket        = var.taito_projects_bucket
+}
+
+module "databases" {
+  source              = "TaitoUnited/databases/aws"
+  version             = "0.0.1"
+
+  name                = var.taito_zone
+  vpc_id              = module.network.vpc_id
+  database_subnets    = module.network.database_subnets
+
+  postgresql_clusters = try(local.databases.postgresqlClusters, [])
+  mysql_clusters      = try(local.databases.mysqlClusters, [])
+
+  # TODO: long_term_backup_bucket = ...
+}
+
+module "dns" {
+  source              = "TaitoUnited/dns/aws"
+  version             = "0.0.1"
+  dns_zones           = try(local.dns["dnsZones"], [])
+}
+
+module "compute" {
+  source              = "TaitoUnited/compute/aws"
+  version             = "0.0.1"
+  virtual_machines    = try(local.compute["virtualMachines"], [])
+}
+
+module "kubernetes" {
+  depends_on                 = [ module.admin ]
+  source                     = "TaitoUnited/kubernetes/aws"
+  version                    = "0.0.1"
+
+  user_profile               = coalesce(var.taito_provider_user_profile, var.taito_organization)
+  email                      = var.taito_devops_email
+
+  # Network
+  vpc_id                     = module.network.vpc_id
+  private_subnets            = module.network.private_subnets
+
+  additional_accounts        = []
+
+  /* TODO: not required? -> use permissions?
+  roles = [
+    rolearn  = string
+    username = "cicd-role"
+    groups   = ["system:masters"]
+  ]
+  users = [
+    userarn  = string
+    username = "cicd-user"
+    groups   = ["system:masters"]
+  ]
+  */
+
+  # Permissions
+  permissions                = try(local.kubernetesPermissions["permissions"], {})
+
+  # Kubernetes
+  kubernetes                 = try(local.kubernetes["kubernetes"], {})
+
+  # Helm infrastructure apps
+  # NOTE: helm_enabled should be false on the first run, then true
+  helm_enabled               = var.first_run == false
+  generate_ingress_dhparam   = true
+  use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
+  postgresql_cluster_names = [
+    for db in (
+      try(local.databases.postgresqlClusters, [])
+    ):
+    db.name
+  ]
+  mysql_cluster_names      = [
+    for db in (
+      try(local.databases.mysqlClusters, [])
+    ):
+    db.name
+  ]
+
+  # OPTIONAL: Helm app versions
+  # ingress_nginx_version  = ...
+  # cert_manager_version   = ...
+  # kubernetes_admin_version = ...
+  # socat_tunneler_version = ...
+}
+
+module "integrations" {
+  source              = "TaitoUnited/integrations/aws"
+  version             = "0.0.1"
+
+  kafkas              = try(local.integrations["kafkas"], [])
+}
+
+module "network" {
+  source              = "TaitoUnited/network/aws"
+  version             = "0.0.1"
+
+  name                = var.taito_zone
+  kubernetes_name     = try(local.kubernetes["kubernetes"]["name"], null)
+
+  network             = local.network["network"]
+}
+
+module "monitoring" {
+  source                     = "TaitoUnited/monitoring/aws"
+  version                    = "0.0.1"
+
   name                       = var.taito_zone
 
-  # Providers and namespaces
-  account_id                 = var.taito_provider_org_id
-  user_profile               = coalesce(var.taito_provider_user_profile, var.taito_organization)
-  region                     = var.taito_provider_region
-
-  # Domain
-  default_domain             = var.taito_default_domain
-
-  # Settings
-  email                      = var.taito_devops_email
-  archive_day_limit          = var.taito_archive_day_limit
-  cicd_secrets_path          = var.taito_cicd_secrets_path
-
-  # Buckets
-  state_bucket               = var.taito_state_bucket
-  projects_bucket            = var.taito_projects_bucket
-  public_bucket              = var.taito_public_bucket
-
-  # Helm
-  helm_enabled               = var.first_run != true
-
-  # Messaging
+  messaging_app              = var.taito_messaging_app
   messaging_webhook          = var.taito_messaging_webhook
   messaging_critical_channel = var.taito_messaging_critical_channel
   messaging_builds_channel   = var.taito_messaging_builds_channel
 
-  # Variables
-  variables                  = local.variables
+  alerts                     = local.network["alerts"]
+}
+
+module "storage" {
+  source              = "TaitoUnited/storage/aws"
+  version             = "0.0.1"
+
+  storage_buckets    = try(local.storage["storageBuckets"], [])
 }

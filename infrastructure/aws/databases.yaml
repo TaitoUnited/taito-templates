@@ -1,0 +1,37 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/databases/aws
+
+# NOTE: If you use the additional database privilege modules for managing
+# roles and users, you need to define database provider for each database
+# in terraform/database-privileges.tf and enable kubernetes_db_proxy_enabled
+# in taito-config.sh
+
+postgresqlClusters:
+  - name: ${postgres_default_name}
+    version: "13.4"
+    instanceClass: db.t2.large
+    storageType: gp2
+    storageSizeGb: 10
+    maxStorageSizeGb: 100
+    backupRetentionDays: 7
+    backupWindow: "05:00-07:00"
+    maintenanceWindow: "Tue:02:00-Tue:05:00"
+    adminUsername: ${postgres_default_admin}
+    # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/postgresql
+    # WARNING: Names of roles and users are visible for all database users
+    roles:
+    users:
+
+mysqlClusters:
+  # - name: ${mysql_default_name}
+  #   version: "8.0.25"
+  #   instanceClass: db.t2.large
+  #   storageType: gp2
+  #   storageSizeGb: 10
+  #   maxStorageSizeGb: 100
+  #   backupRetentionDays: 7
+  #   backupWindow: "05:00-07:00"
+  #   maintenanceWindow: "Tue:02:00-Tue:05:00"
+  #   adminUsername: ${mysql_default_admin}
+  #   # Privileges: https://registry.terraform.io/modules/TaitoUnited/privileges/mysql
+  #   roles:
+  #   users:

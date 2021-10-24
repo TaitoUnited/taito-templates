@@ -2,7 +2,7 @@
 # shellcheck disable=SC2034
 set -a
 
-# CHANGE: To enable VPN you must do the following:
+# CHANGE: If you want to enable VPN, you must do the following:
 # - Add 'vpn' to taito_plugins
 # - Set taito_vpn_enabled to true
 # - Enable VPN in terraform/vpn.tf
@@ -27,7 +27,7 @@ taito_organization_abbr=myorg # CHANGE
 # Zone settings
 taito_zone=my-zone
 taito_zone_short="${taito_zone//-/}"
-taito_zone_multi_tenant=false
+taito_zone_multi_tenant=false # Not supported yet
 taito_vpn_enabled=false # CHANGE
 taito_devops_email=support@myorganization.com # CHANGE
 taito_default_domain=${taito_zone}.myorganization.com # CHANGE
