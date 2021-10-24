@@ -1,0 +1,54 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/digitalocean
+
+# TODO: Does not work yet
+
+permissions:
+  clusterRoles:
+    # Grant global access management rights for some users/groups
+    - name: taito-iam-admin
+      subjects:
+        # CHANGE: Either set your personal user account here or give id
+        # of a group (e.g. id of admins group)
+        - user:TODO
+
+    # Grant global development rights for some users/groups
+    - name: taito-developer
+      subjects:
+        # CHANGE: Either set your personal user account here or give id
+        # of a group (e.g. id of admins group)
+        - user:TODO
+
+    # EXAMPLE: Grant global status viewer rights for some users/groups
+    # - name: taito-status-viewer
+    #   subjects:
+    #     - user:TODO
+
+  namespaces:
+    # EXAMPLE: Grant reading common secrets for some users/groups
+    # - name: common
+    #   clusterRoles:
+    #     - name: taito-secret-viewer
+    #       subjects:
+    #         - group:TODO
+
+    # EXAMPLE: Grant database access through a db proxy for some users/groups
+    # - name: db-proxy
+    #   clusterRoles:
+    #     - name: taito-proxyer
+    #       subjects:
+    #         - group:TODO
+
+    # EXAMPLE: Grant project env development and access management rights
+    # - name: my-project-dev
+    #   clusterRoles:
+    #     - name: taito-iam-admin
+    #       subjects:
+    #         - user:TODO
+    #     - name: taito-developer
+    #       subjects:
+    #         - group:TODO
+
+    # TIP: Alternatively you can configure project env specific permissions
+    # directly in the project git repository using Helm terraform provider with
+    # the namespace Helm chart. Examples:
+    # https://github.com/TaitoUnited/full-stack-template/blob/master/scripts/terraform/examples.yaml

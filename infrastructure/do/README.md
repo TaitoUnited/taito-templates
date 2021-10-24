@@ -1,8 +1,12 @@
 # DigitalOcean example
 
-> NOTE: This example is incomplete. It lacks container registry.
+Example for a taito zone located in DigitalOcean. Create infrastructure with the following steps:
 
-Example for a taito zone located in DigitalOcean. Configure settings in `taito-config.sh` and then create the zone by running `taito zone apply`.
+- Configure settings to your liking in `taito-config.sh` and `*.yaml` files. Change at least all the settings that have been marked with `CHANGE`.
+- Authenticate with `taito auth`.
+- Create the zone by running `taito zone apply`.
+
+Infrastructure is provisioned with Terraform and you can customize it to your liking by modifying the `*.yaml` files and terraform scripts.
 
 ## Links
 
@@ -12,7 +16,7 @@ LINKS WILL BE GENERATED HERE
 
 [//]: # "GENERATED LINKS END"
 
-> You can update this section by configuring links in `taito-config.sh` and running `taito project docs`.
+> You can update this section by configuring links in `taito-config.sh` and running `taito project generate`.
 
 ## Interactive operations
 
@@ -24,29 +28,20 @@ LINKS WILL BE GENERATED HERE
 - `taito zone destroy`: Destroy the zone.
 - `taito project settings`: Show project template settings for this zone.
 
+## User permissions
+
+Grant permissions for user groups in zone configuration:
+
+- In **admin.yaml** grant TODO.
+- In **admin.yaml** grant TODO. This allows external developers to connect to Kubernetes, but they don't have permissions to any namespaces by default.
+- In **kubernetes-permissions.yaml** grant `taito-proxyer` role on `db-proxy` namespace for `External developers` group. This allows external developers to connect to database clusters, but they don't have access to any database credentials by default.
+
+Use project specific configuration to grant access to project specific namespaces and database credentials. See [the example](https://github.com/TaitoUnited/full-stack-template/blob/dev/scripts/terraform/examples.yaml).
+
 ## Troubleshooting
-
-Terraform fails during Helm release execution:
-
-- Just retry a few times to see if that resolves the issue.
-- Reinstall all Helm releases:
-  1. Set `helm_enabled = false` in `main.tf`
-  2. Run `taito zone apply`, and retry until it succeeds.
-  3. Delete rest of the cert-manager [manually](https://github.com/jetstack/cert-manager/issues/2273#issuecomment-564525232) in case something extra is still lying around.
-  4. Set `helm_enabled = true` in `main.tf`
-  5. Run `taito zone apply`, and retry until succeeds.
 
 Misc Terraform problems:
 
-- Use `terraform_init_options` and `terraform_apply_options` in `taito-config.sh` to pass extra parameters for terraform (e.g. `teffaform_target`).
+- Just retry a few times to see if that resolves the issue.
+- Use `terraform_init_options` and `terraform_apply_options` in `taito-config.sh` to pass extra parameters for terraform (e.g. `-target=module.vpn`).
 - Run `taito shell` and execute terraform commands directly.
-
-Limit terraform execution to a specific target by setting `teffaform_target` in `taito-config.sh`. For example: `teffaform_target=module.taito_zone.helm_release.postgres_proxy`.
-
-## TODO
-
-Implement by using gcp as an example.
-
-- https://www.digitalocean.com/products/kubernetes/
-- https://blog.digitalocean.com/announcing-managed-databases-for-postgresql/
-- https://www.digitalocean.com/products/spaces/

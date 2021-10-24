@@ -1,0 +1,4 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/network/digitalocean
+
+network:
+  ipRange: 10.10.10.0/24

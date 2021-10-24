@@ -1,0 +1,10 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/compute/digitalocean
+
+# EXAMPLE:
+# --------
+# virtualMachines:
+#   - name: my-server
+#     region: nyc2
+#     size: s-1vcpu-1gb
+#     image: ubuntu-18-04-x64
+#     ...

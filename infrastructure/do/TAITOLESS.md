@@ -1,5 +1,7 @@
 # Taitoless: without Taito CLI
 
+> TODO: Update instructions (nowadays multiple yaml files)
+
 Creating a zone without Taito CLI:
 
 1) Configure settings in *taito-config.sh* and add terraform specific `TF_VAR_` prefix to each variable.
@@ -34,10 +36,10 @@ Creating a zone without Taito CLI:
     terraform apply
     ```
 
-10) Check nginx-ingress load balancer external IP address:
+10) Check ingress-nginx load balancer external IP address:
 
     ```
-    kubectl get services --namespace nginx-ingress
+    kubectl get services --namespace ingress-nginx
     ```
 
 11) Add A record for the load balancer IP address (e.g. `A *.do.mydomain.com -> 123.123.123.123`)

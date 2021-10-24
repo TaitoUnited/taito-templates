@@ -1,0 +1,15 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/dns/digitalocean
+
+# EXAMPLE:
+# --------
+# dnsZones:
+#   - dnsName: mydomain.com
+#     recordSets:
+#       - dnsName: www
+#         type: A
+#         ttl: 3600
+#         value: "127.127.127.127"
+#       - dnsName: myapp
+#         type: CNAME
+#         ttl: 43200
+#         value: myapp.otherdomain.com.

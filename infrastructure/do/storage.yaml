@@ -1,0 +1,33 @@
+# See: https://registry.terraform.io/modules/TaitoUnited/storage/digitalocean
+
+storageBuckets:
+  - name: ${taito_state_bucket}
+    purpose: zone state
+    location: ${taito_provider_region}
+    acl: private
+    versioningEnabled: true
+    versioningRetainDays: 90
+    autoDeletionRetainDays:
+
+  - name: ${taito_projects_bucket}
+    purpose: projects state
+    location: ${taito_provider_region}
+    acl: private
+    versioningEnabled: true
+    versioningRetainDays: 90
+    autoDeletionRetainDays:
+
+  - name: ${taito_backup_bucket}
+    purpose: backup
+    location: ${taito_provider_region}
+    acl: private
+    versioningEnabled: false
+
+  # - name: ${taito_public_bucket}
+  #   purpose: public static assets
+  #   location: ${taito_provider_region}
+  #   acl: public-read
+  #   versioningEnabled: true
+  #   versioningRetainDays: 60
+  #   corsRules:
+  #     - allowedOrigins: ["*"]
