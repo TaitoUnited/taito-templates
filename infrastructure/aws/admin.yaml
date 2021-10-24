@@ -12,8 +12,9 @@ groups:
   - name: developers
     path: /
     policies: [ "kubernetes.connect", "logging.read" ]
-    assumeRoles:
-      - "arn:aws:iam::56789012345:role/developer"
+    # TODO: causes syntax error
+    # assumeRoles:
+    #   - "arn:aws:iam::${taito_provider_org_id}:role/developer"
 
 users:
   # CHANGE: Add developers here

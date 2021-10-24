@@ -13,8 +13,9 @@ set -a
 taito_version=1
 taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
+# TODO: aws-secrets should use secret manager
 taito_plugins="
-  aws-zone aws-secrets
+  aws-zone
   terraform-zone
   kubectl-zone helm-zone
   generate-secrets links-global custom
@@ -47,7 +48,6 @@ taito_projects_bucket=$taito_zone-projects
 # Cloud provider
 taito_provider=aws
 taito_provider_org_id=0123456789 # CHANGE: AWS account id
-taito_provider_region_hexchars=TAITO_PROVIDER_REGION_HEXCHARS
 taito_provider_region=us-east-1 # CHANGE
 taito_provider_zone=us-east-1a # CHANGE
 taito_provider_secrets_location=$taito_zone
@@ -63,7 +63,7 @@ taito_container_registry=${taito_provider_org_id}.dkr.ecr.${taito_provider_regio
 # CI/CD provider
 taito_ci_provider=github  # NOTE: Set to "azure" if you want to use Azure DevOps instead
 taito_ci_provider_url=
-taito_ci_organization=$taito_organization  # e.g. GitHub organization or Azure DevOps organization
+taito_ci_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
 # Version control provider
 taito_vc_provider=github

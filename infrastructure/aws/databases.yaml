@@ -7,8 +7,9 @@
 
 postgresqlClusters:
   - name: ${postgres_default_name}
+    family: postgres13
     version: "13.4"
-    instanceClass: db.t2.large
+    instanceClass: db.t4g.small
     storageType: gp2
     storageSizeGb: 10
     maxStorageSizeGb: 100
@@ -21,10 +22,11 @@ postgresqlClusters:
     roles:
     users:
 
-mysqlClusters:
+mysqlClusters: []
   # - name: ${mysql_default_name}
+  #   family: mysql8
   #   version: "8.0.25"
-  #   instanceClass: db.t2.large
+  #   instanceClass: db.t4g.small
   #   storageType: gp2
   #   storageSizeGb: 10
   #   maxStorageSizeGb: 100

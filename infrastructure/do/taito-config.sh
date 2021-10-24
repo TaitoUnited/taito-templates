@@ -54,7 +54,7 @@ taito_container_registry=registry.digitalocean.com/CONTAINER_REGISTRY
 # CI/CD provider
 taito_ci_provider=github  # NOTE: Set to "azure" if you want to use Azure DevOps instead
 taito_ci_provider_url=
-taito_ci_organization=$taito_organization  # e.g. GitHub organization or Azure DevOps organization
+taito_ci_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
 # Version control provider
 taito_vc_provider=github

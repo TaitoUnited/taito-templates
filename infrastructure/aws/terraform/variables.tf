@@ -41,6 +41,18 @@ variable "kubernetes_db_proxy_enabled" {
   type = bool
 }
 
+/* Buckets */
+
+variable "taito_public_bucket" {
+  type = string
+  default = ""
+}
+
+variable "taito_projects_bucket" {
+  type = string
+  default = ""
+}
+
 /* Messaging */
 
 variable "taito_messaging_app" {

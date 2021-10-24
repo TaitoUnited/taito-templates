@@ -18,7 +18,7 @@ postgresqlClusters:
     roles:
     users:
 
-mysqlClusters:
+mysqlClusters: []
   # - name: ${mysql_default_name}
   #   region: ${taito_provider_region}
   #   version: "8"

@@ -58,6 +58,7 @@ taito_container_registry=eu.gcr.io/$taito_zone
 # CI/CD provider
 taito_ci_provider=gcp
 taito_ci_provider_url=
+taito_ci_organization=$taito_organization  # CHANGE: e.g. GitHub organization or username
 
 # Version control provider
 taito_vc_provider=github
