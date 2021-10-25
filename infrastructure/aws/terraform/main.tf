@@ -179,7 +179,7 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/aws"
-  version             = "0.0.3"
+  version             = "0.0.4"
 
   name                = var.taito_zone
   kubernetes_name     = try(local.kubernetes["kubernetes"]["name"], null)
