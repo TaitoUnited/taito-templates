@@ -6,8 +6,9 @@ set -a
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
 # - Remove kubernetes_* settings from this file
-# - Delete kubernetes.yaml and kubernetes-permissions.yaml
+# - Delete kubernetes.yaml and kubernetes-permissions.yaml files
 # - Enable bastion host by setting taito_bastion_enabled=true
+# - Set empty value to taito_provider_secrets_mode
 # - Uncomment DNS settings in dns.yaml
 
 # Taito CLI
@@ -16,7 +17,7 @@ taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
 # TODO: aws-secrets should use secret manager
 taito_plugins="
-  aws-zone
+  aws-zone aws-secrets
   terraform-zone
   kubectl-zone helm-zone
   generate-secrets links-global custom
