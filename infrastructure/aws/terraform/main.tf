@@ -88,11 +88,12 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/aws"
-  version             = "0.0.2"
+  version             = "0.0.3"
 
   name                = var.taito_zone
   vpc_id              = module.network.vpc_id
   database_subnets    = module.network.database_subnets
+  client_subnets      = concat(module.network.private_subnets, module.network.public_subnets)
 
   postgresql_clusters = try(local.databases.postgresqlClusters, [])
   mysql_clusters      = try(local.databases.mysqlClusters, [])
@@ -179,7 +180,7 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/aws"
-  version             = "0.0.4"
+  version             = "0.0.5"
 
   name                = var.taito_zone
   kubernetes_name     = try(local.kubernetes["kubernetes"]["name"], null)
