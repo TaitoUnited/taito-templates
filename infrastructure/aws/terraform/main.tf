@@ -88,7 +88,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/aws"
-  version             = "0.0.3"
+  version             = "0.0.4"
 
   name                = var.taito_zone
   vpc_id              = module.network.vpc_id
