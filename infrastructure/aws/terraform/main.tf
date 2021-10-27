@@ -70,7 +70,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/aws"
-  version             = "0.0.4"
+  version             = "0.0.5"
 
   account_id          = var.taito_provider_org_id
 
@@ -82,8 +82,10 @@ module "admin" {
   create_predefined_policies = true
   predefined_policy_prefix   = ""
   cicd_secrets_path          = "/cicd/"
-  shared_cdn_bucket          = var.taito_public_bucket
-  shared_state_bucket        = var.taito_projects_bucket
+
+  shared_static_assets_bucket = var.taito_public_bucket
+  shared_functions_bucket     = var.taito_projects_bucket
+  shared_state_bucket         = var.taito_projects_bucket
 }
 
 module "databases" {
