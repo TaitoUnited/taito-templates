@@ -197,7 +197,7 @@ module "monitoring" {
   messaging_app              = var.taito_messaging_app
   messaging_webhook          = var.taito_messaging_webhook
   messaging_critical_channel = var.taito_messaging_critical_channel
-  messaging_builds_channel   = var.taito_messaging_builds_channel
+  messaging_builds_channel   = var.taito_ci_provider == "aws" ? var.taito_messaging_builds_channel : null
 
   # TODO: alerts                     = local.network["alerts"]
 }

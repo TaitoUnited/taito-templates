@@ -31,6 +31,11 @@ variable "taito_provider_user_profile" {
   default = ""
 }
 
+variable "taito_ci_provider" {
+  type    = string
+  default = ""
+}
+
 /* Settings */
 
 variable "taito_devops_email" {
