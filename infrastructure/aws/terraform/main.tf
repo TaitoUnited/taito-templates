@@ -70,7 +70,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/aws"
-  version             = "0.0.2"
+  version             = "0.0.4"
 
   account_id          = var.taito_provider_org_id
 
