@@ -6,6 +6,7 @@ set -a
 # following changes:
 # - Remove kubectl-zone and helm-zone from taito_plugins
 # - Remove kubernetes_* settings from this file
+# - Remove kubernetes settings from terraform/variables.tf and terraform/main.tf
 # - Delete kubernetes.yaml and kubernetes-permissions.yaml files
 # - Enable bastion host by setting taito_bastion_enabled=true
 # - Set empty value to taito_provider_secrets_mode
