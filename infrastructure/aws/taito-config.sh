@@ -15,7 +15,6 @@ set -a
 taito_version=1
 taito_type=zone
 # TODO: custom extension -> taito_extensions="./extension"
-# TODO: aws-secrets should use secret manager
 taito_plugins="
   aws-zone aws-secrets
   terraform-zone
@@ -134,7 +133,7 @@ db_commonpg_real_host="POSTGRES_HOST" # ${taito_zone}-common-postgres.${taito_pr
 db_commonpg_real_port="5432"
 db_commonpg_ssl_enabled="true"
 db_commonpg_ssl_client_cert_enabled="false"
-db_commonpg_ssl_server_cert_enabled="false"
+db_commonpg_ssl_server_cert_enabled="false" # TODO: enable once works
 db_commonpg_proxy_ssl_enabled="true"
 db_commonpg_username=${taito_zone_short}
 db_commonpg_username_suffix=
@@ -149,7 +148,7 @@ db_commonmysql_real_host="MYSQL_HOST" # ${taito_zone}-common-mysql.${taito_provi
 db_commonmysql_real_port="3306"
 db_commonmysql_ssl_enabled="true"
 db_commonmysql_ssl_client_cert_enabled="false"
-db_commonmysql_ssl_server_cert_enabled="false"
+db_commonmysql_ssl_server_cert_enabled="false" # TODO: enable once works
 db_commonmysql_proxy_ssl_enabled="true"
 db_commonmysql_username=${taito_zone_short}
 db_commonmysql_username_suffix=
