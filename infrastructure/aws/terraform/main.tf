@@ -70,7 +70,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/aws"
-  version             = "0.0.7"
+  version             = "1.0.0"
 
   account_id          = var.taito_provider_org_id
 
@@ -90,7 +90,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/aws"
-  version             = "0.0.4"
+  version             = "1.0.0"
 
   name                = var.taito_zone
   vpc_id              = module.network.vpc_id
@@ -105,20 +105,20 @@ module "databases" {
 
 module "dns" {
   source              = "TaitoUnited/dns/aws"
-  version             = "0.0.4"
+  version             = "1.0.0"
   dns_zones           = try(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source              = "TaitoUnited/compute/aws"
-  version             = "0.0.1"
+  version             = "1.0.0"
   # TODO: virtual_machines    = try(local.compute["virtualMachines"], [])
 }
 
 module "kubernetes" {
   # depends_on                 = [ module.admin ]
   source                     = "TaitoUnited/kubernetes/aws"
-  version                    = "0.0.4"
+  version                    = "1.0.0"
 
   user_profile               = coalesce(var.taito_provider_user_profile, var.taito_organization)
   email                      = var.taito_devops_email
@@ -175,14 +175,14 @@ module "kubernetes" {
 
 module "integrations" {
   source              = "TaitoUnited/integrations/aws"
-  version             = "0.0.1"
+  version             = "1.0.0"
 
   # TODO: kafkas              = try(local.integrations["kafkas"], [])
 }
 
 module "network" {
   source              = "TaitoUnited/network/aws"
-  version             = "0.0.5"
+  version             = "1.0.0"
 
   name                = var.taito_zone
   kubernetes_name     = try(local.kubernetes["kubernetes"]["name"], null)
@@ -192,7 +192,7 @@ module "network" {
 
 module "monitoring" {
   source                     = "TaitoUnited/monitoring/aws"
-  version                    = "0.0.1"
+  version                    = "1.0.0"
 
   name                       = var.taito_zone
 
@@ -206,7 +206,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/aws"
-  version             = "0.0.3"
+  version             = "1.0.0"
 
   storage_buckets    = try(local.storage["storageBuckets"], [])
 }
