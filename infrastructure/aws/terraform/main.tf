@@ -105,7 +105,7 @@ module "databases" {
 
 module "dns" {
   source              = "TaitoUnited/dns/aws"
-  version             = "1.0.0"
+  version             = "1.1.0"
   dns_zones           = try(local.dns["dnsZones"], [])
 }
 
