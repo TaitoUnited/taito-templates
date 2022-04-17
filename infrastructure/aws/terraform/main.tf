@@ -118,7 +118,7 @@ module "compute" {
 module "kubernetes" {
   # depends_on                 = [ module.admin ]
   source                     = "TaitoUnited/kubernetes/aws"
-  version                    = "1.0.0"
+  version                    = "1.1.0"
 
   user_profile               = coalesce(var.taito_provider_user_profile, var.taito_organization)
   email                      = var.taito_devops_email

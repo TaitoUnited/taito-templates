@@ -117,7 +117,7 @@ module "compute" {
 module "kubernetes" {
   depends_on                 = [ module.admin ]
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "1.5.1"
+  version                    = "1.6.0"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
