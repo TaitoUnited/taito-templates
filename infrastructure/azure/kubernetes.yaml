@@ -2,15 +2,15 @@
 
 kubernetes:
   name: ${kubernetes_name}
-  skuTier: Free  # Free or Paid (Paid includes Uptime SLA)
-  automaticChannelUpgrade: stable  # none, patch, rapid, stable
+  skuTier: Free # Free or Paid (Paid includes Uptime SLA)
+  automaticChannelUpgrade: stable # none, patch, rapid, stable
   maintenanceAllowed:
     - day: Sunday
-      hours: [ 4, 5, 6, 7 ]
+      hours: [4, 5, 6, 7]
 
   # Network
-  networkPlugin: azure  # azure, kubenet
-  networkPolicy: ${kubernetes_network_policy_provider}  # azure, calico
+  networkPlugin: azure # azure, kubenet
+  networkPolicy: ${kubernetes_network_policy_provider} # azure, calico
   privateClusterEnabled: false # CHANGE
   masterAuthorizedNetworks:
     - 0.0.0.0/0 # CHANGE: For private cluster use: masterAuthorizedNetworks: []
@@ -30,7 +30,7 @@ kubernetes:
   nodePools:
     - name: default
       vmSize: Standard_D2_v2
-      availabilityZones: [ "1", "2", "3" ]
+      zones: ["1", "2", "3"]
       # CHANGE: Using at least 3 nodes is recommended
       minNodeCount: 1
       maxNodeCount: 1

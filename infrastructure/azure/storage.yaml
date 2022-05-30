@@ -8,7 +8,7 @@ storageAccounts:
     accessTier: Hot
     accountReplicationType: ZRS
     containerAccessType: private
-    allowBlobPublicAccess: false
+    allowNestedItemsToBePublic: false
 
   # NOTE: taito_projects_bucket not required on a multi-tenant zone
   - name: ${taito_projects_bucket}
@@ -18,7 +18,7 @@ storageAccounts:
     accessTier: Hot
     accountReplicationType: ZRS
     containerAccessType: private
-    allowBlobPublicAccess: false
+    allowNestedItemsToBePublic: false
 
   - name: ${taito_backup_bucket}
     purpose: backup
@@ -27,7 +27,7 @@ storageAccounts:
     accessTier: Cool
     accountReplicationType: ZRS
     containerAccessType: private
-    allowBlobPublicAccess: false
+    allowNestedItemsToBePublic: false
 
   # - name: ${taito_public_bucket}
   #   purpose: public static assets
@@ -36,6 +36,6 @@ storageAccounts:
   #   accessTier: Hot
   #   accountReplicationType: ZRS
   #   containerAccessType: blob
-  #   allowBlobPublicAccess: true
+  #   allowNestedItemsToBePublic: true
   #   cors:
   #     - origin: ["*"]

@@ -117,7 +117,7 @@ module "compute" {
 module "kubernetes" {
   depends_on                 = [ module.admin ]
   source                     = "TaitoUnited/kubernetes/azurerm"
-  version                    = "1.6.0"
+  version                    = "2.0.0"
 
   resource_group_name        = azurerm_resource_group.zone.name
 
@@ -198,7 +198,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/azurerm"
-  version             = "0.0.7"
+  version             = "1.0.0"
 
   resource_group_name = azurerm_resource_group.zone.name
   storage_accounts    = try(local.storage["storageAccounts"], [])
