@@ -44,7 +44,7 @@ taito_projects_bucket=${taito_zone_short}projects
 # Cloud provider
 taito_provider=azure
 taito_provider_org_id=mytenant.onmicrosoft.com # CHANGE: Azure tenant
-taito_provider_region=northeurope # CHANGE
+taito_provider_region=westeurope # CHANGE
 # Billing account subscription id (Billing -> Subscriptions):
 taito_provider_billing_account_id=a1234567-b123-c123-d123-e12345678901 # CHANGE
 taito_provider_secrets_location=
