@@ -70,7 +70,7 @@ locals {
 
 module "admin" {
   source              = "TaitoUnited/admin/aws"
-  version             = "1.0.0"
+  version             = "1.0.1"
 
   account_id          = var.taito_provider_org_id
 
@@ -90,7 +90,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/aws"
-  version             = "1.0.0"
+  version             = "1.1.0"
 
   name                = var.taito_zone
   vpc_id              = module.network.vpc_id
@@ -105,13 +105,13 @@ module "databases" {
 
 module "dns" {
   source              = "TaitoUnited/dns/aws"
-  version             = "1.1.0"
+  version             = "1.1.1"
   dns_zones           = try(local.dns["dnsZones"], [])
 }
 
 module "compute" {
   source              = "TaitoUnited/compute/aws"
-  version             = "1.0.0"
+  version             = "1.0.1"
   # TODO: virtual_machines    = try(local.compute["virtualMachines"], [])
 }
 
@@ -182,17 +182,15 @@ module "integrations" {
 
 module "network" {
   source              = "TaitoUnited/network/aws"
-  version             = "1.0.0"
+  version             = "1.1.0"
 
   name                = var.taito_zone
-  kubernetes_name     = try(local.kubernetes["kubernetes"]["name"], null)
-
   network             = local.network["network"]
 }
 
 module "monitoring" {
   source                     = "TaitoUnited/monitoring/aws"
-  version                    = "1.0.0"
+  version                    = "1.1.0"
 
   name                       = var.taito_zone
 
@@ -206,7 +204,7 @@ module "monitoring" {
 
 module "storage" {
   source              = "TaitoUnited/storage/aws"
-  version             = "1.0.0"
+  version             = "1.0.1"
 
   storage_buckets    = try(local.storage["storageBuckets"], [])
 }
