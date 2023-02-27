@@ -2,29 +2,21 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
-  tags:
-    - docker
 
 - name: Verify that we have the key with the fingerprint
   apt_key:
     id: 0EBFCD88
     state: present
-  tags:
-    - docker
 
 - name: Set up the stable repository
   apt_repository:
     repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
     state: present
     update_cache: yes
-  tags:
-    - docker
 
 - name: Update apt packages
   apt:
     update_cache: yes
-  tags:
-    - docker
 
 - name: Install docker
   apt:
@@ -32,15 +24,6 @@
     state: present
     update_cache: yes
   # notify: Restart docker
-  tags:
-    - docker
-
-- name: Create "docker" group
-  group:
-    name: docker
-    state: present
-  tags:
-    - docker
 
 - name: Check current docker-compose version.
   command: docker-compose --version
@@ -58,15 +41,43 @@
 
 - name: Install Docker Compose (if configured).
   get_url:
-    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    url: https://github.com/docker/compose/releases/download/v{{ docker_compose_version }}/docker-compose-Linux-x86_64
     dest: "{{ docker_compose_path }}"
     mode: 0755
 
-- name: Allow http to Docker Compose through firewall
-  ufw:
-    rule: allow
-    to_port: "{{ lookup('env','taito_worker_port_range') }}"
-    proto: tcp
-    src: '{{ item }}'
-  loop: "{{ lookup('env','taito_worker_authorized_networks').split(' ') }}"
-  notify: Reload ufw
+- name: Create "projects" folder
+  file:
+    path: /projects
+    state: directory
+    owner: root
+    group: docker
+    mode: u=rwx,g=rwxs,o=
+
+- name: Create shared docker folder
+  file:
+    path: /projects/docker
+    state: directory
+    owner: root
+    group: docker
+    mode: u=rwx,g=rwxs,o=
+
+- name: Create shared docker config
+  copy:
+    dest: /projects/docker/config.json
+    owner: root
+    group: docker
+    mode: u=rw,g=rw,o=
+    content: "{}"
+
+- name: Create shared docker profile
+  copy:
+    dest: /etc/profile.d/docker.sh
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+    content: |
+      export DOCKER_CONFIG=/projects/docker
+
+# NOTE: If binding to 127.0.0.1 on docker-compose.yaml is not enough,
+# We could prevent exposing Docker host ports on Firewall like this:
+# https://github.com/chaifeng/ufw-docker

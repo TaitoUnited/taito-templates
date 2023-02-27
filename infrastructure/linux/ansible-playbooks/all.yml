@@ -4,6 +4,8 @@
   roles:
     - apt
     - ufw
+    - ufw-ssh
+    - geoip
     - common
     - users
     - auth

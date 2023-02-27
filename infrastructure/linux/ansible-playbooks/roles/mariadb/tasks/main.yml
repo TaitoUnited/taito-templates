@@ -1,10 +1,14 @@
+- name: Remove old 3306 rules
+  shell: ufw status numbered | grep ' 3306/tcp' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1 bash -c 'if [ $0 != 'bash' ]; then yes | ufw delete $0; fi'
+  notify: Reload ufw
+
 - name: Allow 3306 from database authorized networks through firewall
   ufw:
     rule: allow
     to_port: "3306"
     proto: tcp
-    src: '{{ item }}'
-  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+    src: "{{ item }}"
+  loop: "{{ database_authorized_networks }}"
   notify: Reload ufw
 
 - name: Deny all IPv6 to port 3306 just in case it was allowed at some point
@@ -28,7 +32,7 @@
   mysql_user:
     name: "{{ mariadb.admin_user }}"
     password: "{{ mariadb_admin_password }}"
-    priv: '*.*:ALL,GRANT'
+    priv: "*.*:ALL,GRANT"
   when: mariadb.admin_user is defined and mariadb_admin_password is defined
 
 # TODO remove mariadb root user?
@@ -41,7 +45,7 @@
 
 - name: Remove anonymous MariaDB users
   mysql_user:
-    name: ''
+    name: ""
     host_all: yes
     state: absent
 

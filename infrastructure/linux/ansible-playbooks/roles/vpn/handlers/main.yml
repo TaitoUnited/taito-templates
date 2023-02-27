@@ -1,0 +1,4 @@
+# - name: Restart vpn
+#   service:
+#     name: vpn
+#     state: restarted

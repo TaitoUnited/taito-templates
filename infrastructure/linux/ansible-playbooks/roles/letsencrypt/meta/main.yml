@@ -1,6 +1,5 @@
 dependencies:
-  - role: nginx
   - role: apt
     packages:
-      - python-simplejson
+      - python3-simplejson
       - letsencrypt

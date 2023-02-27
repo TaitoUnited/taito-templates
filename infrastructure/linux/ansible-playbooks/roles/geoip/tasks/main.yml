@@ -1,0 +1,106 @@
+- name: Create xt_geoip directory
+  file:
+    path: /usr/share/xt_geoip
+    state: directory
+
+# Alternative from: https://ultramookie.com/2020/10/geoip-blocking-ubuntu-20.04/
+# - name: Create update-geoip.sh script (alternative)
+#   copy:
+#     dest: /usr/local/bin/update-geoip.sh
+#     mode: u=rwx,g=r,o=r
+#     content: |
+#       #!/bin/bash
+#       MON=$(date +"%m")
+#       YR=$(date +"%Y")
+#       wget https://download.db-ip.com/free/dbip-country-lite-${YR}-${MON}.csv.gz -O /usr/share/xt_geoip/dbip-country-lite.csv.gz
+#       gunzip /usr/share/xt_geoip/dbip-country-lite.csv.gz
+#       /usr/libexec/xtables-addons/xt_geoip_build -D /usr/share/xt_geoip/
+#       rm /usr/share/xt_geoip/dbip-country-lite.csv
+
+# Based on https://www.seenlyst.com/blog/geo-blocking-ufw-iptables/
+- name: Create update-geoip.sh script
+  copy:
+    dest: /usr/local/bin/update-geoip.sh
+    mode: u=rwx,g=r,o=r
+    content: |
+      #!/bin/bash
+
+      # Create temporary directory
+      rm -r /usr/share/xt_geoip/tmp/ 2> /dev/null || :
+      mkdir -p /usr/share/xt_geoip/tmp/
+      mkdir -p /usr/share/xt_geoip/tmp/ip2loc/
+
+      # Download latest from db-ip.com
+      cd /usr/share/xt_geoip/tmp/
+      /usr/libexec/xtables-addons/xt_geoip_dl
+
+      # Download maxmind legacy csv and process
+      wget https://mailfud.org/geoip-legacy/GeoIP-legacy.csv.gz -O /usr/share/xt_geoip/tmp/GeoIP-legacy.csv.gz
+      gunzip /usr/share/xt_geoip/tmp/GeoIP-legacy.csv.gz
+      cat /usr/share/xt_geoip/tmp/GeoIP-legacy.csv | tr -d '"' | cut -d, -f1,2,5 > /usr/share/xt_geoip/tmp/GeoIP-legacy-processed.csv
+      rm /usr/share/xt_geoip/tmp/GeoIP-legacy.csv
+
+      # Download latest from https://github.com/sapics/ip-location-db
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/geo-whois-asn-country/geo-whois-asn-country-ipv4.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/geo-whois-asn-country/geo-whois-asn-country-ipv6.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/iptoasn-country/iptoasn-country-ipv4.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/iptoasn-country/iptoasn-country-ipv6.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/dbip-country/dbip-country-ipv4.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/dbip-country/dbip-country-ipv6.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country/geolite2-country-ipv4.csv
+      # wget -P /usr/share/xt_geoip/tmp/ https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-country/geolite2-country-ipv6.csv
+
+      # Combine all csv and remove duplicates
+      cat *.csv > geoip.csv
+      sort -u geoip.csv -o /usr/share/xt_geoip/dbip-country-lite.csv
+
+      # Remove temp directory and update geoip xtables
+      cd /usr/share/xt_geoip
+      rm -r /usr/share/xt_geoip/tmp/
+      /usr/libexec/xtables-addons/xt_geoip_build -D /usr/share/xt_geoip/
+      rm /usr/share/xt_geoip/dbip-country-lite.csv
+
+- name: Execute the update-geoip.sh script and reload ufw
+  shell: /usr/local/bin/update-geoip.sh
+  notify: Reload ufw
+
+- name: Allow ssh authorized countries
+  blockinfile:
+    path: /etc/ufw/before.rules
+    insertbefore: "COMMIT"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK ssh_authorized_countries"
+    block: |
+      -A ufw-before-input -p tcp --dport 22 -m geoip --src-cc {{ ssh_authorized_countries | join(',') }} -j ACCEPT
+  when: ssh_authorized_countries | length
+  notify: Reload ufw
+
+- name: Allow http authorized countries
+  blockinfile:
+    path: /etc/ufw/before.rules
+    insertbefore: "COMMIT"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK http_authorized_countries"
+    block: |
+      -A ufw-before-input -p tcp --dport 80 -m geoip --src-cc {{ http_authorized_countries | join(',') }} -j ACCEPT
+  when: http_authorized_countries | length
+  notify: Reload ufw
+
+- name: Allow https authorized countries
+  blockinfile:
+    path: /etc/ufw/before.rules
+    insertbefore: "COMMIT"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK https_authorized_countries"
+    block: |
+      -A ufw-before-input -p tcp --dport 443 -m geoip --src-cc {{ https_authorized_countries | join(',') }} -j ACCEPT
+  when: https_authorized_countries | length
+  notify: Reload ufw
+
+- name: Allow vpn authorized countries
+  blockinfile:
+    path: /etc/ufw/before.rules
+    insertbefore: "COMMIT"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK vpn_authorized_countries"
+    block: |
+      -A ufw-before-input -p tcp --dport 1194 -m geoip --src-cc {{ vpn_authorized_countries | join(',') }} -j ACCEPT
+      -A ufw-before-input -p udp --dport 1194 -m geoip --src-cc {{ vpn_authorized_countries | join(',') }} -j ACCEPT
+  when: vpn_authorized_countries | length
+  notify: Reload ufw

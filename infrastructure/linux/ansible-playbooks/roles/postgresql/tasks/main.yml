@@ -1,6 +1,6 @@
 - name: Postgresql listens all addresses
   lineinfile:
-    dest: /etc/postgresql/{{ pg.version | default('9.6') }}/main/postgresql.conf
+    dest: /etc/postgresql/{{ pg.version | default('13') }}/main/postgresql.conf
     regexp: "^.*listen_addresses ="
     line: "listen_addresses = '*'"
     state: present
@@ -9,21 +9,25 @@
 
 - name: Allow database authorized networks postgresql access
   lineinfile:
-    dest: /etc/postgresql/{{ pg.version | default('9.6') }}/main/pg_hba.conf
+    dest: /etc/postgresql/{{ pg.version | default('13') }}/main/pg_hba.conf
     regexp: ".*allow access from {{ item }}"
     line: "host   all   all   {{ item }}   md5   # allow access from {{ item }}"
     state: present
-  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+  loop: "{{ database_authorized_networks }}"
   notify:
     - Restart postgresql
+
+- name: Remove old 5432 rules
+  shell: ufw status numbered | grep ' 5432/tcp' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1 bash -c 'if [ $0 != 'bash' ]; then yes | ufw delete $0; fi'
+  notify: Reload ufw
 
 - name: Allow 5432 from database authorized networks through firewall
   ufw:
     rule: allow
     to_port: "5432"
     proto: tcp
-    src: '{{ item }}'
-  loop: "{{ lookup('env','taito_database_authorized_networks').split(' ') }}"
+    src: "{{ item }}"
+  loop: "{{ database_authorized_networks }}"
   notify: Reload ufw
 
 - name: Deny all IPv6 to port 5432 just in case it was allowed at some point
@@ -53,9 +57,9 @@
   postgresql_db:
     name: "{{ pg.admin_user }}"
     owner: "{{ pg.admin_user }}"
-    encoding: 'UTF-8'
-    lc_collate: 'en_US.UTF-8'
-    lc_ctype: 'en_US.UTF-8'
+    encoding: "UTF-8"
+    lc_collate: "en_US.UTF-8"
+    lc_ctype: "en_US.UTF-8"
   when: pg.admin_user is defined and pg_admin_password is defined
 
 # TODO: remove postgres user?
@@ -75,9 +79,9 @@
   postgresql_db:
     name: "{{ pg.database }}"
     owner: "{{ pg.user }}"
-    encoding: 'UTF-8'
-    lc_collate: 'en_US.UTF-8'
-    lc_ctype: 'en_US.UTF-8'
+    encoding: "UTF-8"
+    lc_collate: "en_US.UTF-8"
+    lc_ctype: "en_US.UTF-8"
   when: pg.database is defined and pg.user is defined and pg.password is defined
 
 - name: Install postgres trigram extension
@@ -85,12 +89,6 @@
   become_user: postgres
   command: psql -d {{ pg.database }} -c "CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;"
   when: pg.enable_trigram is defined and pg.enable_trigram
-
-- name: Install postgres uuid-ossp extension
-  become: yes
-  become_user: postgres
-  command: psql -d {{ pg.database }} -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\" WITH SCHEMA pg_catalog;"
-  when: pg.enable_uuid_oosp is defined and pg.enable_uuid_oosp
 
 - name: Install postgres pgcrypto extension
   become: yes

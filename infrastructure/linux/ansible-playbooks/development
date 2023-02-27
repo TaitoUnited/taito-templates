@@ -22,6 +22,8 @@ x.dev[1:1].mydomain.com
 # use a virtual private network and/or use SSL/TLS connections in all
 # communication between hosts.
 
+[vpn]
+
 [ingress]
 
 [worker]

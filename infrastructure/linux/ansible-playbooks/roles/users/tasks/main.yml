@@ -1,9 +1,14 @@
 # TODO: remove non-existing users
 
+- name: Create "docker" group
+  group:
+    name: docker
+    state: present
+
 - name: Add admin users
   user:
     name: "{{ item.value.username }}"
-    groups: sudo
+    groups: "{{ [ 'sudo', 'users' ] + item.value.groups | default(omit) }}"
     shell: /bin/bash
     generate_ssh_key: "{{ item.value.generate_ssh_key | default(omit) }}"
     ssh_key_bits: "{{ item.value.ssh_key_bits | default(omit) }}"
@@ -21,7 +26,7 @@
   user:
     name: "{{ item.value.username }}"
     shell: /bin/bash
-    groups: "{{ item.value.groups | default(omit) }}"
+    groups: "{{ [ 'users' ] + item.value.groups | default(omit) }}"
     generate_ssh_key: "{{ item.value.generate_ssh_key | default(omit) }}"
     ssh_key_bits: "{{ item.value.ssh_key_bits | default(omit) }}"
     ssh_key_file: "{{ item.value.ssh_key_file | default(omit) }}"
@@ -35,3 +40,23 @@
     exclusive: yes # Deletes all other authorized keys
   with_dict: "{{ users | default({}) }}"
   when: item.value.get('public_key')
+
+- name: Fail if there are no admin users
+  fail:
+    msg: There are no admin users!
+  when: admins | map(attribute='username') | length == 0
+
+- name: Determine existing users
+  shell: 'grep users /etc/group | cut -d: -f4 | tr "," "\n"'
+  changed_when: false
+  register: existing_users
+
+- name: Determine removed users
+  set_fact:
+    removed_users: "{{ existing_users.stdout_lines | difference((users.values() | default([])) | map(attribute='username') + admins.values() | map(attribute='username')) }}"
+
+- name: Delete removed user accounts
+  user:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ removed_users }}"

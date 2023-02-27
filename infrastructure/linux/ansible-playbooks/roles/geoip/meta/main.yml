@@ -1,0 +1,10 @@
+dependencies:
+  - role: ufw
+  - role: apt
+    packages:
+      - curl
+      - perl
+      - unzip
+      - xtables-addons-common
+      - libtext-csv-xs-perl
+      - libmoosex-types-netaddr-ip-perl

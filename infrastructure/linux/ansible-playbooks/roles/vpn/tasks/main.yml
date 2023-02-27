@@ -1,0 +1,26 @@
+- name: Remove old port 1194 ufw rules
+  shell: ufw status numbered | grep ' 1193/' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1 bash -c 'if [ $0 != 'bash' ]; then yes | ufw delete $0; fi'
+  notify: Reload ufw
+
+- name: Allow 1194/tcp through firewall
+  ufw:
+    rule: allow
+    to_port: "1194"
+    proto: tcp
+    src: "{{ item }}"
+  loop: "{{ vpn_authorized_networks }}"
+  notify: Reload ufw
+
+- name: Allow 1194/udp through firewall
+  ufw:
+    rule: allow
+    to_port: "1194"
+    proto: udp
+    src: "{{ item }}"
+  loop: "{{ vpn_authorized_networks }}"
+  notify: Reload ufw
+# - name: Enable vpn service
+#   service:
+#     name: vpn
+#     enabled: yes
+#     state: started

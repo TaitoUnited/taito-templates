@@ -1,10 +1,18 @@
+- name: Remove old http rules
+  shell: ufw status numbered | grep ' 80/tcp' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1 bash -c 'if [ $0 != 'bash' ]; then yes | ufw delete $0; fi'
+  notify: Reload ufw
+
 - name: Allow http through firewall
   ufw:
     rule: allow
     to_port: "80"
     proto: tcp
-    src: '{{ item }}'
-  loop: "{{ lookup('env','taito_http_authorized_networks').split(' ') }}"
+    src: "{{ item }}"
+  loop: "{{ http_authorized_networks }}"
+  notify: Reload ufw
+
+- name: Remove old https rules
+  shell: ufw status numbered | grep ' 443/tcp' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1 bash -c 'if [ $0 != 'bash' ]; then yes | ufw delete $0; fi'
   notify: Reload ufw
 
 - name: Allow https through firewall
@@ -12,8 +20,8 @@
     rule: allow
     to_port: "443"
     proto: tcp
-    src: '{{ item }}'
-  loop: "{{ lookup('env','taito_http_authorized_networks').split(' ') }}"
+    src: "{{ item }}"
+  loop: "{{ https_authorized_networks }}"
   notify: Reload ufw
 
 - name: Disable nginx default site

@@ -1,0 +1,43 @@
+# NOTE: cleaning up old rules does not work
+#
+# - name: List old ssh rules
+#   shell: ufw status numbered | grep ' 22/tcp' | awk -F] '{print $1}' | sed 's/\[\s*//' | tac | xargs -n 1
+#   register: old_ssh_rules
+#
+# - name: Disable firewall for cleaning up old ssh rules (ufw)
+#   ufw:
+#     state: disabled
+#   notify:
+#     - Reload ufw
+#
+# - name: Remove old ssh rules
+#   shell: ufw delete {{ item }}
+#   with_items:
+#     - "{{ old_ssh_rules.stdout_lines }}"
+
+- name: Allow ssh through firewall to specific ip addresses
+  ufw:
+    rule: allow
+    to_port: "22"
+    proto: tcp
+    src: "{{ item }}"
+  loop: "{{ ssh_authorized_networks }}"
+  notify:
+    - Reload ufw
+
+- name: Enable firewall (ufw)
+  ufw:
+    state: enabled
+  notify:
+    - Reload ufw
+
+- name: Deny all IPv6 to port 22 just in case it was allowed at some point
+  ufw:
+    rule: deny
+    proto: tcp
+    port: "22"
+    to_ip: "::"
+    insert: 0
+    insert_relative_to: first-ipv6
+  notify:
+    - Reload ufw

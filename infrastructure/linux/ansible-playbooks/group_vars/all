@@ -1,6 +1,20 @@
 # Common
 devops_email: "{{ lookup('env','taito_devops_email') }}"
 
+# NOTE: If you remove ip from ssh_authorized_networks list,
+# you have to remove the corresponding rule from ufw manually
+# with "ufw delete".
+ssh_authorized_networks: ["0.0.0.0/0"]
+ssh_authorized_countries: []
+http_authorized_networks: ["0.0.0.0/0"] # We must allow all on port 80 because of Let's Encrypt cert reneval process
+http_authorized_countries: []
+https_authorized_networks: ["0.0.0.0/0"]
+https_authorized_countries: []
+vpn_authorized_networks: []
+vpn_authorized_countries: []
+database_authorized_networks:
+  - 172.16.0.0/12 # Docker subnets
+
 # Ingress
 nginx_package: nginx-light
 createtaitosite_template: files/sites/createtaitosite.j2
@@ -8,12 +22,12 @@ deletetaitosite_template: files/sites/deletetaitosite.j2
 gettaitositeport_template: files/sites/gettaitositeport.j2
 
 # Worker
-docker_compose_version: 1.24.0
+docker_compose_version: 2.15.1
 docker_compose_path: /usr/bin/docker-compose
 
 # PostgreSQL
 pg:
-  version: 9.6
+  version: 13
   admin_user: "{{ lookup('env','postgres_default_admin') }}"
 
 # MariaDB

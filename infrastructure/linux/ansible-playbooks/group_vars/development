@@ -7,8 +7,11 @@ admins:
   johndoe:
     username: johndoe
     public_key: files/public_keys/johndoe.pub
+    groups: ["docker"]
 
 # users:
 #  janedoe:
 #    username: janedoe
 #    public_key: files/public_keys/janedoe.pub
+#    groups: ["docker"] # WARNING: docker users basically have root privileges
+
