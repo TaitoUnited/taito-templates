@@ -2,52 +2,89 @@
 # shellcheck disable=SC2034
 set -a
 
-# NOTE: Before modifying the configuration values,
-# read configuration instructions from README.md
+# Access - configure authorized networks in:
+# - ansible-playbook/group_vars/all
+
+# User rights - configure user rights in:
+# - ansible-playbook/group_vars/development   # CHANGE
+# - ansible-playbook/group_vars/production    # CHANGE
+
+# Servers - configure servers in:
+# - ansible-playbooks/development             # CHANGE
+# - ansible-playbooks/production
 
 # Taito CLI
 taito_version=1
 taito_type=zone
-# TODO: taito_extensions="./extension"
+# TODO: custom extension -> taito_extensions="./extension"
 taito_plugins="ansible-zone links-global custom"
 
 # Labeling
-taito_organization=myorganization # CHANGE
-taito_organization_abbr=myorg # CHANGE
-taito_zone=my-zone
+taito_organization=myorganization             # CHANGE
+taito_organization_abbr=myorg                 # CHANGE
 
-# Domains
-# CHANGE: Change domain names also in:
-# - ansible-playbooks/development
-# - ansible-playbooks/production
-taito_default_domain=dev1.mydomain.com # CHANGE
-taito_default_domain_prod=prod1.mydomain.com # CHANGE
+# Zone settings
+taito_zone=my-zone
+taito_zone_short="${taito_zone//-/}"
+taito_zone_multi_tenant=false
+taito_devops_email=support@myorganization.com # CHANGE
+taito_default_domain=dev1.mydomain.com        # CHANGE
+taito_default_domain_prod=prod1.mydomain.com  # CHANGE
 taito_default_cdn_domain=
 
-# Providers
-taito_provider=linux
-taito_uptime_provider=
-taito_uptime_provider_org_id=
-taito_container_registry_provider=local
-taito_container_registry=local
-taito_ci_provider=local
-taito_vc_provider=github # CHANGE
-taito_vc_domain=github.com # CHANGE
+# Zone buckets
+# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
+taito_state_bucket=$taito_zone-state
+taito_function_bucket=$taito_zone-function
+taito_backup_bucket=$taito_zone-backup
+taito_public_bucket=$taito_zone-public
+taito_projects_bucket=$taito_zone-projects
 
-# User rights - configure user rights in:
-# - ansible-playbook/group_vars/development # CHANGE
-# - ansible-playbook/group_vars/production # CHANGE
+# Cloud provider
+taito_provider=linux
+
+# Container registry provider
+taito_container_registry_provider=github
+taito_container_registry_provider_url=
+taito_container_registry_organization=$taito_organization
+taito_container_registry=ghcr.io/$taito_container_registry_organization
+
+# CI/CD provider
+taito_ci_provider=github
+taito_ci_provider_url=
+taito_ci_organization=$taito_organization     # CHANGE: e.g. GitHub organization or username
+
+# Version control provider
+taito_vc_provider=github
+taito_vc_domain=github.com
+taito_vc_organization=$taito_organization     # CHANGE: e.g. GitHub organization or username
+
+# Uptime monitoring provider
+taito_uptime_provider=
+taito_uptime_provider_url=
+taito_uptime_provider_org_id=
+taito_uptime_channels=""
+
+# Error tracking provider
+taito_tracking_provider=sentry
+taito_tracking_provider_url=
+taito_tracking_organization=$taito_organization
+
+# Distributed tracing provider
+taito_tracing_provider=jaeger
+taito_tracing_provider_url=https://jaeger.${taito_default_domain}
+taito_tracing_organization=$taito_organization
+
+# Messaging provider
+# CHANGE: Set slack webhook and channels (optional)
+taito_messaging_app=slack
+taito_messaging_webhook=
+taito_messaging_builds_channel=builds
+taito_messaging_critical_channel=critical
+taito_messaging_monitoring_channel=monitoring
 
 # Ansible
 # ansible_options="--ask-vault-pass"
-
-# Settings
-taito_devops_email=support@mydomain.com # CHANGE
-taito_ssh_authorized_networks="0.0.0.0/0"
-taito_http_authorized_networks="0.0.0.0/0"
-taito_worker_authorized_networks="127.0.0.1" # Only local nginx accesses worker ports
-taito_worker_port_range="9000:9010"
-taito_database_authorized_networks="172.17.0.0/16 172.18.0.0/16" # Docker subnets
 
 # Postgres
 postgres_default_host="x.$taito_default_domain"
@@ -58,13 +95,6 @@ postgres_default_admin="${taito_zone//-/}"
 mysql_default_host="x.$taito_default_domain"
 mysql_default_host_prod="x.$taito_default_domain_prod"
 mysql_default_admin="${taito_zone//-/}"
-
-# Messaging
-taito_messaging_app=slack
-taito_messaging_webhook=
-taito_messaging_builds_channel=builds
-taito_messaging_critical_channel=critical
-taito_messaging_monitoring_channel=monitoring
 
 # Links
 # CHANGE: configure some links here
