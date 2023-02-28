@@ -2,10 +2,31 @@
   apt:
     pkg: ufw
 
+- name: Allow ssh through firewall to specific ip addresses
+  ufw:
+    rule: allow
+    to_port: "22"
+    proto: tcp
+    src: "{{ item }}"
+  loop: "{{ ssh_authorized_networks }}"
+  notify:
+    - Reload ufw
+
 - name: Make deny the default firewall policy
   ufw:
     policy: deny
     direction: incoming
+  notify:
+    - Reload ufw
+
+- name: Deny all IPv6 to port 22 just in case it was allowed at some point
+  ufw:
+    rule: deny
+    proto: tcp
+    port: "22"
+    to_ip: "::"
+    insert: 0
+    insert_relative_to: first-ipv6
   notify:
     - Reload ufw
 
