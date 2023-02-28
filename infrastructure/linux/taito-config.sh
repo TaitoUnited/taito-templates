@@ -33,7 +33,6 @@ taito_default_domain_prod=prod1.mydomain.com  # CHANGE
 taito_default_cdn_domain=
 
 # Zone buckets
-# NOTE: State bucket name also in terraform/main.tf file (terraform backend)
 taito_state_bucket=$taito_zone-state
 taito_function_bucket=$taito_zone-function
 taito_backup_bucket=$taito_zone-backup
