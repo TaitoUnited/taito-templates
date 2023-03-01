@@ -1,0 +1,7 @@
+dependencies:
+  - role: apt
+    packages:
+      - python3-psycopg2
+      - "postgresql-client-{{ pg.version | default('13') }}"
+      - mariadb-client
+      - python3-mysqldb

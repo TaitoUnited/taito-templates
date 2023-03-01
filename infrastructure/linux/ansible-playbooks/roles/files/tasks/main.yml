@@ -1,0 +1,20 @@
+- name: Copy files
+  copy:
+    src: "{{ item.value.src | default(omit) }}"
+    dest: "{{ item.value.dest }}"
+    owner: "{{ item.value.owner | default('root') }}"
+    group: "{{ item.value.group | default('root') }}"
+    mode: "{{ item.value.mode | default('u=rw,g=r,o=') }}"
+    force: "{{ item.value.force | default('yes') }}"
+    content: "{{ item.value.content | default(omit) }}"
+  with_dict: "{{ copy_files | default({}) }}"
+
+- name: Copy templated files
+  template:
+    src: "{{ item.value.src }}"
+    dest: "{{ item.value.dest }}"
+    owner: "{{ item.value.owner | default('root') }}"
+    group: "{{ item.value.group | default('root') }}"
+    mode: "{{ item.value.mode | default('u=rw,g=r,o=r') }}"
+    force: "{{ item.value.force | default('yes') }}"
+  with_dict: "{{ copy_templated_files | default({}) }}"

@@ -61,23 +61,13 @@
     group: docker
     mode: u=rwx,g=rwxs,o=
 
-- name: Create shared docker config
-  copy:
-    dest: /projects/docker/config.json
-    owner: root
-    group: docker
-    mode: u=rw,g=rw,o=
-    content: "{}"
-
-- name: Create shared docker profile
-  copy:
-    dest: /etc/profile.d/docker.sh
-    owner: root
-    group: root
-    mode: u=rw,g=r,o=r
-    content: |
-      export DOCKER_CONFIG=/projects/docker
-
+- name: Add DOCKER_CONFIG path to shared environment
+  blockinfile:
+    path: /etc/environment
+    marker: "# {mark} ANSIBLE MANAGED BLOCK DOCKER_CONFIG"
+    block: "export DOCKER_CONFIG=/projects/docker"
+#
 # NOTE: If binding to 127.0.0.1 on docker-compose.yaml is not enough,
 # We could prevent exposing Docker host ports on Firewall like this:
 # https://github.com/chaifeng/ufw-docker
+#

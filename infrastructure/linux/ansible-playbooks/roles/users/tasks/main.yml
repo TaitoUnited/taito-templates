@@ -53,7 +53,7 @@
 
 - name: Determine removed users
   set_fact:
-    removed_users: "{{ existing_users.stdout_lines | difference((users.values() | default([])) | map(attribute='username') + admins.values() | map(attribute='username')) }}"
+    removed_users: "{{ existing_users.stdout_lines | difference((users | default({})).values() | map(attribute='username') + admins.values() | map(attribute='username')) }}"
 
 - name: Delete removed user accounts
   user:

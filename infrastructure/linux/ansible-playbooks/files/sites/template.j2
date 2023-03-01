@@ -2,10 +2,28 @@ upstream {{ item.name }} {
   server localhost:{{ item.port }};
 }
 
+# Set default response headers values
+map $upstream_http_referrer_policy $hdr_referrer_policy {
+    '' "strict-origin-when-cross-origin";
+}
+map $upstream_http_x_content_type_options $hdr_x_content_type_options {
+    '' "nosniff";
+}
+map $upstream_http_content_security_policy $hdr_content_security_policy {
+    '' "frame-ancestors 'none'";
+}
+map $upstream_http_x_xss_protection $hdr_x_xss_protection {
+    '' "1; mode=block";
+}
+map $upstream_http_strict_transport_security $hdr_strict_transport_security {
+    '' "max-age=63072000";
+}
+
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
   server_name {{ item.domain }};
+  server_tokens off;
 
   # TODO: check SSL settings
   ssl_certificate         /etc/letsencrypt/live/{{ item.domain }}/fullchain.pem;
@@ -31,10 +49,19 @@ server {
     proxy_redirect off;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection 'upgrade';
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
+
+    proxy_hide_header Server;
+
+    add_header Referrer-Policy $hdr_referrer_policy always;
+    add_header X-Content-Type-Options $hdr_x_content_type_options always;
+    add_header Content-Security-Policy $hdr_content_security_policy always;
+    add_header X-Xss-Protection $hdr_x_xss_protection always;
+    add_header Strict-Transport-Security $hdr_strict_transport_security always;
   }
 
 }

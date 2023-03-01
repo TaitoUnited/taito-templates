@@ -1,5 +1,5 @@
-- hosts: vpn
+- hosts: tools:allinone
   become: yes
   become_user: root
   roles:
-    - vpn
+    - tools

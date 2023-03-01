@@ -1,4 +1,4 @@
-- hosts: mysql # NOTE: allinone does not include mysql by default
+- hosts: mysql:allinone
   become: yes
   become_user: root
   roles:

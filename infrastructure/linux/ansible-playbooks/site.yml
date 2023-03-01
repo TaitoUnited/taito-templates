@@ -2,5 +2,6 @@
 - import_playbook: ingress.yml
 - import_playbook: mysql.yml
 - import_playbook: postgresql.yml
+- import_playbook: tools.yml
 - import_playbook: vpn.yml
 - import_playbook: worker.yml

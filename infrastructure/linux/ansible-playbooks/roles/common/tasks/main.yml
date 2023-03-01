@@ -1,3 +1,14 @@
+- name: Determine hostname
+  shell: hostname
+  register: hostname
+
+- name: Add hostname to /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    insertafter: "127.0.0.1"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK hostname"
+    block: "127.0.0.1 {{ hostname.stdout }}"
+
 - name: Upgrade the system
   apt:
     update_cache: yes

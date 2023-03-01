@@ -4,7 +4,8 @@
   roles:
     - apt
     - ufw
-    - geoip
     - common
     - users
     - auth
+    - files
+    - geoip

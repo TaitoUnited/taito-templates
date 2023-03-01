@@ -64,6 +64,15 @@
   shell: /usr/local/bin/update-geoip.sh
   notify: Reload ufw
 
+- name: Check xt_geoip module exists
+  shell: modprobe xt_geoip
+  ignore_errors: true
+  register: modprobe_out
+
+- name: Reboot if xt_geoip module doesn't exists
+  reboot:
+  when: modprobe_out.rc != 0
+
 - name: Allow ssh authorized countries
   blockinfile:
     path: /etc/ufw/before.rules

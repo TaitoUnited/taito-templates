@@ -6,27 +6,27 @@ postgresql
 mysql
 
 # --- All-in-one ---
-
-# Each host on all-in-one group includes NGINX as ingress, Docker Compose for
-# running workloads, and PostgreSQL as DBMS. To include also MySQL DBMS on a
-# host, add the same host also to the mysql group.
+# Each host on all-in-one group includes all components (excluding VPN):
+# - NGINX (ingress)
+# - Docker Compose (worker)
+# - Tools (database clients, etc.)
+# - PostgreSQL (database)
+# - MySQL (database)
 
 [allinone]
-x.dev[1:1].mydomain.com
+dev[1:10].mydomain.com
 
 # --- Distributed ---
-
-# Ingress, worker, postgresql, and mysql groups are meant for distributing
-# different components of infrastucture to separate hosts. If you want to use
-# them, you should ensure secure communication between hosts. For example,
-# use a virtual private network and/or use SSL/TLS connections in all
-# communication between hosts.
+# These groups are meant for distributing different components of
+# infrastucture to separate hosts.
 
 [vpn]
 
 [ingress]
 
 [worker]
+
+[tools]
 
 [postgresql]
 

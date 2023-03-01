@@ -19,11 +19,10 @@
   notify:
     - Reload ufw
 
-- name: Deny all IPv6 to port 22 just in case it was allowed at some point
+- name: Deny all IPv6 traffic just in case
   ufw:
     rule: deny
     proto: tcp
-    port: "22"
     to_ip: "::"
     insert: 0
     insert_relative_to: first-ipv6
