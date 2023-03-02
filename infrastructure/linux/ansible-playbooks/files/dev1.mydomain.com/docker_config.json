@@ -1,3 +1,0 @@
-Add your Ansible Vault encrypted docker config.json file here.
-It is used for authentication when docker images are pulled
-from container registry.

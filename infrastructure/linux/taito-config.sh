@@ -2,16 +2,19 @@
 # shellcheck disable=SC2034
 set -a
 
-# Access - configure authorized networks in:
-# - ansible-playbook/group_vars/all
+# Network Access - Configure authorized networks in:
+# - ansible-playbooks/group_vars/all
 
-# User rights - configure user rights in:
-# - ansible-playbook/group_vars/development   # CHANGE
-# - ansible-playbook/group_vars/production    # CHANGE
+# User Rights - Configure user rights in:
+# - ansible-playbooks/group_vars/development   # CHANGE
+# - ansible-playbooks/group_vars/production    # CHANGE
 
-# Servers - configure servers in:
-# - ansible-playbooks/development             # CHANGE
-# - ansible-playbooks/production
+# Service Accounts - Configure service authentication in:
+# - ansible-playbooks/files/docker/config.json # CHANGE
+
+# Servers - Configure servers in:
+# - ansible-playbookss/development             # CHANGE
+# - ansible-playbookss/production
 
 # Taito CLI
 taito_version=1
