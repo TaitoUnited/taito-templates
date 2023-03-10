@@ -12,9 +12,6 @@ map $upstream_http_x_content_type_options $hdr_x_content_type_options {
 map $upstream_http_content_security_policy $hdr_content_security_policy {
     '' "frame-ancestors 'none'";
 }
-map $upstream_http_x_xss_protection $hdr_x_xss_protection {
-    '' "1; mode=block";
-}
 map $upstream_http_strict_transport_security $hdr_strict_transport_security {
     '' "max-age=63072000";
 }
@@ -60,7 +57,6 @@ server {
     add_header Referrer-Policy $hdr_referrer_policy always;
     add_header X-Content-Type-Options $hdr_x_content_type_options always;
     add_header Content-Security-Policy $hdr_content_security_policy always;
-    add_header X-Xss-Protection $hdr_x_xss_protection always;
     add_header Strict-Transport-Security $hdr_strict_transport_security always;
   }
 
