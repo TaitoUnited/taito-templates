@@ -26,20 +26,18 @@
     name: "{{ mariadb.admin_user }}"
     encoding: utf8
     collation: utf8_unicode_ci
-  when: mariadb.admin_user is defined
+  when: mariadb.admin_user is defined and mariadb.admin_user != 'root'
 
 - name: Add MariaDB admin user
   mysql_user:
     name: "{{ mariadb.admin_user }}"
     password: "{{ mariadb_admin_password }}"
     priv: "*.*:ALL,GRANT"
-  when: mariadb.admin_user is defined and mariadb_admin_password is defined
+  when: mariadb.admin_user is defined and mariadb_admin_password is defined and mariadb.admin_user != 'root'
 
-# TODO remove mariadb root user?
-
-- name: Change MariaDB root password
+- name: Change MariaDB admin user password
   mysql_user:
-    name: root
+    name: "{{ mariadb.admin_user }}"
     password: "{{ mariadb_admin_password }}"
   when: mariadb_admin_password is defined
 

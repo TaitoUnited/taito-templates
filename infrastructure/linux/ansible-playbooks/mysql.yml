@@ -3,9 +3,5 @@
   become_user: root
   roles:
     - mariadb
-  vars_prompt:
-    - name: "mariadb_admin_password"
-      prompt: "(New) MariaDB admin password"
-      unsafe: yes
-      private: yes
-      confirm: yes
+  vars:
+    mariadb_admin_password: !unsafe "{{ lookup('file', '/backups/mysql_admin_password') | trim }}"

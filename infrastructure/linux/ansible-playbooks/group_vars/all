@@ -32,4 +32,4 @@ pg:
 
 # MariaDB
 mariadb:
-  admin_user: "{{ lookup('env','postgres_default_admin') }}"
+  admin_user: "{{ lookup('env','mysql_default_admin') }}"

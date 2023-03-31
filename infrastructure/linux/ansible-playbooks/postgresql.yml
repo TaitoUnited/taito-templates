@@ -3,9 +3,5 @@
   become_user: root
   roles:
     - postgresql
-  vars_prompt:
-    - name: "pg_admin_password"
-      prompt: "(New) PostgreSQL database admin password"
-      unsafe: yes
-      private: yes
-      confirm: yes
+  vars:
+    pg_admin_password: !unsafe "{{ lookup('file', '/backups/postgres_admin_password') | trim }}"

@@ -1,9 +1,13 @@
 dependencies:
   - role: ufw
   - role: apt
+    repositories:
+      - "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    key_urls:
+      - "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
     packages:
       - acl
       - python3-psycopg2
-      - "postgresql-{{ pg.version | default('13') }}"
-      # - "postgresql-contrib-{{ pg.version | default('13') }}"
-      - "postgresql-client-{{ pg.version | default('13') }}"
+      - "postgresql-{{ pg.version | default('15') }}"
+      # - "postgresql-contrib-{{ pg.version | default('15') }}"
+      - "postgresql-client-{{ pg.version | default('15') }}"

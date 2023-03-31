@@ -3,6 +3,7 @@
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2
 # WARNING: Do not accidentally copy the private key!
 
+# CHANGE
 admins:
   johndoe:
     username: johndoe

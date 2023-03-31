@@ -1,3 +1,13 @@
+- name: Create directories
+  file:
+    state: directory
+    path: "{{ item.value.path }}"
+    owner: "{{ item.value.owner | default('root') }}"
+    group: "{{ item.value.group | default('root') }}"
+    mode: "{{ item.value.mode | default('u=rw,g=r,o=') }}"
+    force: "{{ item.value.force | default('no') }}"
+  with_dict: "{{ directories | default({}) }}"
+
 - name: Copy files
   copy:
     src: "{{ item.value.src | default(omit) }}"

@@ -1,5 +1,5 @@
-If your servers pullr Docker container images from a private container registry,
+If your servers pull Docker container images from a private container registry,
 you need to generate a docker config.json based on a service account that has
 appropriate permissions to pull the images.
 
-Add the config.json file here and encrypt with Ansible Vault.
+# CHANGE: Add the config.json file here and encrypt with Ansible Vault.

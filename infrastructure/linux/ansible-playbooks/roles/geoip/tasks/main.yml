@@ -25,6 +25,11 @@
     content: |
       #!/bin/bash
 
+      # Backup the old xt_geoip
+      if [[ -d /usr/share/xt_geoip ]]; then
+        cp -r /usr/share/xt_geoip /usr/share/xt_geoip-$(date +'%Y-%m-%d-%H%M%S')
+      fi
+
       # Create temporary directory
       rm -r /usr/share/xt_geoip/tmp/ 2> /dev/null || :
       mkdir -p /usr/share/xt_geoip/tmp/

@@ -1,0 +1,18 @@
+directories:
+  backups:
+    path: /backups
+    mode: u=rwx,g=,o=
+
+copy_files:
+  backup_database:
+    src: files/backups/database.sh
+    dest: /backups/database.sh
+    mode: u=rwx,g=,o=
+  backup_mysql_admin_password:
+    src: files/backups/mysql_admin_password
+    dest: /backups/mysql_admin_password
+    mode: u=rw,g=,o=
+  backup_mysql_cron:
+    src: files/backups/mysql_cron
+    dest: /etc/cron.d/mysql_backup
+    mode: u=rw,g=r,o=r

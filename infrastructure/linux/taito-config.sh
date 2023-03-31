@@ -91,12 +91,12 @@ taito_messaging_monitoring_channel=monitoring
 # Postgres
 postgres_default_host="x.$taito_default_domain"
 postgres_default_host_prod="x.$taito_default_domain_prod"
-postgres_default_admin="${taito_zone//-/}"
+postgres_default_admin="postgres"
 
 # MySQL
 mysql_default_host="x.$taito_default_domain"
 mysql_default_host_prod="x.$taito_default_domain_prod"
-mysql_default_admin="${taito_zone//-/}"
+mysql_default_admin="root"
 
 # Links
 # CHANGE: configure some links here
