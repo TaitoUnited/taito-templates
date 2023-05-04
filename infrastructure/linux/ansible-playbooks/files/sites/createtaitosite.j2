@@ -5,6 +5,7 @@ set -e
 NAMESPACE=$1
 DOMAIN=$2
 CLIENT_MAX_BODY_SIZE=${3:-1m}
+PORT=$4
 
 PROJECT_DIR="/projects/${NAMESPACE}"
 TEMPLATE_FILE=/etc/nginx/templates/taito-site-template
@@ -15,7 +16,9 @@ mkdir -p "${PROJECT_DIR}"
 echo
 
 echo "[Determine port for site ${NAMESPACE}]"
-PORT=$(gettaitositeport "$NAMESPACE")
+if [[ -z "${PORT}" ]]; then
+  PORT=$(gettaitositeport "$NAMESPACE")
+fi
 echo "port: $PORT"
 echo
 

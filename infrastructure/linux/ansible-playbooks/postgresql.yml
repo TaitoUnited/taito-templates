@@ -4,4 +4,4 @@
   roles:
     - postgresql
   vars:
-    pg_admin_password: !unsafe "{{ lookup('file', '/backups/postgres_admin_password') | trim }}"
+    pg_admin_password: !unsafe "{{ lookup('file', '/secrets/postgres_admin_password') | trim }}"

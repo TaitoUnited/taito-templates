@@ -102,6 +102,13 @@
   notify:
     - Restart nginx
 
+- name: Create monitoring site
+  command: "createtaitosite {{ monitoring_namespace }} {{ monitoring_domain }} 1m 3000"
+  args:
+    chdir: "/projects"
+    creates: "/etc/nginx/sites-available/{{ monitoring_namespace }}"
+  when: monitoring_namespace is defined and monitoring_domain is defined
+
 - name: Enable nginx service
   service:
     name: nginx

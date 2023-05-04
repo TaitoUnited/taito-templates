@@ -1,13 +1,17 @@
 [production:children]
 allinone
+vpn
 ingress
+monitoring
 worker
+tools
 postgresql
 mysql
 
 # --- All-in-one ---
 # Each host on all-in-one group includes all components (excluding VPN):
 # - NGINX (ingress)
+# - Grafana, Loki, Prometheus, etc. (monitoring)
 # - Docker Compose (worker)
 # - Tools (database clients, etc.)
 # - PostgreSQL (database)
@@ -23,6 +27,8 @@ prod[1:10].mydomain.com
 [vpn]
 
 [ingress]
+
+[monitoring]
 
 [worker]
 

@@ -27,9 +27,36 @@ docker_compose_path: /usr/bin/docker-compose
 
 # PostgreSQL
 pg:
-  version: 13
+  version: 15
   admin_user: "{{ lookup('env','postgres_default_admin') }}"
 
 # MariaDB
 mariadb:
   admin_user: "{{ lookup('env','mysql_default_admin') }}"
+
+# Monitoring
+monitoring_domain:
+monitoring_namespace: monitoring
+monitoring_uptime_targets: "[]"
+loki_version: 2.8.1
+loki_url: http://loki:3100
+prometheus_version: 2.37.7
+prometheus_url: http://prometheus:9090
+node_exporter_version: 1.5.0
+blackbox_exporter_version: 0.23.0
+grafana_version: 9.5.1
+grafana_database_host: localhost
+grafana_database_port: 5432
+grafana_database_name: grafana
+grafana_database_username: grafana
+grafana_database_ssl_mode: disable
+grafana_database_ssl_ca_file:
+grafana_smtp_password_file: files/secrets/sendgrid_api_key
+monitoring_docker_compose_template: files/monitoring/docker-compose.j2
+monitoring_loki_datasource_template: files/monitoring/loki-datasource.j2
+monitoring_prometheus_datasource_template: files/monitoring/prometheus-datasource.j2
+monitoring_loki_template: files/monitoring/loki.j2
+monitoring_prometheus_template: files/monitoring/prometheus.j2
+monitoring_blackbox_template: files/monitoring/blackbox.j2
+monitoring_agent_docker_compose_template: files/monitoring-agent/docker-compose.j2
+monitoring_agent_promtail_template: files/monitoring-agent/promtail.j2

@@ -1,0 +1,102 @@
+- name: Create "/projects/monitoring" folder
+  file:
+    path: /projects/monitoring
+    state: directory
+    owner: root
+    group: docker
+    mode: u=rwx,g=rwxs,o=
+
+- name: Create "/projects/monitoring/secrets" folder
+  file:
+    path: /projects/monitoring/secrets
+    state: directory
+    owner: root
+    group: docker
+    mode: u=rwx,g=rwxs,o=
+
+# - name: Create "/projects/monitoring/loki" folder
+#   file:
+#     path: /projects/monitoring/loki
+#     state: directory
+#     owner: 10001
+#     group: 10001
+#     mode: u=rwx,g=rwxs,o=
+- name: Add docker-compose.yaml
+  template:
+    src: "{{ monitoring_docker_compose_template }}"
+    dest: "/projects/monitoring/docker-compose.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add loki-datasource.yaml
+  template:
+    src: "{{ monitoring_loki_datasource_template }}"
+    dest: "/projects/monitoring/loki-datasource.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add prometheus-datasource.yaml
+  template:
+    src: "{{ monitoring_prometheus_datasource_template }}"
+    dest: "/projects/monitoring/prometheus-datasource.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add loki.yaml
+  template:
+    src: "{{ monitoring_loki_template }}"
+    dest: "/projects/monitoring/loki.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add prometheus.yaml
+  template:
+    src: "{{ monitoring_prometheus_template }}"
+    dest: "/projects/monitoring/prometheus.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add blackbox.yaml
+  template:
+    src: "{{ monitoring_blackbox_template }}"
+    dest: "/projects/monitoring/blackbox.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Set DATABASE_SSL_CA docker secret
+  copy:
+    src: "{{ grafana_database_ssl_ca_file }}"
+    dest: "/projects/monitoring/secrets/DATABASE_SSL_CA"
+    mode: u=rw,g=r,o=r
+  when: grafana_database_ssl_ca_file is defined
+
+- name: Set SMTP_PASSWORD docker secret
+  copy:
+    src: "{{ grafana_smtp_password_file }}"
+    dest: "/projects/monitoring/secrets/SMTP_PASSWORD"
+    mode: u=rw,g=r,o=r
+  when: grafana_smtp_password_file is defined
+
+- name: Set GRAFANA_ADMIN_PASSWORD docker secret
+  command: sh -c "openssl rand -base64 20 | tr -d '=' | tr -d '\n' > /projects/monitoring/secrets/GRAFANA_ADMIN_PASSWORD"
+  args:
+    creates: "/projects/monitoring/secrets/GRAFANA_ADMIN_PASSWORD"
+
+- name: Set GRAFANA_ADMIN_PASSWORD permissions
+  file:
+    path: /projects/monitoring/secrets/GRAFANA_ADMIN_PASSWORD
+    mode: u=rw,g=r,o=r
+
+- name: Set GRAFANA_DATABASE_PASSWORD docker secret
+  command: sh -c "openssl rand -base64 20 | tr -d '=' | tr -d '\n' > /projects/monitoring/secrets/GRAFANA_DATABASE_PASSWORD"
+  args:
+    creates: "/projects/monitoring/secrets/GRAFANA_DATABASE_PASSWORD"
+
+- name: Set GRAFANA_DATABASE_PASSWORD permissions
+  file:
+    path: /projects/monitoring/secrets/GRAFANA_DATABASE_PASSWORD
+    mode: u=rw,g=r,o=r
+
+- name: Stop monitoring
+  command: sh -c "docker-compose stop || :"
+  args:
+    chdir: /projects/monitoring
+
+- name: Start monitoring
+  command: docker-compose up -d
+  args:
+    chdir: /projects/monitoring

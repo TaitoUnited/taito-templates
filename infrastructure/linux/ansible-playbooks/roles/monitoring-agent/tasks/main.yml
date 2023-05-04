@@ -1,0 +1,29 @@
+- name: Create "/projects/monitoring-agent" folder
+  file:
+    path: /projects/monitoring-agent
+    state: directory
+    owner: root
+    group: docker
+    mode: u=rwx,g=rwxs,o=
+
+- name: Add docker-compose.yaml
+  template:
+    src: "{{ monitoring_agent_docker_compose_template }}"
+    dest: "/projects/monitoring-agent/docker-compose.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Add promtail.yaml
+  template:
+    src: "{{ monitoring_agent_promtail_template }}"
+    dest: "/projects/monitoring-agent/promtail.yaml"
+    mode: u=rw,g=r,o=r
+
+- name: Stop monitoring agent
+  command: sh -c "docker-compose stop || :"
+  args:
+    chdir: /projects/monitoring-agent
+
+- name: Start monitoring agent
+  command: docker-compose up -d
+  args:
+    chdir: /projects/monitoring-agent

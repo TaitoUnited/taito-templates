@@ -1,6 +1,6 @@
-- hosts: worker:allinone
+- hosts: monitoring:allinone
   become: yes
   become_user: root
   roles:
     - docker
-    - monitoring-agent
+    - monitoring

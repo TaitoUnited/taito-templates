@@ -9,7 +9,7 @@ copy_files:
     dest: /backups/database.sh
     mode: u=rwx,g=,o=
   backup_postgres_admin_password:
-    src: files/backups/postgres_admin_password
+    src: files/secrets/postgres_admin_password
     dest: /backups/postgres_admin_password
     mode: u=rw,g=,o=
   backup_postgres_cron:

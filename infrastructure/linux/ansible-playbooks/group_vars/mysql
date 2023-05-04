@@ -9,7 +9,7 @@ copy_files:
     dest: /backups/database.sh
     mode: u=rwx,g=,o=
   backup_mysql_admin_password:
-    src: files/backups/mysql_admin_password
+    src: files/secrets/mysql_admin_password
     dest: /backups/mysql_admin_password
     mode: u=rw,g=,o=
   backup_mysql_cron:

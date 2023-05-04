@@ -4,4 +4,4 @@
   roles:
     - mariadb
   vars:
-    mariadb_admin_password: !unsafe "{{ lookup('file', '/backups/mysql_admin_password') | trim }}"
+    mariadb_admin_password: !unsafe "{{ lookup('file', '/secrets/mysql_admin_password') | trim }}"

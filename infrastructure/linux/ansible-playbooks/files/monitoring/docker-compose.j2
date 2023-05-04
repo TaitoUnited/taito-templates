@@ -1,0 +1,100 @@
+version: "3.8"
+services:
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:{{ grafana_version }}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - monitoring
+    volumes:
+      - ./loki-datasource.yaml:/etc/grafana/provisioning/datasources/loki-datasource.yaml
+      - ./prometheus-datasource.yaml:/etc/grafana/provisioning/datasources/prometheus-datasource.yaml
+    secrets:
+      - GRAFANA_ADMIN_PASSWORD
+      - GRAFANA_DATABASE_PASSWORD
+      - DATABASE_SSL_CA
+      - SMTP_PASSWORD
+    environment:
+      # GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/GRAFANA_ADMIN_PASSWORD
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: {{ grafana_database_host }}:{{ grafana_database_port }}
+      GF_DATABASE_NAME: {{ grafana_database_name }}
+      GF_DATABASE_USER: {{ grafana_database_username }}
+      GF_DATABASE_PASSWORD__FILE: /run/secrets/GRAFANA_DATABASE_PASSWORD
+      GF_DATABASE_SSL_MODE: {{ grafana_database_ssl_mode }}
+      GF_DATABASE_ca_cert_path: /run/secrets/DATABASE_SSL_CA
+      GF_DATABASE_client_key_path:
+      GF_DATABASE_client_cert_path:
+      GF_DATABASE_server_cert_name:
+      GF_SMTP_ENABLED: 'true'
+      GF_SMTP_HOST: smtp.sendgrid.net:587
+      GF_SMTP_USER: apikey
+      GF_SMTP_PASSWORD__FILE: /run/secrets/SMTP_PASSWORD
+      GF_SMTP_SKIP_VERIFY: 'false'
+      GF_SMTP_FROM_ADDRESS: no-reply@taitodev.com
+      GF_SMTP_FROM_NAME: Grafana
+
+  loki:
+    container_name: loki
+    image: grafana/loki:{{ loki_version }}
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100"
+    networks:
+      - monitoring
+    volumes:
+      - loki_data:/loki
+      - ./loki.yaml:/etc/loki/local-config.yaml
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v{{ prometheus_version }}
+    restart: unless-stopped
+    ports:
+      - "9090"
+    networks:
+      - monitoring
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  blackbox-exporter:
+    container_name: blackbox-exporter
+    image: prom/blackbox-exporter:v{{ blackbox_exporter_version }}
+    restart: unless-stopped
+    command: "--config.file=/config/blackbox.yaml"
+    ports:
+      - "9115"
+    networks:
+      - monitoring
+    volumes:
+      - "./blackbox.yaml:/config/blackbox.yaml"
+
+volumes:
+  loki_data: {}
+  prometheus_data: {}
+
+networks:
+  monitoring:
+    name: monitoring
+
+secrets:
+  GRAFANA_ADMIN_PASSWORD:
+    file: ./secrets/GRAFANA_ADMIN_PASSWORD
+  GRAFANA_DATABASE_PASSWORD:
+    file: ./secrets/GRAFANA_DATABASE_PASSWORD
+  DATABASE_SSL_CA:
+    file: ./secrets/DATABASE_SSL_CA
+  SMTP_PASSWORD:
+    file: ./secrets/SMTP_PASSWORD
