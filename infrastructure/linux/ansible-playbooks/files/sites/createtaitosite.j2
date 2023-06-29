@@ -2,8 +2,8 @@
 
 set -e
 
-NAMESPACE=$1
-DOMAIN=$2
+NAMESPACE=${1:?give namespace as argument}
+DOMAIN=${2:?give domain as argument}
 CLIENT_MAX_BODY_SIZE=${3:-1m}
 PORT=$4
 
@@ -25,10 +25,10 @@ echo
 echo "[Add letsencrypt for site ${NAMESPACE}]"
 sed "s/NAME/${NAMESPACE}/g" "$LETSENCRYPT_TEMPLATE_FILE" | \
   sed "s/DOMAIN/${DOMAIN}/g" \
-    > "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt"
-rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
-ln -s "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt" \
-  "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
+    > "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}-letsencrypt"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}-letsencrypt"
+ln -s "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}-letsencrypt" \
+  "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}-letsencrypt"
 echo
 
 echo "[Restart nginx]"
@@ -50,10 +50,10 @@ sed "s/NAME/${NAMESPACE}/g" "$TEMPLATE_FILE" | \
   sed "s/DOMAIN/${DOMAIN}/g" | \
   sed "s/PORT/${PORT}/g" | \
   sed "s/CLIENT_MAX_BODY_SIZE/${CLIENT_MAX_BODY_SIZE}/g" \
-    > "/etc/nginx/sites-available/${NAMESPACE}"
-rm -f "/etc/nginx/sites-enabled/${NAMESPACE}"
-ln -s "/etc/nginx/sites-available/${NAMESPACE}" \
-  "/etc/nginx/sites-enabled/${NAMESPACE}"
+    > "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}"
+ln -s "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}" \
+  "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}"
 echo
 
 echo "[Restart nginx]"

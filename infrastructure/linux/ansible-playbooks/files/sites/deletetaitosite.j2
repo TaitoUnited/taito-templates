@@ -2,21 +2,17 @@
 
 set -e
 
-NAMESPACE=$1
-PROJECT_DIR="/projects/${NAMESPACE}"
+NAMESPACE=${1:?give namespace as argument}
+DOMAIN=${2:?give domain as argument}
 
-echo "[Delete directory ${PROJECT_DIR}]"
-rm -rf "${PROJECT_DIR}"
+echo "[Delete configuration of site ${NAMESPACE}-${DOMAIN}]"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}"
+rm -f "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}"
 echo
 
-echo "[Delete configuration of site ${NAMESPACE}]"
-rm -f "/etc/nginx/sites-enabled/${NAMESPACE}"
-rm -f "/etc/nginx/sites-available/${NAMESPACE}"
-echo
-
-echo "[Delete letsencrypt configuration of site ${NAMESPACE}]"
-rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-letsencrypt"
-rm -f "/etc/nginx/sites-available/${NAMESPACE}-letsencrypt"
+echo "[Delete letsencrypt configuration of site ${NAMESPACE}-${DOMAIN}]"
+rm -f "/etc/nginx/sites-enabled/${NAMESPACE}-${DOMAIN}-letsencrypt"
+rm -f "/etc/nginx/sites-available/${NAMESPACE}-${DOMAIN}-letsencrypt"
 echo
 
 echo "[Delete letsencrypt renewal cron job]"
