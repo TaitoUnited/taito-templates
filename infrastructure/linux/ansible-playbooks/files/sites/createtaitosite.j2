@@ -42,7 +42,7 @@ echo
 echo "[Create letsencrypt renewal cron job]"
 # TODO: Do not reload nginx?
 sed -i "/ letsencrypt .*${DOMAIN//./\\.}/d" /etc/crontab || :
-echo "0 3 * * * root letsencrypt --renew certonly -n --webroot -w /var/www/letsencrypt -m {{ devops_email }} --agree-tos -d '${DOMAIN}' && service nginx reload" >> /etc/crontab
+echo "0 3 * * * root letsencrypt certonly -n --webroot -w /var/www/letsencrypt -m {{ devops_email }} --agree-tos -d '${DOMAIN}' && service nginx reload" >> /etc/crontab
 echo
 
 echo "[Add configuration for site ${NAMESPACE}]"
