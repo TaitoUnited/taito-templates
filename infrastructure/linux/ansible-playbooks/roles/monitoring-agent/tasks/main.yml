@@ -5,25 +5,30 @@
     owner: root
     group: docker
     mode: u=rwx,g=rwxs,o=
+  when: monitoring_enabled
 
 - name: Add docker-compose.yaml
   template:
     src: "{{ monitoring_agent_docker_compose_template }}"
     dest: "/projects/monitoring-agent/docker-compose.yaml"
     mode: u=rw,g=r,o=r
+  when: monitoring_enabled
 
 - name: Add promtail.yaml
   template:
     src: "{{ monitoring_agent_promtail_template }}"
     dest: "/projects/monitoring-agent/promtail.yaml"
     mode: u=rw,g=r,o=r
+  when: monitoring_enabled
 
 - name: Stop monitoring agent
   command: sh -c "docker-compose stop || :"
   args:
     chdir: /projects/monitoring-agent
+  when: monitoring_enabled
 
 - name: Start monitoring agent
   command: docker-compose up -d
   args:
     chdir: /projects/monitoring-agent
+  when: monitoring_enabled

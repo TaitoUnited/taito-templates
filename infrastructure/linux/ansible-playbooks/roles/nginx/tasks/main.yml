@@ -118,7 +118,7 @@
   args:
     chdir: "/projects"
     creates: "/etc/nginx/sites-available/{{ monitoring_namespace }}"
-  when: monitoring_namespace is defined and monitoring_domain is defined
+  when: monitoring_enabled and monitoring_namespace is defined and monitoring_domain is defined
 
 - name: Enable nginx service
   service:

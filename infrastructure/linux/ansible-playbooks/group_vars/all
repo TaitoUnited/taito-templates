@@ -35,7 +35,8 @@ mariadb:
   admin_user: "{{ lookup('env','mysql_default_admin') }}"
 
 # Monitoring
-# monitoring_domain:
+monitoring_enabled: true
+monitoring_domain:
 monitoring_namespace: monitoring
 monitoring_uptime_targets: "[]"
 loki_version: 2.8.1
