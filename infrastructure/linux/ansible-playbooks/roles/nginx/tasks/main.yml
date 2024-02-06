@@ -24,6 +24,15 @@
   loop: "{{ https_authorized_networks }}"
   notify: Reload ufw
 
+- name: Allow additional ports
+  ufw:
+    rule: allow
+    to_port: "{{ item.value.port }}"
+    proto: "{{ item.value.proto }}"
+    src: "{{ item.value.src }}"
+  with_dict: "{{ additional_ports | default({}) }}"
+  notify: Reload ufw
+
 - name: Disable nginx default site
   file:
     dest: /etc/nginx/sites-enabled/default
@@ -102,6 +111,8 @@
   notify:
     - Restart nginx
 
+# TODO: create monitoring site only once letsencrypt has been installed
+# -> move this to monitoring tasks
 - name: Create monitoring site
   command: "createtaitosite {{ monitoring_namespace }} {{ monitoring_domain }} 1m 3000"
   args:

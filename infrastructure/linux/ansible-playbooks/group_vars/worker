@@ -1,3 +1,7 @@
+directories:
+  docker:
+    path: /projects/docker
+
 copy_files:
   docker_config:
     src: files/secrets/docker_config.json
