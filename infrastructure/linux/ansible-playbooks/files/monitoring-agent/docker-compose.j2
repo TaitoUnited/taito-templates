@@ -1,10 +1,17 @@
 version: "3.8"
+x-logging: &default-logging
+  options:
+    max-size: '100m'
+    max-file: '10'
+  driver: json-file
+
 services:
 
   promtail:
     container_name: promtail
     image: grafana/promtail:{{ loki_version }}
     restart: unless-stopped
+    logging: *default-logging
     networks:
       - monitoring-agent
     volumes:
@@ -16,6 +23,7 @@ services:
     container_name: node-exporter
     image: prom/node-exporter:v{{ node_exporter_version }}
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "9100"
     networks:

@@ -1,10 +1,17 @@
 version: "3.8"
+x-logging: &default-logging
+  options:
+    max-size: '100m'
+    max-file: '10'
+  driver: json-file
+
 services:
 
   grafana:
     container_name: grafana
     image: grafana/grafana:{{ grafana_version }}
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "127.0.0.1:3000:3000"
     networks:
@@ -42,6 +49,7 @@ services:
     container_name: loki
     image: grafana/loki:{{ loki_version }}
     restart: unless-stopped
+    logging: *default-logging
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - "3100"
@@ -55,6 +63,7 @@ services:
     container_name: prometheus
     image: prom/prometheus:v{{ prometheus_version }}
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "9090"
     networks:
@@ -73,6 +82,7 @@ services:
     container_name: blackbox-exporter
     image: prom/blackbox-exporter:v{{ blackbox_exporter_version }}
     restart: unless-stopped
+    logging: *default-logging
     command: "--config.file=/config/blackbox.yaml"
     ports:
       - "9115"
