@@ -5,19 +5,28 @@
 # in terraform/database-privileges.tf and enable kubernetes_db_proxy_enabled
 # in taito-config.sh
 
+databaseBackupVault:
+  enabled: false
+  location: ${taito_provider_region}
+  redundancy: LocallyRedundant
+  softDelete: On
+  softDeleteRetentionDurationInDays: 30
+
 postgresqlClusters:
   - name: ${postgres_default_name}
     location: ${taito_provider_region}
-    version: "11" # TODO: Upgrade requires moving to flexible or hyperscale
-    skuName: GP_Gen5_2
-    storageMb: 10240
+    version: "16"
+    skuName: GP_Standard_D2s_v3
     autoGrowEnabled: true
-    backupRetentionDays: 30
+    # Normal database backup
+    backupRetentionDays: 14
     geoRedundantBackupEnabled: true
-    infrastructureEncryptionEnabled: false # This property is currently still in development and not supported by Microsoft.
+    # Vault backup schedule in ISO 8601 formatted intervals (R = repeating, P1W = weekly)
+    vaultBackupSchedule:
+      - R/2024-06-01T02:00:00+00:00/P1W
+    # Vault backup retention in ISO 8601 formatted durations (P4M = 4 months)
+    vaultBackupRetention: P4M
     publicNetworkAccessEnabled: false
-    sslEnforcementEnabled: true
-    sslMinimalTlsVersionEnforced: TLS1_2
     # authorizedNetworks:
     #   - start: 127.127.127.10
     #     end: 127.127.127.20
@@ -32,15 +41,11 @@ mysqlClusters:
   # - name: ${mysql_default_name}
   #   location: ${taito_provider_region}
   #   version: "8.0"
-  #   skuName: GP_Gen5_2
-  #   storageMb: 10240
+  #   skuName: GP_Standard_D2s_v3
   #   autoGrowEnabled: true
-  #   backupRetentionDays: 30
+  #   backupRetentionDays: 14
   #   geoRedundantBackupEnabled: true
-  #   infrastructureEncryptionEnabled: false
   #   publicNetworkAccessEnabled: false
-  #   sslEnforcementEnabled: true
-  #   sslMinimalTlsVersionEnforced: TLS1_2
   #   # authorizedNetworks:
   #   #   - start: 127.127.127.10
   #   #     end: 127.127.127.20
