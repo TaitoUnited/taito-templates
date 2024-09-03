@@ -10,9 +10,13 @@ terraform {
     helm = {
       source = "hashicorp/helm"
     }
+
+    /* Disabled by default as does not support linux_arm64
     mysql = {
       source = "terraform-providers/mysql"
     }
+    */
+    
     postgresql = {
       source = "terraform-providers/postgresql"
     }
