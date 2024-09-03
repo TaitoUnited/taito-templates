@@ -8,19 +8,19 @@
 # - TIP: You can create groups for your domain, see:
 # https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control#google-groups-for-gke
 
-members:
+permissions:
   - id: "serviceAccount:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
-    roles: [ "roles/container.clusterViewer" ]
+    roles: ["roles/container.clusterViewer"]
 
 serviceAccounts:
   - id: "cicd-tester"
-    roles: [ "roles/container.clusterViewer" ]
+    roles: ["roles/container.clusterViewer"]
     description: >
       Service account for running tests on CI/CD. Connects to database
       through a database proxy running on Kubernetes cluster.
 
 apis:
-  - id: "cloudbuild.googleapis.com"        # NOTE: Not required for multi-tenant
+  - id: "cloudbuild.googleapis.com" # NOTE: Not required for multi-tenant
   - id: "cloudfunctions.googleapis.com"
   - id: "cloudkms.googleapis.com"
   - id: "cloudscheduler.googleapis.com"

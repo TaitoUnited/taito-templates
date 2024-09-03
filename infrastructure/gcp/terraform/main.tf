@@ -46,8 +46,8 @@ locals {
   )
 
   admin = merge(local.adminOrig, {
-    members = flatten([
-      for member in local.adminOrig.members:
+    permissions = flatten([
+      for member in local.adminOrig.permissions:
       replace(member.id, "TAITO_PROVIDER_TAITO_ZONE_ID", "") == member.id ? [ member ] : []
     ])
   })
@@ -94,7 +94,7 @@ module "admin" {
 
   project_id       = google_project.zone.project_id
 
-  members          = local.admin["members"]
+  permissions      = local.admin["permissions"]
   service_accounts = local.admin["serviceAccounts"]
   apis             = local.admin["apis"]
 }
