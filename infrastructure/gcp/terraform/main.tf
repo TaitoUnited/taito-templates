@@ -89,7 +89,7 @@ data "external" "network_wait" {
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "2.0.0"
+  version          = "2.1.0"
   depends_on       = [ google_project.zone ]
 
   project_id       = google_project.zone.project_id
@@ -101,7 +101,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "2.0.0"
+  version             = "2.1.0"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -115,14 +115,14 @@ module "databases" {
 
 module "dns" {
   source       = "TaitoUnited/dns/google"
-  version      = "2.0.0"
+  version      = "2.1.0"
   depends_on   = [ module.admin ]
   dns_zones    = local.dns["dnsZones"]
 }
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "2.4.0"
+  version                = "2.5.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -176,7 +176,7 @@ module "kubernetes" {
 
 module "events" {
   source       = "TaitoUnited/events/google"
-  version      = "2.0.0"
+  version      = "2.1.0"
   depends_on   = [ module.admin, module.databases ]
 
   project_id             = google_project.zone.project_id
@@ -197,7 +197,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "2.0.0"
+  version      = "2.1.0"
   depends_on   = [ module.admin ]
 
   project_id   = google_project.zone.project_id
@@ -206,7 +206,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "2.0.0"
+  version         = "2.1.0"
   depends_on      = [ module.admin ]
 
   project_id      = google_project.zone.project_id

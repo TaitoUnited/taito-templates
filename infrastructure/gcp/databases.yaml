@@ -9,7 +9,7 @@ postgresqlClusters:
   - name: ${postgres_default_name}
     region: ${taito_provider_region}
     zone: ${taito_provider_zone}
-    version: POSTGRES_12
+    version: POSTGRES_16
     tier: db-custom-1-3840
     maintenanceDay: 2
     maintenanceHour: 2
