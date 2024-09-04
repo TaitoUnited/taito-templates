@@ -89,7 +89,7 @@ data "external" "network_wait" {
 
 module "admin" {
   source           = "TaitoUnited/admin/google"
-  version          = "2.1.0"
+  version          = "2.1.2"
   depends_on       = [ google_project.zone ]
 
   project_id       = google_project.zone.project_id
@@ -101,7 +101,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "2.1.0"
+  version             = "2.1.1"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -122,7 +122,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "2.5.0"
+  version                = "2.6.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -140,6 +140,8 @@ module "kubernetes" {
     ? data.external.network_wait.result.project_number
     : google_project.zone.number
   )
+
+  grant_registry_access    = var.first_run == false
 
   # Settings
   # NOTE: helm_enabled should be false on the first run, then true
@@ -206,7 +208,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "2.1.0"
+  version         = "2.1.1"
   depends_on      = [ module.admin ]
 
   project_id      = google_project.zone.project_id
