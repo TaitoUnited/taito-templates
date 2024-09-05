@@ -7,9 +7,8 @@ kubernetes:
   context: ${taito_zone}
   releaseChannel: REGULAR
   maintenanceStartTime: 02:00
-  registryProjectId: ""
-  authenticatorSecurityGroup: gke-security-groups@${taito_provider_org_domain}
-  rbacSecurityGroup: ""
+  registryProjectId:
+  authenticatorSecurityGroup: # example: gke-security-groups@${taito_provider_org_domain}
   clusterFirewallRulesEnabled: true
   masterPrivateEndpointEnabled: false
   masterGlobalAccessEnabled: true
