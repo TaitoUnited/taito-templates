@@ -101,7 +101,7 @@ module "admin" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "2.2.0"
+  version             = "2.3.0"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -122,7 +122,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "2.7.0"
+  version                = "2.7.1"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
