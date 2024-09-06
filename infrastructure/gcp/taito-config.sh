@@ -26,6 +26,14 @@ taito_devops_email=support@myorganization.com # CHANGE
 taito_default_domain=dev.myorganization.com   # CHANGE
 taito_default_cdn_domain=
 
+# Networking
+taito_vpn_enabled=false # TODO: not supported yet
+if [[ ${taito_vpn_enabled} == "true" ]]; then
+  kubernetes_db_proxy_enabled=false
+else
+  kubernetes_db_proxy_enabled=true
+fi
+
 # Zone buckets
 # NOTE: State bucket name also in terraform/main.tf file (terraform backend)
 taito_state_bucket=$taito_zone-state
@@ -103,7 +111,6 @@ kubernetes_user=$kubernetes_cluster
 
 # Databases
 taito_databases="commonpg commonmysql"
-# kubernetes_db_proxy_enabled=true
 
 # Database: common-postgres
 db_commonpg_type=pg

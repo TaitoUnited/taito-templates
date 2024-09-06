@@ -162,6 +162,7 @@ module "kubernetes" {
   kubernetes               = local.kubernetes["kubernetes"]
 
   # Database clusters (for db proxies)
+  use_kubernetes_as_db_proxy = var.kubernetes_db_proxy_enabled
   postgresql_cluster_names = [
     for db in (
       local.databases.postgresqlClusters != null ? local.databases.postgresqlClusters : []

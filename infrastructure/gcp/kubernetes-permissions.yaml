@@ -31,6 +31,8 @@ permissions:
             - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
             # - "group:developers@${taito_provider_org_domain}"
     # Grant database access through a db proxy
+    # CHANGE: Remove this if you are not going to use VPN instead of Kubernetes for opening
+    #         a database connection from external network using personal credentials.
     - name: db-proxy
       clusterRoles:
         - name: taito-proxyer

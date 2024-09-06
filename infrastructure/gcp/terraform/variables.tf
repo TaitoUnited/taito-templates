@@ -37,6 +37,10 @@ variable "taito_devops_email" {
   type = string
 }
 
+variable "kubernetes_db_proxy_enabled" {
+  type    = bool
+}
+
 /* Buckets */
 
 variable "taito_function_bucket" {
