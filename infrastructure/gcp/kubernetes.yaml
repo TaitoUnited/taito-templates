@@ -34,15 +34,15 @@ kubernetes:
   # Node pools
   nodePools:
     - name: pool-1
-      machineType: e2-medium
+      machineType: e2-standard-4
       acceleratorType: "" # (e.g. nvidia-tesla-t4, note: e2-* do not support GPUs)
       acceleratorCount: 0
       secureBootEnabled: true
       diskSizeGb: 100
       locations: "" # Leave empty or specify zones, example: europe-west1-b,europe-west1-c
       # NOTE: On Google Cloud total number of nodes = node_count * num_of_zones
-      minNodeCount: 2
-      maxNodeCount: 2
+      minNodeCount: 1
+      maxNodeCount: 1
 
   # Ingress controllers
   ingressNginxControllers:
