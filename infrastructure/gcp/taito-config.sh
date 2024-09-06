@@ -177,7 +177,7 @@ binauthz_public_key_id=
 # CHANGE: remove CI/CD tester service account if this zone is not used for testing
 taito_secrets="
   ${taito_secrets}
-  cicd-tester-serviceaccount.key/common:file
+  cicd-proxy-serviceaccount.key/common:file
 "
 if [[ $taito_zone_multi_tenant != true ]]; then
   # - GitHub personal token for tagging releases (optional)

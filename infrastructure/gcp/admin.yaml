@@ -1,6 +1,6 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/admin/google
 
-# - NOTE: cicd-tester service account is not required on production clusters
+# - NOTE: cicd-proxy service account is not required on production clusters
 # - NOTE: On multi-tenant setup, replace the zone specific cloudbuild service
 # account with tenant specific cloudbuild service accounts.
 # - TIP: You can create custom roles at the project or organization level, see:
@@ -13,7 +13,7 @@ permissions:
     roles: ["roles/container.clusterViewer"]
 
 serviceAccounts:
-  - id: "cicd-tester"
+  - id: "cicd-proxy"
     roles: ["roles/container.clusterViewer"]
     description: >
       Service account for running tests on CI/CD. Connects to database

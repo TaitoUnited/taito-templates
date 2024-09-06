@@ -1,6 +1,6 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/google
 
-# NOTE: cicd-tester service account is not required on production clusters
+# NOTE: cicd-proxy service account is not required on production clusters
 # NOTE: On multi-tenant setup, replace the zone specific cloudbuild service
 # account with tenant specific cloudbuild service accounts, and give each
 # 'taito-deployer' permissions only to specific namespaces.
@@ -28,7 +28,7 @@ permissions:
         - name: taito-secret-viewer
           subjects:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
-            - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
+            - "user:cicd-proxy@${taito_zone}.iam.gserviceaccount.com"
             # - "group:developers@${taito_provider_org_domain}"
     # Grant database access through a db proxy
     # CHANGE: Remove this if you are not going to use VPN instead of Kubernetes for opening
@@ -38,5 +38,5 @@ permissions:
         - name: taito-proxyer
           subjects:
             - "user:${taito_provider_taito_zone_id}@cloudbuild.gserviceaccount.com"
-            - "user:cicd-tester@${taito_zone}.iam.gserviceaccount.com"
+            - "user:cicd-proxy@${taito_zone}.iam.gserviceaccount.com"
             # - "group:developers@${taito_provider_org_domain}"
