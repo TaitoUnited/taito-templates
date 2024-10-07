@@ -9,22 +9,35 @@ kubernetes:
   maintenanceStartTime: 02:00
   registryProjectId:
   authenticatorSecurityGroup: # example: gke-security-groups@${taito_provider_org_domain}
-  clusterFirewallRulesEnabled: true
-  masterPrivateEndpointEnabled: false
+  addClusterFirewallRules: true
+  enablePrivateEndpoint: false
+  deployUsingPrivateEndpoint: false
   masterGlobalAccessEnabled: true
-  privateNodesEnabled: true
-  shieldedNodesEnabled: true
-  networkPolicyEnabled: false
+  enablePrivateNodes: true
+  enableShieldedNodes: true
+  enableConfidentialNodes: false
+  sandboxEnabled: false
+  securityPostureMode: DISABLED
+  securityPostureVulnerabilityMode: VULNERABILITY_DISABLED
+  workloadVulnerabilityMode: DISABLED
+  networkPolicy: false
+  enableFqdnNetworkPolicy: false
+  enableCiliumClusterwideNetworkPolicy: false
+  datapathProvider: ADVANCED_DATAPATH
   dbEncryptionEnabled: false
-  verticalPodAutoscalingEnabled: true
-  dnsCacheEnabled: true
-  pdCsiDriverEnabled: true
-  resourceConsumptionExportEnabled: false
-  resourceConsumptionExportDatasetId: ""
-  networkEgressExportEnabled: false
-  binaryAuthorizationEnabled: false
-  intranodeVisibilityEnabled: false
-  configConnectorEnabled: false
+  enableVerticalPodAutoscaling: true
+  dnsCache: true
+  gcePdCsiDriver: true
+  gcsFuseCsiDriver: false
+  filestoreCsiDriver: false
+  enableResourceConsumptionExport: false
+  resourceUsageExportDatasetId: ""
+  enableNetworkEgressExport: false
+  enableBinaryAuthorization: false
+  enableIntranodeVisibility: false
+  configConnector: false
+  monitoringEnableManagedPrometheus: false
+  gkeBackupAgentConfig: false
   region: ${taito_provider_region}
   regional: ${kubernetes_regional}
   zones: ["${taito_provider_zone}"] # RECOMMENDED: add all three GCP zones here
