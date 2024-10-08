@@ -105,7 +105,7 @@ module "admin" {
 
 module "compute" {
   source              = "TaitoUnited/compute/google"
-  version             = "1.0.0"
+  version             = "1.0.1"
 
   project_id          = (
     var.first_run

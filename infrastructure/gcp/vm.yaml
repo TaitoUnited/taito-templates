@@ -5,4 +5,6 @@ virtualMachines:
   #   zone: ${taito_provider_zone}
   #   subnetwork: subnet-${taito_provider_region}
   #   machineType: e2-medium
+  #   image: debian-cloud/debian-12
   #   diskSizeGb: 50
+  #   deletionProtection: true
