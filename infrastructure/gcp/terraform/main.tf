@@ -151,9 +151,9 @@ module "kubernetes" {
 
   # Network
   network                  = module.network.network_name
-  subnetwork               = module.network.subnet_names[0]
-  pods_ip_range_name       = module.network.pods_ip_range_name
-  services_ip_range_name   = module.network.services_ip_range_name
+  subnetwork               = local.kubernetes["kubernetes"].subnetwork
+  pods_ip_range_name       = local.kubernetes["kubernetes"].podsIpRangeName
+  services_ip_range_name   = local.kubernetes["kubernetes"].servicesIpRangeName
 
   # Permissions
   permissions              = local.kubernetesPermissions["permissions"]
@@ -200,7 +200,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "2.1.0"
+  version      = "3.0.0"
   depends_on   = [ module.admin ]
 
   project_id   = google_project.zone.project_id

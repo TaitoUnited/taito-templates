@@ -44,6 +44,11 @@ kubernetes:
   masterAuthorizedNetworks:
     - 0.0.0.0/0
 
+  # See network.yaml
+  subnetwork: subnet-${taito_provider_region}
+  podsIpRangeName: range-${taito_provider_region}-pods
+  servicesIpRangeName: range-${taito_provider_region}-services
+
   # Node pools
   nodePools:
     - name: pool-1

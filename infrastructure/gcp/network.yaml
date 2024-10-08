@@ -8,3 +8,34 @@ network:
   flowLoggingEnabled: false
   vpcSharingEnabled: false
   sharedVpcServiceProjects: []
+
+  subnets:
+    - subnet_name: subnet-dmz
+      subnet_ip: 10.0.0.0/24
+      subnet_region: ${taito_provider_region}
+      subnet_private_access: true
+      subnet_flow_logs: true
+    - subnet_name: subnet-${taito_provider_region}
+      subnet_ip: 10.0.32.0/19
+      subnet_region: ${taito_provider_region}
+      subnet_private_access: true
+      subnet_flow_logs: false
+    # EXAMPLE: subnet in another region
+    # - subnet_name: subnet-europe-west4
+    #   subnet_ip: 10.0.64.0/19
+    #   subnet_region: europe-west4
+    #   subnet_private_access: true
+    #   subnet_flow_logs: false
+
+  secondary_ranges:
+    subnet-${taito_provider_region}:
+      - range_name: range-${taito_provider_region}-pods
+        ip_cidr_range: 192.168.0.0/19
+      - range_name: range-${taito_provider_region}-services
+        ip_cidr_range: 192.168.32.0/19
+    # EXAMPLE: subnet in another region
+    # subnet-europe-west4:
+    #   - range_name: range-europe-west4-pods
+    #     ip_cidr_range: 192.168.64.0/19
+    #   - range_name: range-europe-west4-services
+    #     ip_cidr_range: 192.168.96.0/19
