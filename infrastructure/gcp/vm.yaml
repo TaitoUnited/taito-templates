@@ -3,7 +3,7 @@ virtualMachines:
   # EXAMPLE:
   # - name: vpn
   #   zone: ${taito_provider_zone}
-  #   subnetwork: subnet-${taito_provider_region}
+  #   subnetwork: subnet-dmz
   #   machineType: e2-medium
   #   image: debian-cloud/debian-12
   #   diskSizeGb: 50
