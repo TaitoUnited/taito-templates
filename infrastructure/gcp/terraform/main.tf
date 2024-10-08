@@ -79,6 +79,10 @@ locals {
   storage = jsondecode(
     file("${path.root}/../storage.json.tmp")
   )
+
+  vm = jsondecode(
+    file("${path.root}/../vm.json.tmp")
+  )
 }
 
 # NOTE: This is a hack to make some modules wait for an existing GCP project and network
@@ -97,6 +101,20 @@ module "admin" {
   permissions      = local.admin["permissions"]
   service_accounts = local.admin["serviceAccounts"]
   apis             = local.admin["apis"]
+}
+
+module "compute" {
+  source              = "TaitoUnited/compute/google"
+  version             = "1.0.0"
+
+  project_id          = (
+    var.first_run
+    ? data.external.network_wait.result.project_id
+    : google_project.zone.project_id
+  )
+
+  network             = module.network.network_name
+  virtual_machines    = local.vm.virtualMachines
 }
 
 module "databases" {
