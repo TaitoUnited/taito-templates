@@ -61,7 +61,7 @@ taito_cicd_secrets_path=
 taito_container_registry_provider=gcp
 taito_container_registry_provider_url=
 taito_container_registry_organization=$taito_organization
-taito_container_registry=eu.gcr.io/$taito_zone
+taito_container_registry=${taito_provider_region}-docker.pkg.dev/${taito_zone}/container-registry
 
 # CI/CD provider
 taito_ci_provider=gcp

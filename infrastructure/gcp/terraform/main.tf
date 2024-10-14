@@ -140,7 +140,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "3.2.0"
+  version                = "3.3.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -159,6 +159,7 @@ module "kubernetes" {
     : google_project.zone.number
   )
 
+  create_registry          = true
   grant_registry_access    = var.first_run == false
 
   # Settings
