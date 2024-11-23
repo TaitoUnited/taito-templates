@@ -3,9 +3,9 @@
 network:
   name: ${taito_zone}
   region: ${taito_provider_region}
+  dnsLoggingEnabled: true
   natEnabled: true # NAT is required for private Kubernetes or virtual machines
   privateGoogleServicesEnabled: true
-  flowLoggingEnabled: false
   vpcSharingEnabled: false
   sharedVpcServiceProjects: []
 

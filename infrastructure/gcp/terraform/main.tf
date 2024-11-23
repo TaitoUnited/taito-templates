@@ -140,7 +140,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "3.3.0"
+  version                = "3.3.1"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -219,7 +219,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "3.0.0"
+  version      = "3.1.0"
   depends_on   = [ module.admin ]
 
   project_id   = google_project.zone.project_id
