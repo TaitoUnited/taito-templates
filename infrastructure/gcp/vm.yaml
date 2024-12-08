@@ -8,3 +8,5 @@ virtualMachines:
   #   image: debian-cloud/debian-12
   #   diskSizeGb: 50
   #   deletionProtection: true
+  #   gpuType: nvidia-tesla-t4
+  #   gpuCount: 1
