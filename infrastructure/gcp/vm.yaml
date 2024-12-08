@@ -4,9 +4,12 @@ virtualMachines:
   # - name: vpn
   #   zone: ${taito_provider_zone}
   #   subnetwork: subnet-dmz
+  #   sshAuthorizedNetworks: ["0.0.0.0/0"]
+  #   publicAuthorizedNetworks: ["0.0.0.0/0"]
+  #   publicTcpPorts: ["80", "443"]
+  #   publicUdpPorts: ["51820"]
   #   machineType: e2-medium
   #   image: debian-cloud/debian-12
   #   diskSizeGb: 50
-  #   deletionProtection: true
   #   gpuType: nvidia-tesla-t4
   #   gpuCount: 1
