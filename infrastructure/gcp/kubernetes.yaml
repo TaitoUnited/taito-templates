@@ -1,7 +1,7 @@
 # See: https://registry.terraform.io/modules/TaitoUnited/kubernetes/google
 
 # For Kubernetes setting descriptions, see
-# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/private-cluster
+# https://registry.terraform.io/modules/terraform-google-modules/kubernetes-engine/google/latest/submodules/beta-private-cluster
 kubernetes:
   name: ${kubernetes_name}
   context: ${taito_zone}
@@ -19,6 +19,7 @@ kubernetes:
   sandboxEnabled: false
   securityPostureMode: DISABLED
   securityPostureVulnerabilityMode: VULNERABILITY_DISABLED
+  workloadConfigAuditMode: DISABLED
   workloadVulnerabilityMode: DISABLED
   networkPolicy: false # Not allowed with ADVANCED_DATAPATH
   enableFqdnNetworkPolicy: false
@@ -31,6 +32,7 @@ kubernetes:
   gcePdCsiDriver: true
   gcsFuseCsiDriver: false
   filestoreCsiDriver: false
+  enableCostAllocation: false
   enableResourceConsumptionExport: false
   resourceUsageExportDatasetId: ""
   enableNetworkEgressExport: false

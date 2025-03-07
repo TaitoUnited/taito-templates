@@ -20,12 +20,12 @@ serviceAccounts:
       through a database proxy running on Kubernetes cluster.
 
 apis:
-  - id: "cloudbuild.googleapis.com" # NOTE: Not required for multi-tenant
   - id: "cloudfunctions.googleapis.com"
   - id: "cloudkms.googleapis.com"
   - id: "cloudscheduler.googleapis.com"
   - id: "compute.googleapis.com"
   - id: "container.googleapis.com"
+  - id: "containersecurity.googleapis.com"
   - id: "containerregistry.googleapis.com" # NOTE: Not required for multi-tenant
   - id: "monitoring.googleapis.com"
   - id: "pubsub.googleapis.com"
@@ -37,3 +37,4 @@ apis:
   # - id: "binaryauthorization.googleapis.com"
   # - id: "dns.googleapis.com"
   # - id: "containeranalysis.googleapis.com"
+  # - id: "cloudbuild.googleapis.com" # NOTE: Not required for multi-tenant

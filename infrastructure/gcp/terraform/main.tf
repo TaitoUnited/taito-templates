@@ -119,7 +119,7 @@ module "compute" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "2.3.0"
+  version             = "2.4.0"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -140,7 +140,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "3.4.0"
+  version                = "3.7.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -219,7 +219,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "3.1.0"
+  version      = "3.2.0"
   depends_on   = [ module.admin ]
 
   project_id   = google_project.zone.project_id
