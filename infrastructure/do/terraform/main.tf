@@ -120,7 +120,7 @@ module "compute" {
 
 module "kubernetes" {
   source                     = "TaitoUnited/kubernetes/digitalocean"
-  version                    = "0.0.2"
+  version                    = "0.0.3"
 
   email                      = var.taito_devops_email
 
