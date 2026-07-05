@@ -8,6 +8,7 @@
 postgresqlClusters:
   - name: ${postgres_default_name}
     region: ${taito_provider_region}
+    # cmekLocation: ${taito_provider_region}
     zone: ${taito_provider_zone}
     version: POSTGRES_16
     tier: db-custom-1-3840
@@ -31,6 +32,7 @@ postgresqlClusters:
 mysqlClusters:
   - name: ${mysql_default_name}
     region: ${taito_provider_region}
+    # cmekLocation: ${taito_provider_region}
     zone: ${taito_provider_zone}
     version: MYSQL_8_0
     tier: db-custom-1-3840

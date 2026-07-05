@@ -57,6 +57,12 @@ taito_provider_secrets_location=taito_resource_namespace_id
 taito_provider_secrets_mode=backup
 taito_cicd_secrets_path=
 
+# Cloud backup
+taito_backup_project=${taito_zone}-backup
+taito_backup_location=europe-west1 # CHANGE
+taito_backup_time_zone=EEST        # CHANGE
+taito_backup_cmek_enabled=true     # CHANGE
+
 # Container registry provider
 taito_container_registry_provider=gcp
 taito_container_registry_provider_url=

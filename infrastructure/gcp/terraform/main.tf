@@ -21,8 +21,20 @@ provider "google-beta" {
   zone    = var.taito_provider_zone
 }
 
+provider "google" {
+  alias   = "backup"
+  project = var.taito_backup_project
+  region  = var.taito_backup_location
+}
+
+provider "google-beta" {
+  alias   = "backup"
+  project = var.taito_backup_project
+  region  = var.taito_backup_location
+}
+
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path = "~/.kube/config"
   }
 }
@@ -119,7 +131,7 @@ module "compute" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "2.4.0"
+  version             = "3.2.0"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
@@ -131,6 +143,33 @@ module "databases" {
   )
 }
 
+/* Enable some services for the backup project */
+resource "google_project_service" "backup_backupdr" {
+  provider            = google.backup
+  service             = "backupdr.googleapis.com"
+}
+
+module "backup" {
+  source              = "TaitoUnited/backup/google"
+  version             = "1.0.0"
+  depends_on          = [
+    module.admin,
+    google_project_service.backup_backupdr
+  ]
+
+  providers = {
+    google = google.backup
+    google-beta = google-beta.backup
+  }    
+
+  name_prefix         = "backup"
+  location            = var.taito_backup_location
+  time_zone           = var.taito_backup_time_zone
+  cmek_enabled        = var.taito_backup_cmek_enabled == "true"
+
+  database_instances  = concat(module.databases.postgres_instances, module.databases.mysql_instances)
+}
+
 module "dns" {
   source       = "TaitoUnited/dns/google"
   version      = "2.1.0"
@@ -140,7 +179,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "3.8.1"
+  version                = "4.1.0"
 
   # OPTIONAL: Helm app versions
   # ingress_nginx_version  = ...
@@ -173,6 +212,9 @@ module "kubernetes" {
   subnetwork               = local.kubernetes["kubernetes"].subnetwork
   pods_ip_range_name       = local.kubernetes["kubernetes"].podsIpRangeName
   services_ip_range_name   = local.kubernetes["kubernetes"].servicesIpRangeName
+
+  # Gateway
+  gateway_security_policy  = google_compute_security_policy.default_cloud_armor_policy
 
   # Permissions
   permissions              = local.kubernetesPermissions["permissions"]
@@ -219,7 +261,7 @@ module "events" {
 
 module "network" {
   source       = "TaitoUnited/network/google"
-  version      = "3.2.0"
+  version      = "4.0.0"
   depends_on   = [ module.admin ]
 
   project_id   = google_project.zone.project_id

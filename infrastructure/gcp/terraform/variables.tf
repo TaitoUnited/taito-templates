@@ -31,6 +31,20 @@ variable "taito_provider_zone" {
   type = string
 }
 
+/* Cloud backup */
+
+variable "taito_backup_location" {
+  type = string
+}
+
+variable "taito_backup_time_zone" {
+  type = string
+}
+
+variable "taito_backup_cmek_enabled" {
+  type = string
+}
+
 /* Settings */
 
 variable "taito_devops_email" {
