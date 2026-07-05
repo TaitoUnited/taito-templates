@@ -270,7 +270,7 @@ module "network" {
 
 module "storage" {
   source          = "TaitoUnited/storage/google"
-  version         = "2.1.1"
+  version         = "3.0.0"
   depends_on      = [ module.admin ]
 
   project_id      = google_project.zone.project_id
