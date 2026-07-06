@@ -247,7 +247,6 @@ module "events" {
   project_id             = google_project.zone.project_id
 
   cloud_build_notify_enabled = var.taito_messaging_webhook != ""
-  cloud_sql_backups_enabled  = var.taito_backup_bucket != ""
 
   functions_bucket        = var.taito_function_bucket
   functions_region        = "europe-west1" # Not available on all regions
@@ -256,8 +255,10 @@ module "events" {
   slack_webhook_url       = var.taito_messaging_webhook
   slack_builds_channel    = var.taito_messaging_builds_channel
 
-  postgresql_clusters     = local.databases.postgresqlClusters
-  mysql_clusters          = local.databases.mysqlClusters
+  # TODO: remove custom backup functionality from module
+  cloud_sql_backups_enabled  = false # var.taito_backup_bucket != ""
+  postgresql_clusters        = [] # local.databases.postgresqlClusters
+  mysql_clusters             = [] # local.databases.mysqlClusters
 }
 
 module "network" {
