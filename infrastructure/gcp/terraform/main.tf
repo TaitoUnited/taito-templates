@@ -131,16 +131,20 @@ module "compute" {
 
 module "databases" {
   source              = "TaitoUnited/databases/google"
-  version             = "3.2.0"
+  version             = "3.3.2"
   depends_on          = [ module.admin ]
 
   postgresql_clusters = local.databases.postgresqlClusters
   mysql_clusters      = local.databases.mysqlClusters
+
+  private_network_id  = module.network.network_self_link
+  /*
   private_network_id  = (
     var.first_run
     ? data.external.network_wait.result.network_self_link
     : module.network.network_self_link
   )
+  */
 }
 
 /* Enable some services for the backup project */
@@ -215,7 +219,7 @@ module "kubernetes" {
   services_ip_range_name   = local.kubernetes["kubernetes"].servicesIpRangeName
 
   # Gateway
-  gateway_security_policy  = google_compute_security_policy.default_cloud_armor_policy
+  gateway_security_policy  = google_compute_security_policy.default_cloud_armor_policy.name
 
   # Permissions
   permissions              = local.kubernetesPermissions["permissions"]
