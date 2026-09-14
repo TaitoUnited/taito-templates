@@ -183,7 +183,7 @@ module "dns" {
 
 module "kubernetes" {
   source                 = "TaitoUnited/kubernetes/google"
-  version                = "4.1.0"
+  version                = "4.2.0"
   depends_on             = [ module.databases ]
 
   # OPTIONAL: Helm app versions
@@ -217,9 +217,6 @@ module "kubernetes" {
   subnetwork               = local.kubernetes["kubernetes"].subnetwork
   pods_ip_range_name       = local.kubernetes["kubernetes"].podsIpRangeName
   services_ip_range_name   = local.kubernetes["kubernetes"].servicesIpRangeName
-
-  # Gateway
-  gateway_security_policy  = google_compute_security_policy.default_cloud_armor_policy.name
 
   # Permissions
   permissions              = local.kubernetesPermissions["permissions"]
